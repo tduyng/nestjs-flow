@@ -1,7 +1,9 @@
-# nestjs-flow
+# NESTJS FLOW
 
 End to end build a project with NestJS
 
+<details>
+<summary>All branches of projects</summary>
 1. Init project: Controller, services, modules
 2. Database, typeorm
 3. Auth with passpord, jwt
@@ -26,3 +28,22 @@ End to end build a project with NestJS
 22. Storing JSON with PostgresSQL & TypeORM
 23. Implementing in-memory cache to increase the performance
 24. Cache with Redis. Running the app in a Nodejs cluster
+</details>
+
+---
+
+<details>
+
+<summary>Table of content</summary>
+
+- [NESTJS FLOW](#nestjs-flow)
+  - [1. Init project](#1-init-project)
+
+
+
+</details>
+
+
+---
+
+## 1. Init project
