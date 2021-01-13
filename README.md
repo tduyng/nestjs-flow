@@ -38,6 +38,7 @@ End to end build a project with NestJS
 
 - [NESTJS FLOW](#nestjs-flow)
   - [1. Init project](#1-init-project)
+    - [Installation](#installation)
 
 
 
@@ -47,3 +48,67 @@ End to end build a project with NestJS
 ---
 
 ## 1. Init project
+
+### Installation
+
+Install [Nest CLI](https://docs.nestjs.com/cli/overview)
+  ```bash
+  $ yarn global add @nestjs/cli
+  $ nest new project-name
+  ```
+
+  or alternatively, to install the TypeScript project wiht **Git**:
+  ```bash
+  $ git clone https://github.com/nestjs/typescript-starter.git project
+  $ cd project
+  $ npm install
+  $ npm run start
+  ```
+
+  Check [Nestjs documentations for more details](https://docs.nestjs.com/)
+
+**Start coding**
+- Init project with **Nest CLI**
+  ```bash
+  $ nest new nestjs-flow
+  $ cd nestjs-flow
+  ```
+
+  When all done, we will have a structure project:
+
+  ```tree
+    .
+  ├── nest-cli.json
+  ├── package.json
+  ├── README.md
+  ├── src
+  │   ├── app.controller.spec.ts
+  │   ├── app.controller.ts
+  │   ├── app.module.ts
+  │   ├── app.service.ts
+  │   └── main.ts
+  ├── test
+  │   ├── app.e2e-spec.ts
+  │   └── jest-e2e.json
+  ├── tsconfig.build.json
+  ├── tsconfig.json
+  └── yarn.lock
+  ```
+
+  Check the [Nest documentation](https://docs.nestjs.com/), you will have a very good explain about structure, about each files & understand how it works.
+
+  **Note:** when you create project with **Nest cli**, it will be automatically include a file `.git` in the root folder. Consider delete it with `rm -rf .git` if you have already another `.git`.
+
+  **Note2:** if you create Nestjs as a subfolder in your project (as microservice eg), you will have some problem with **eslint** syntax. **To fix that**, update `tsconfigRootDir: __dirname` in `.eslint.js` file
+
+  ```diff
+    parserOptions: {
+      project: 'tsconfig.json',
+  +  tsconfigRootDir: __dirname,
+      sourceType: 'module',
+    },
+  ```
+
+- Start server
+  Run `yarn start:dev` to start server. Check all scripts availables in `package.json` file.
+- Custom port
