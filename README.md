@@ -48,6 +48,7 @@ End to end build a project with NestJS
     - [Documentation with Swagger/Open API](#documentation-with-swaggeropen-api)
   - [3. Auth](#3-auth)
     - [Installation](#installation-1)
+    - [User](#user)
   - [4. Error handling](#4-error-handling)
   - [5.](#5)
 
@@ -830,9 +831,10 @@ For this part, we need to install packages:
 - [cookie-parser](https://github.com/expressjs/cookie-parser): to parse cookie
 
   ```bash
-  $ yarn add @nestjs/jwt passport-jwt cookie-parser bcrypt
+  $ yarn add @nestjs/jwt @nestjs/passport passport-jwt cookie-parser bcrypt
   $ yarn add -D @types/bcrypt @types/cookie-parser @types/passport-jwt
   ```
+### User
 
 </details>
 
