@@ -42,6 +42,7 @@ End to end build a project with NestJS
     - [Bootstrap projects](#bootstrap-projects)
     - [Using variable environment (.env)](#using-variable-environment-env)
     - [Modules](#modules)
+      - [Post modules](#post-modules)
 
 
 
@@ -285,3 +286,17 @@ I recommend structure src project as:
 
 This structure will help you better organize your codes & adapt with principle of Nest framework. If you follow this series, you will understand better why I prefer this structure.
 
+#### Post modules
+- Getting started
+  Docs of **Nest** is very well structure and excellent explain all techniques & theirs features. So I will not go deep to explain each one.
+  When you read my codes, if you don't understand some parts, you can check for more details:
+  - [Controllers](https://docs.nestjs.com/controllers)
+  - [Providers](https://docs.nestjs.com/providers)
+  - [Modules](https://docs.nestjs.com/modules)
+
+
+- Create `PostService`
+- Create PostDto
+  Data transfer objects
+- Create `PostController`
+- Create `PostModule`
