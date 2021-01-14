@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Launch Program",
       "args":[
-        "${workspaceFolder}/src/server.ts"
+        "${workspaceFolder}/src/main.ts"
       ],
       "runtimeArgs": [
         "--nolazy",
