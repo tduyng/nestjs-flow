@@ -46,7 +46,10 @@ End to end build a project with NestJS
   - [2. TypeORM](#2-typeorm)
     - [Post modules](#post-modules-1)
     - [Documentation with Swagger/Open API](#documentation-with-swaggeropen-api)
-  - [3.](#3)
+  - [3. Auth](#3-auth)
+    - [Installation](#installation-1)
+  - [4. Error handling](#4-error-handling)
+  - [5.](#5)
 
 
 
@@ -806,7 +809,49 @@ Check [swagger.io](https://swagger.io/) & [Nest Open api](https://docs.nestjs.co
 
 ---
 
-## 3. 
+
+
+## 3. Auth
+
+<details>
+<summary>Click to expand section</summary>
+
+Check the code at branch [3-auth](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/3-auth)
+
+Create authentication with bcrypt, passport Nestjs, Jwt & cookies
+
+Check [Nest security](https://docs.nestjs.com/security/authentication) for more information.
+
+### Installation
+For this part, we need to install packages: 
+- [bcrypt](https://github.com/kelektiv/node.bcrypt.js/): For hashing password
+- [passport-jwt](https://github.com/mikenicholson/passport-jwt): passport strategy with json web token
+- **@nestjs/jwt** & **passport-jwt** to use feature JWT of Nestjs
+- [cookie-parser](https://github.com/expressjs/cookie-parser): to parse cookie
+
+  ```bash
+  $ yarn add @nestjs/jwt passport-jwt cookie-parser bcrypt
+  $ yarn add -D @types/bcrypt @types/cookie-parser @types/passport-jwt
+  ```
+
+</details>
+
+---
+
+## 4. Error handling
+
+<details>
+<summary>Click to expand section</summary>
+
+Check the code at branch [4-error-handling](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/4-error-handling)
+
+
+
+</details>
+
+---
+
+## 5. 
 
 <details>
 <summary>Click to expand section</summary>
@@ -814,4 +859,8 @@ Check [swagger.io](https://swagger.io/) & [Nest Open api](https://docs.nestjs.co
 Check the code at branch [3-](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/2-typeorm)
 
 
+
+
 </details>
+
+---
