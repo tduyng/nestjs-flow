@@ -66,6 +66,9 @@ Now we will code a REST api project with NestJS from basics to advances.
 Each big step will separate by each branch git.
 
 ## 1. Init project
+<details>
+<summary>Click to expand: Init project</summary>
+
 
 ### Installation
 
@@ -297,15 +300,191 @@ This structure will help you better organize your codes & adapt with principle o
 
 - Create `PostService`
   For the first step, we will create a simple Post module. We will not use the database now and we use the fake array instead.
+  - Add package `uuid` to create fake **id**
+    ```bash
+    $ yarn add -D uuid
+    ```
   - Create folder `src/modules/post`
   - Create `post.interface.service` for **post model**
     ```ts
+    // post.interface.ts
+    export interface Post {
+      id: string;
+      title: string;
+      content: string;
+    }
+
+    ```
+  - Create `src/post/dto`: data transfer object --> to handle data between class data & body request
+    ```ts
+    // create-post.dto.ts
+    export class CreatePostDto {
+      title: string;
+      content: string;
+    }
+    ```
+    ```ts
+    // update-post.dto.ts
+    export class UpdatePostDto {
+      title?: string;
+      content?: string;
+    }
+    ```
+    For **UpdatePostDto** we make nullable for the field to permit update partial.
+  - We convert data between class typescript & body request, so we need add package `class-transformer`. **Nest** will help use convert them automatically.
+    ```bash
+    $ yarn add class-transformer
+    ```
+  - Create `post.service.ts` from **PostService**
+    ```ts
+    import { Injectable, NotFoundException } from '@nestjs/common';
+    import { CreatePostDto, UpdatePostDto } from './dto';
+    import { Post } from './post.interface';
+    import { v4 as uuid } from 'uuid';
+
+    @Injectable()
+    export class PostService {
+      private posts: Post[] = [];
+
+      public async getPosts(): Promise<Post[]> {
+        return this.posts;
+      }
+
+      public async getPostById(id: string): Promise<Post> {
+        const post = this.posts.find((p) => p.id === id);
+        if (!post) {
+          throw new NotFoundException(`Post with id ${id} not found`);
+        }
+        return post;
+      }
+
+      public async createPost(postDto: CreatePostDto): Promise<Post> {
+        const post: Post = {
+          ...postDto,
+          id: uuid() as string,
+        };
+        this.posts.push(post);
+        return post;
+      }
+       public async updatePost(id: string, postDto: UpdatePostDto): Promise<Post> {
+        const post = this.posts.find((p) => p.id === id);
+        if (!post) {
+          throw new NotFoundException(`Post with id ${post.id} not found`);
+        }
+        const updated = Object.assign(post, postDto);
+        const postIndex = this.posts.findIndex((p) => p.id === post.id);
+        this.posts[postIndex] = updated;
+        return updated;
+      }
+
+      public async deletePost(id: string): Promise<void> {
+        const postIndex = this.posts.findIndex((p) => p.id === id);
+        if (postIndex < 0) {
+          throw new NotFoundException(`Post with id ${id} not found`);
+        }
+        this.posts.splice(postIndex, 1);
+      }
+    }
 
     ```
 
+    In this post service, we will create the **CRUD** method work with a simple **posts** array.
+
+    **Note**: If you ask what is `@Injectable()` at above of class **PostService**?. It is a class decorator for provider use **Dependency injection (or inversion of injection)**. We will use that to inject easily in controller file.
+
+    For more details, check [Custom providers](https://docs.nestjs.com/fundamentals/custom-providers), [Injection scopes](https://docs.nestjs.com/fundamentals/injection-scopes) & [Circular dependency](https://docs.nestjs.com/fundamentals/circular-dependency) of **Nest**.
 
 
-- Create PostDto
-  Data transfer objects
+
 - Create `PostController`
+  Ok now, we will use the methods of **PostService** in **PostController**
+  ```ts
+  // post.controller.ts
+  import {
+    Controller,
+    Body,
+    Get,
+    Post,
+    Put,
+    Delete,
+    Param,
+  } from '@nestjs/common';
+  import { CreatePostDto, UpdatePostDto } from './dto';
+  import { PostService } from './post.service';
+
+  @Controller('posts')
+  export class PostController {
+    constructor(private readonly postService: PostService) {}
+
+    @Get()
+    public async getPost() {
+      return await this.postService.getPosts();
+    }
+
+    @Get('/:id')
+    public async getPostId(@Param('id') id: string) {
+      return await this.postService.getPostById(id);
+    }
+
+    @Post('/')
+    public async createPost(@Body() postDto: CreatePostDto) {
+      return await this.postService.createPost(postDto);
+    }
+
+    @Put('/:id')
+    public async updatePost(
+      @Param('id') id: string,
+      @Body() postDto: UpdatePostDto,
+    ) {
+      return await this.postService.updatePost(id, postDto);
+    }
+
+    @Delete('/:id')
+    public async deletePost(@Param('id') id: string) {
+      return await this.postService.deletePost(id);
+    }
+  }
+
+  ```
+
+  Note: 
+  - Make sure you use `@Controller('...')` decorator for class **PostController**
+  - You can also use [Nest CLI](https://docs.nestjs.com/cli/overview) for simplify this tâche.
+
+
 - Create `PostModule`
+  ```ts
+  // post.module.ts
+  @Module({
+    imports: [],
+    controllers: [PostController],
+    providers: [PostService],
+  })
+  export class PostModule {}
+  ```
+  Check [Nest module](https://docs.nestjs.com/modules)
+
+- Import **PostModule** in AppModule.
+  ```ts
+  import { PostModule } from '@modules/post/post.module';
+  import { Module } from '@nestjs/common';
+  import { AppController } from './app.controller';
+  import { AppService } from './app.service';
+  import { ConfigModule } from '@nestjs/config';
+
+  @Module({
+    imports: [
+      ConfigModule.forRoot({
+        isGlobal: true,
+        envFilePath: '.env',
+      }),
+      PostModule,
+    ],
+    controllers: [AppController],
+    providers: [AppService],
+  })
+  export class AppModule {}
+
+  ```
+
+</details>
