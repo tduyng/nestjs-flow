@@ -51,6 +51,8 @@ End to end build a project with NestJS
     - [Auth](#auth)
       - [Installation](#installation-1)
       - [Auth service](#auth-service)
+      - [Auth controller](#auth-controller)
+      - [Complete authentication part](#complete-authentication-part)
   - [4. Error handling](#4-error-handling)
   - [5.](#5)
 
@@ -934,6 +936,7 @@ For this part, we need to install packages:
   
 - Create `auth.service.ts` file in `src/modules/auth`
   ```ts
+  // auth.service.ts
   import {
     BadRequestException,
     ConflictException,
@@ -1005,6 +1008,7 @@ For this part, we need to install packages:
   - Create Passport local strategy
     Create `local.strategy.ts` in `src/modules/auth/strategies`:
     ```ts
+    // local.strategy.ts
     import { User } from '@modules/user/user.entity';
     import { Injectable } from '@nestjs/common';
     import { PassportStrategy } from '@nestjs/passport';
@@ -1034,6 +1038,7 @@ For this part, we need to install packages:
 
   - Create Jwt strategy: `jwt.strategy.ts`
     ```ts
+    // jwt.strategy.ts
     import { IPayloadJwt } from '../auth.interface';
     import { Injectable } from '@nestjs/common';
     import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -1074,12 +1079,146 @@ For this part, we need to install packages:
         secretOrKey: process.env.JWT_SECRET,
       });
       ```
+  - Create `guards` files to indicate which guard auth we will use for routing
+    - `local-auth.guard.ts`
 
+      ```ts
+      // local.strategy.ts
+      import { Injectable } from '@nestjs/common';
+      import { AuthGuard } from '@nestjs/passport';
 
+      @Injectable()
+      export class LocalAuthGuard extends AuthGuard('local') {}
+      ```
 
+    - `jwt-auth.guard.ts`
+
+      ```ts
+      // jwt.guard.ts
+      import { Injectable } from '@nestjs/common';
+      import { AuthGuard } from '@nestjs/passport';
+
+      @Injectable()
+      export class JwtAuthGuard extends AuthGuard('jwt') {}
+
+      ```
   
+#### Auth controller
 
+Ok, now we will update **auth guard in our routes**
+  - Create AuthController: `src/modules/auth/auth.controller.ts`
 
+    ```ts
+    // auth.controller
+    import { IRequestWithUser } from '@common/interfaces/http.interface';
+    import {
+      Body,
+      Controller,
+      Get,
+      Post,
+      Req,
+      Res,
+      UseGuards,
+    } from '@nestjs/common';
+    import { IPayloadJwt } from './auth.interface';
+    import { AuthService } from './auth.service';
+    import { RegisterUserDto } from './dto';
+    import { LocalAuthGuard } from './guards/local-auth.guard';
+    import { Response } from 'express';
+    import { JwtAuthGuard } from './guards/jwt-auth.guard';
+    import { ApiTags } from '@nestjs/swagger';
+
+    @ApiTags('Auth')
+    @Controller('auth')
+    export class AuthController {
+      constructor(private readonly authService: AuthService) {}
+
+      @Post()
+      public async register(@Body() registerDto: RegisterUserDto) {
+        const user = await this.authService.register(registerDto);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, ...rest } = user;
+        return rest;
+      }
+
+      @Post('login')
+      @UseGuards(LocalAuthGuard)
+      public async login(@Req() req: IRequestWithUser, @Res() res: Response) {
+        const { user } = req;
+        const payload: IPayloadJwt = {
+          userId: user.id,
+          email: user.email,
+        };
+        const cookie = this.authService.getCookieWithToken(payload);
+        res.setHeader('Set-Cookie', cookie);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, ...rest } = user;
+        return res.send(rest);
+      }
+
+      @Get()
+      @UseGuards(JwtAuthGuard)
+      public getAuthenticatedUser(@Req() req: IRequestWithUser) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, ...rest } = req.user;
+        return rest;
+      }
+
+      @Post('logout')
+      @UseGuards(JwtAuthGuard)
+      public async logout(@Res() res: Response) {
+        res.setHeader('Set-Cookie', this.authService.clearCookie());
+        return res.sendStatus(200);
+      }
+    }
+
+    ```
+    - `@UseGuards(LocalAuthGuard)`: for local strategy --> using for login
+    - `@UseGuards(JwtAuthGuard)`: for jwt strategy --> using to protect our routes
+
+      When use login, we need to set cookie with new json web token.
+
+- Update also auth Guards in `Postcontroller`
+
+#### Complete authentication part
+
+- Create `auth.module.ts`
+  ```ts
+  import { Module } from '@nestjs/common';
+  import { AuthService } from './auth.service';
+  import { LocalStrategy } from './strategies/local.strategy';
+  import { PassportModule } from '@nestjs/passport';
+  import { UserModule } from '@modules/user/user.module';
+  import { JwtModule } from '@nestjs/jwt';
+  import { JwtStrategy } from './strategies/jwt.strategy';
+  import { AuthController } from './auth.controller';
+  @Module({
+    imports: [
+      UserModule,
+      PassportModule,
+      JwtModule.register({
+        secret: process.env.JWT_SECRET,
+        signOptions: { expiresIn: process.env.JWT_EXPIRE_TIME },
+      }),
+    ],
+    providers: [AuthService, LocalStrategy, JwtStrategy],
+    exports: [AuthService],
+    controllers: [AuthController],
+  })
+  export class AuthModule {}
+
+  ```
+- Import `AuthModule` in `AppModule` and run server to test
+  
+  **Note**: To test cookie with postman: If the project works properly, when you logged successfully, a cookie will be created automatically.
+
+  But if you want to use this cookie to test other protected routes, you need to copie that and add it to header with the key: "Cookie" --> value: value of cookie copied
+
+  See the photo to better understand.
+
+  <div align="center">
+  <img src="docs/images/3-cookie.png" alt="Using cookie">
+  </div>
 </details>
 
 ---
