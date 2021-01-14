@@ -39,8 +39,9 @@ End to end build a project with NestJS
 - [NESTJS FLOW](#nestjs-flow)
   - [1. Init project](#1-init-project)
     - [Installation](#installation)
-      - [Bootstrap projects](#bootstrap-projects)
-      - [Using variable environment (.env)](#using-variable-environment-env)
+    - [Bootstrap projects](#bootstrap-projects)
+    - [Using variable environment (.env)](#using-variable-environment-env)
+    - [Modules](#modules)
 
 
 
@@ -84,7 +85,7 @@ Install [Nest CLI](https://docs.nestjs.com/cli/overview)
   Check [Nestjs documentations for more details](https://docs.nestjs.com/)
 
 **Start coding**
-#### Bootstrap projects
+### Bootstrap projects
 - Init project with **Nest CLI**
   ```bash
   $ nest new nestjs-flow
@@ -146,7 +147,7 @@ Install [Nest CLI](https://docs.nestjs.com/cli/overview)
   bootstrap();
 
   ```
-#### Using variable environment (.env)
+### Using variable environment (.env)
 
 If you are familiar with Nodejs, you may be sûre already know `dotenv` package to manage variable environment (secret variable) in `.env` files.
 
@@ -253,3 +254,34 @@ Nest JS also help us to handle that with `@nestjs/config`.
 
 
   For more details check on [Nest configuration](https://docs.nestjs.com/techniques/configuration).
+
+
+### Modules
+
+In the template create by **Nest cli**, there are not many thing to do with. So, we will create a simple api blog to understand easier how NestJS work.
+
+I recommend structure src project as:
+```tree
+├── src
+│   ├── app
+│   │   ├── app.controller.spec.ts
+│   │   ├── app.controller.ts
+│   │   ├── app.module.ts
+│   │   └── app.service.ts
+│   ├── common
+│   │   ├── config
+│   │   └── types
+│   │       └── node.d.ts
+│   ├── main.ts
+│   └── modules
+│       ├── auth
+│       ├── post
+│       └── user
+```
+
+- **app**: contains all files of app modules
+- **common**: contains common or shared files as types, config, migration, data, interface general ...
+- **modules**: contains all files of each modules of project. ex: User module, auth module, post module ...
+
+This structure will help you better organize your codes & adapt with principle of Nest framework. If you follow this series, you will understand better why I prefer this structure.
+
