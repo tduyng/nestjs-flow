@@ -13,8 +13,9 @@ async function bootstrap() {
   // applies security hardening settings. using defaults: https://www.npmjs.com/package/helmet
   app.use(helmet());
   app.setGlobalPrefix('api');
-  await app.listen(1776, () => {
-    console.log(`Server is running at http://localhost:${1776}/`);
+  const port = process.env.SERVER_PORT;
+  await app.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}/`);
   });
 }
 bootstrap();
