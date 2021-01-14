@@ -49,6 +49,7 @@ End to end build a project with NestJS
   - [3. Auth](#3-auth)
     - [Installation](#installation-1)
     - [User](#user)
+    - [Auth](#auth)
   - [4. Error handling](#4-error-handling)
   - [5.](#5)
 
@@ -835,6 +836,86 @@ For this part, we need to install packages:
   $ yarn add -D @types/bcrypt @types/cookie-parser @types/passport-jwt
   ```
 ### User
+
+To use authentication, first of all, wee need to have User table.
+
+- Create UserEntity with Typeorm: `src/modules/user/user.entity.ts`
+  ```ts
+  //user.entity.ts
+  import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+
+  @Entity()
+  export class User {
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
+
+    @Column()
+    name: string;
+
+    @Column({ unique: true })
+    email: string;
+
+    @Column()
+    password: string;
+  }
+
+  ```
+- User service: `src/modules/user/user.service.ts`
+  With the demo purpose, we don't need to create UserController (to have route update, delete ... for user). In UserService, we just create some simple helper methods to use in AuthService.
+
+  ```ts
+  import { RegisterUserDto } from '@modules/auth/dto';
+  import { Injectable } from '@nestjs/common';
+  import { InjectRepository } from '@nestjs/typeorm';
+  import { Repository } from 'typeorm';
+  import { User } from './user.entity';
+
+  @Injectable()
+  export class UserService {
+    constructor(
+      @InjectRepository(User)
+      private readonly userRepository: Repository<User>,
+    ) {}
+
+    public async getUsers(): Promise<User[]> {
+      return await this.userRepository.find();
+    }
+    public async getUserById(id: string): Promise<User> {
+      return await this.userRepository.findOne({ where: { id: id } });
+    }
+    public async getUserByEmail(email: string): Promise<User> {
+      return await this.userRepository.findOne({ where: { email: email } });
+    }
+    public async create(userDto: RegisterUserDto): Promise<User> {
+      const user = this.userRepository.create(userDto);
+      await this.userRepository.save(user);
+      return user;
+    }
+  }
+
+  ```
+- And update UserModule: `src/modules/user/user.module.ts`
+  ```ts
+  import { Module } from '@nestjs/common';
+  import { TypeOrmModule } from '@nestjs/typeorm';
+  import { User } from './user.entity';
+  import { UserService } from './user.service';
+
+  @Module({
+    imports: [TypeOrmModule.forFeature([User])],
+    providers: [UserService],
+    exports: [UserService],
+  })
+  export class UserModule {}
+
+  ```
+  **Note**: `TypeOrmModule.forFeature([User])` allows to use UserRepository of TypeOrm in all User providers files.
+
+  Don't forget import `UserModule` in `AppModule`
+  
+### Auth
+
+
 
 </details>
 
