@@ -43,6 +43,7 @@ End to end build a project with NestJS
     - [Using variable environment (.env)](#using-variable-environment-env)
     - [Modules](#modules)
       - [Post modules](#post-modules)
+  - [2-TypeORM](#2-typeorm)
 
 
 
@@ -66,8 +67,11 @@ Now we will code a REST api project with NestJS from basics to advances.
 Each big step will separate by each branch git.
 
 ## 1. Init project
+
+Check the code at branch [1-init-project](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/1-init-project)
+
 <details>
-<summary>Click to expand: Init project</summary>
+<summary>Click to expand section</summary>
 
 
 ### Installation
@@ -500,4 +504,78 @@ This structure will help you better organize your codes & adapt with principle o
   </div>
   ...
   
+</details>
+
+## 2-TypeORM
+
+<details>
+<summary>Click here to expand section</summary>
+
+Check the code at branch [2-typeorm](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/2-typeorm)
+
+---
+
+In the first part, we are used an array to fake database. In this part, we will use the real database PostgreQL with TypeORM.
+
+[TypeORM](https://github.com/typeorm/typeorm) is an object relation mapping (open source) for Database SQL (SQlite, PostgreSQL, MySQL, MSSQL and also for mongodb). It make the work more easier with SQL query.
+
+You can consider use [Prisma](https://github.com/prisma/prisma) - the next generation of TypeORM. It is a awesome tool, solve many trouble of TypeORM. But there are some interesting features is under preview version.
+
+
+- Install dependencies
+  ```bash
+  $ yarn add @nest/typeorm typeorm pg
+  ```
+- Config ORM
+  Create `src/common/config/ormConfig.ts`
+  ```ts
+  // ormConfig.ts
+  export function ormConfig(): any {
+  return {
+      type: process.env.TYPEORM_CONNECTION,
+      host: process.env.TYPEORM_HOST,
+      port: Number(process.env.TYPEORM_PORT),
+      username: process.env.TYPEORM_USERNAME,
+      password: process.env.TYPEORM_PASSWORD,
+      database: process.env.TYPEORM_DATABASE,
+      autoLoadEntities: true,
+      entities: ['src/modules/**/*.entity.ts'],
+      logging: false,
+      synchronize: true,
+      migrations: ['src/common/migrations/**/*.ts'],
+      cli: {
+        migrationsDir: 'src/common/migrations',
+      },
+    };
+  }
+  ```
+  As we setup ConfigModule with `@Nestjs/Config`, so now we can use directly `process.env` to access directly variable environment;
+- Import `ormConfig` in `app.module`
+  ```ts
+  //app.module.ts
+  import { PostModule } from '@modules/post/post.module';
+  import { Module } from '@nestjs/common';
+  import { AppController } from './app.controller';
+  import { AppService } from './app.service';
+  import { ConfigModule } from '@nestjs/config';
+  import { TypeOrmModule } from '@nestjs/typeorm';
+  import { ormConfig } from '@common/config/ormConfig';
+
+  @Module({
+    imports: [
+      ConfigModule.forRoot({
+        isGlobal: true,
+        envFilePath: '.env',
+      }),
+      TypeOrmModule.forRoot(ormConfig()),
+      PostModule,
+    ],
+    controllers: [AppController],
+    providers: [AppService],
+  })
+  export class AppModule {}
+
+  ```
+
+
 </details>
