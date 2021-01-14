@@ -43,9 +43,10 @@ End to end build a project with NestJS
     - [Using variable environment (.env)](#using-variable-environment-env)
     - [Modules](#modules)
       - [Post modules](#post-modules)
-  - [2-TypeORM](#2-typeorm)
+  - [2. TypeORM](#2-typeorm)
     - [Post modules](#post-modules-1)
     - [Documentation with Swagger/Open API](#documentation-with-swaggeropen-api)
+  - [3.](#3)
 
 
 
@@ -70,11 +71,12 @@ Each big step will separate by each branch git.
 
 ## 1. Init project
 
-Check the code at branch [1-init-project](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/1-init-project)
+
 
 <details>
 <summary>Click to expand section</summary>
 
+Check the code at branch [1-init-project](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/1-init-project)
 
 ### Installation
 
@@ -508,7 +510,9 @@ This structure will help you better organize your codes & adapt with principle o
   
 </details>
 
-## 2-TypeORM
+
+---
+## 2. TypeORM
 
 <details>
 <summary>Click here to expand section</summary>
@@ -721,6 +725,77 @@ Check [swagger.io](https://swagger.io/) & [Nest Open api](https://docs.nestjs.co
   $ yarn add -D @nestjs/swagger swagger-ui-express
   ```
 - Setup swagger
-- 
+  Create swagger constants: `src/common/config/swagger/swagger.contants.ts`
+  ```ts
+  //swagger.constants.ts
+  export const SWAGGER_API_ROOT = 'api/docs';
+  export const SWAGGER_API_NAME = 'Simple API';
+  export const SWAGGER_API_DESCRIPTION = 'Simple API Description';
+  export const SWAGGER_API_CURRENT_VERSION = '1.0';
+
+  ```
+
+  And `src/common/config/swagger/index.ts` for swagger config
+  ```ts
+  import { INestApplication } from '@nestjs/common';
+  import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+
+  import {
+    SWAGGER_API_CURRENT_VERSION,
+    SWAGGER_API_DESCRIPTION,
+    SWAGGER_API_NAME,
+    SWAGGER_API_ROOT,
+  } from './swagger.constants';
+
+  export const setupSwagger = (app: INestApplication) => {
+    const options = new DocumentBuilder()
+      .setTitle(SWAGGER_API_NAME)
+      .setDescription(SWAGGER_API_DESCRIPTION)
+      .setVersion(SWAGGER_API_CURRENT_VERSION)
+      .addBearerAuth()
+      .build();
+
+    const document = SwaggerModule.createDocument(app, options);
+    SwaggerModule.setup(SWAGGER_API_ROOT, app, document);
+  };
+
+  ```
+- Update swagger config in `main.ts` file
+  ```diff
+  // main.ts
+  async function bootstrap() {
+    const app = await NestFactory.create(AppModule);
+    app.enableCors();
+    app.useGlobalPipes(new ValidationPipe());
+    // attaches cookies to request object
+    app.use(cookieParser());
+    // applies security hardening settings. using defaults: https://www.npmjs.com/package/helmet
+    app.use(helmet());
+    app.setGlobalPrefix('api');
+  + setupSwagger(app);
+    const port = process.env.SERVER_PORT;
+    await app.listen(port, () => {
+      console.log(`Server is running at http://localhost:${port}/`);
+    });
+  }
+  bootstrap();
+
+  ```
+  
+- Update swagger tag for controller
+  Using `@ApiTags('route name')` class decorator in controller file:
+
+  
+</details>
+
+---
+
+## 3. 
+
+<details>
+<summary>Click to expand section</summary>
+
+Check the code at branch [3-](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/2-typeorm)
+
 
 </details>

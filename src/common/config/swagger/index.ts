@@ -6,7 +6,7 @@ import {
   SWAGGER_API_DESCRIPTION,
   SWAGGER_API_NAME,
   SWAGGER_API_ROOT,
-} from './swagger.contants';
+} from './swagger.constants';
 
 export const setupSwagger = (app: INestApplication) => {
   const options = new DocumentBuilder()
