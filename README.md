@@ -784,7 +784,23 @@ Check [swagger.io](https://swagger.io/) & [Nest Open api](https://docs.nestjs.co
   
 - Update swagger tag for controller
   Using `@ApiTags('route name')` class decorator in controller file:
+  ```ts
+  @ApiTags('Root')
+  @Controller()
+  export class AppController {
+  ...  
+  }
 
+  @ApiTags('Post')
+  @Controller('posts')
+  export class PostController {
+  ...  
+  }
+  ```
+- Run server and check api docs at route: `/api/docs`:
+  <div align="center">
+    <img src="docs/images/2-swagger.png" alt="Swagger docs">
+  </div>
   
 </details>
 
