@@ -1,5 +1,6 @@
 ## 1. Init project
 
+Check the code at branch [1-init-project](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/1-init-project)
 ### Installation
 
 Install [Nest CLI](https://docs.nestjs.com/cli/overview)
