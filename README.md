@@ -44,6 +44,7 @@ End to end build a project with NestJS
     - [Modules](#modules)
       - [Post modules](#post-modules)
   - [2-TypeORM](#2-typeorm)
+    - [Post modules](#post-modules-1)
 
 
 
@@ -527,6 +528,28 @@ You can consider use [Prisma](https://github.com/prisma/prisma) - the next gener
   $ yarn add @nest/typeorm typeorm pg
   ```
 - Config ORM
+  Update variables in `.env` file
+  ```env
+  SERVER_PORT=1776
+  ROUTE_GLOBAL_PREFIX=/api
+  JWT_SECRET=justanotherworld
+
+  # Typeorm
+  TYPEORM_CONNECTION = postgres
+  TYPEORM_HOST = postgres
+  TYPEORM_USERNAME = postgres
+  TYPEORM_PASSWORD = postgres
+  TYPEORM_DATABASE = test_db
+  TYPEORM_PORT = 5432
+  TYPEORM_ENTITIES = [src/modules/**/*.entity.ts]
+
+  # For run migration cli
+  TYPEORM_MIGRATIONS=[src/common/migrations/**/*.ts]
+  TYPEORM_MIGRATIONS_DIR=src/common/migrations
+
+  ```
+
+
   Create `src/common/config/ormConfig.ts`
   ```ts
   // ormConfig.ts
@@ -542,15 +565,25 @@ You can consider use [Prisma](https://github.com/prisma/prisma) - the next gener
       entities: ['src/modules/**/*.entity.ts'],
       logging: false,
       synchronize: true,
-      migrations: ['src/common/migrations/**/*.ts'],
-      cli: {
-        migrationsDir: 'src/common/migrations',
-      },
     };
   }
   ```
   As we setup ConfigModule with `@Nestjs/Config`, so now we can use directly `process.env` to access directly variable environment;
+
+  **Note**: Check [Nest database](https://docs.nestjs.com/techniques/database) or [Typeorm](https://github.com/typeorm/typeorm) to understand how to config that.
+
+  - **type**: sql driver as: postgres, mysql, mssql, mongodb ...
+  - **host**: host of your database (localhost eg.)
+  - **username** & **password**: permission user to controler database
+  - **database**: name of database that you use for this project
+  - **logging**: logging when query database  in the terminal (recommend: false)
+  - **synchronize**: true. It means all the  modification in entities will synchronize automatically with your database. Attention for this feature: It will be very dangerous. You can be lost your data, should use only for develop phrase.
+  - **entities**: an arry to indicate where stock entity files
+  
+  If you don't want `synchronize` automatically, you need consider use cli to make the migrations.
+
 - Import `ormConfig` in `app.module`
+  
   ```ts
   //app.module.ts
   import { PostModule } from '@modules/post/post.module';
@@ -576,6 +609,103 @@ You can consider use [Prisma](https://github.com/prisma/prisma) - the next gener
   export class AppModule {}
 
   ```
+### Post modules
+- Create Post entity: `src/modules/post/post.entity.ts`
+  Before create a post, we need add `moment-timezone` to handle date with timezone for column date.
+
+  ```ts
+  // post.entity.ts
+  import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+  import moment from 'moment-timezone';
+  @Entity()
+  export class Post extends BaseEntity {
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
+
+    @Column()
+    title: string;
+
+    @Column()
+    content: string;
+
+    @Column({
+      type: Date,
+      default: moment(new Date()).format('YYYY-MM-DD HH:ss'),
+    })
+    createdAt;
+
+    @Column({
+      type: Date,
+      default: moment(new Date()).format('YYYY-MM-DD HH:ss'),
+    })
+    updatedAt;
+  }
+  ```
+  In the previous part, we use **uuid** package to create fake uuid. But typeorm already provide a decorator method: `@PrimaryGeneratedColumn(uuid)`. If you only want to create id: number, you just use: `@PrimaryGeneratedColumn(id)`
+
+  Decorator method `@Column` is equivalent a column of table.
+
+
+  Check [Database](https://docs.nestjs.com/techniques/database) for more details.
+
+- Using PostEntity & PostRepository in PostService
+  
+
+  Now we will modify the old code of first part, and update theme with typeorm solution.
+
+  As we know, Nest use strongly dependency injection pattern, it provide also for inject Repository too --> (`@InjectRepository(Entity)`)
+
+  ```ts
+  // post.service.ts
+  import { Injectable, NotFoundException } from '@nestjs/common';
+  import { CreatePostDto, UpdatePostDto } from './dto';
+  import { InjectRepository } from '@nestjs/typeorm';
+  import { Repository } from 'typeorm';
+  import { Post } from './post.entity';
+
+  @Injectable()
+  export class PostService {
+    constructor(
+      @InjectRepository(Post)
+      private readonly postRepository: Repository<Post>,
+    ) {}
+
+    public async getPosts(): Promise<Post[]> {
+      return this.postRepository.find();
+    }
+
+    public async getPostById(id: string): Promise<Post> {
+      const post = this.postRepository.findOne({ where: { id: id } });
+      if (!post) {
+        throw new NotFoundException(`Post with id ${id} not found`);
+      }
+      return post;
+    }
+
+    public async createPost(postDto: CreatePostDto): Promise<Post> {
+      const post = this.postRepository.create(postDto);
+      await this.postRepository.save(post);
+      return post;
+    }
+    public async updatePost(id: string, postDto: UpdatePostDto): Promise<Post> {
+      const post = await this.postRepository.findOne({ where: { id: id } });
+      if (!post) {
+        throw new NotFoundException(`Post with id ${post.id} not found`);
+      }
+      const updated = Object.assign(post, postDto);
+      updated.updatedAt = Date.now();
+      await this.postRepository.save(updated);
+      return updated;
+    }
+
+    public async deletePost(id: string): Promise<void> {
+      await this.postRepository.delete(id);
+    }
+  }
+
+  ```
+
+  PostController will be not changed.
 
 
 </details>
