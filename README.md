@@ -177,6 +177,7 @@ Nest JS also help us to handle that with `@nestjs/config`.
   `ConfigModule` is setup global (for all files) by default. You can customize to more readable:
 
   ```ts
+  // app.module.ts
   ...
   imports: [
     ConfigModule.forRoot({
@@ -486,5 +487,17 @@ This structure will help you better organize your codes & adapt with principle o
   export class AppModule {}
 
   ```
+- Run server `yarn start:dev` & test routes with **Postman**
+  
+  Create newt post:
+  <div align="center">
+    <img src="docs/images/1-create-post.png" alt="create post">
+  </div>
 
+  Get all posts:
+  <div align="center">
+    <img src="docs/images/1-get-posts.png" alt="get posts">
+  </div>
+  ...
+  
 </details>
