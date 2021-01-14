@@ -14,5 +14,6 @@ declare namespace NodeJS {
     readonly ROUTE_GLOBAL_PREFIX: string;
     readonly JWT_SECRET: string;
     readonly TWO_FACTOR_AUTHENTICATION_APP_NAME: string;
+    readonly JWT_EXPIRATION_TIME: string;
   }
 }
