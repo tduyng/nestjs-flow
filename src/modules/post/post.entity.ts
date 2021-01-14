@@ -1,7 +1,7 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import moment from 'moment-timezone';
 @Entity()
-export class Post extends BaseEntity {
+export class Post {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -20,6 +20,7 @@ export class Post extends BaseEntity {
   @Column({
     type: Date,
     default: moment(new Date()).format('YYYY-MM-DD HH:ss'),
+    nullable: true,
   })
   updatedAt;
 }

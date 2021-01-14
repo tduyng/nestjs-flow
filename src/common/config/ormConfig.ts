@@ -1,3 +1,5 @@
+import { join } from 'path';
+
 export function ormConfig(): any {
   return {
     type: process.env.TYPEORM_CONNECTION,
@@ -7,12 +9,8 @@ export function ormConfig(): any {
     password: process.env.TYPEORM_PASSWORD,
     database: process.env.TYPEORM_DATABASE,
     autoLoadEntities: true,
-    entities: ['src/modules/**/*.entity.ts'],
+    entities: [join(__dirname, '**', '*.entity.{ts,js}')],
     logging: false,
     synchronize: true,
-    migrations: ['src/common/migrations/**/*.ts'],
-    cli: {
-      migrationsDir: 'src/common/migrations',
-    },
   };
 }
