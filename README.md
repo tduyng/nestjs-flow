@@ -45,6 +45,7 @@ End to end build a project with NestJS
       - [Post modules](#post-modules)
   - [2-TypeORM](#2-typeorm)
     - [Post modules](#post-modules-1)
+    - [Documentation with Swagger/Open API](#documentation-with-swaggeropen-api)
 
 
 
@@ -562,7 +563,7 @@ You can consider use [Prisma](https://github.com/prisma/prisma) - the next gener
       password: process.env.TYPEORM_PASSWORD,
       database: process.env.TYPEORM_DATABASE,
       autoLoadEntities: true,
-      entities: ['src/modules/**/*.entity.ts'],
+      entities: [join(__dirname, '**', '*.entity.{ts,js}')],
       logging: false,
       synchronize: true,
     };
@@ -637,6 +638,7 @@ You can consider use [Prisma](https://github.com/prisma/prisma) - the next gener
     @Column({
       type: Date,
       default: moment(new Date()).format('YYYY-MM-DD HH:ss'),
+      nullable: true
     })
     updatedAt;
   }
@@ -706,6 +708,19 @@ You can consider use [Prisma](https://github.com/prisma/prisma) - the next gener
   ```
 
   PostController will be not changed.
+- Run server & test api endpoints with postman
 
+### Documentation with Swagger/Open API
+
+To better check  available you api endpoint, I think it's usefull to setup Swagger documentation as soon as possible.
+
+Check [swagger.io](https://swagger.io/) & [Nest Open api](https://docs.nestjs.com/openapi/introduction) for more information.
+
+- Installation
+  ```bash
+  $ yarn add -D @nestjs/swagger swagger-ui-express
+  ```
+- Setup swagger
+- 
 
 </details>
