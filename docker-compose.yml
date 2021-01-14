@@ -1,0 +1,55 @@
+version: '3.8'
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    ports:
+      - '5432-5432'
+    volumes:
+      - /data/postgres:/data/postgres
+    env_file:
+      - docker.env
+    networks:
+      - postgres-network
+
+  pgadmin:
+    links:
+     - postgres:postgres
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    ports:
+      - '8080:80'
+    volumes:
+      - /data/pgadmin:/root/.pgadmin
+    env_file:
+      - docker.env
+    networks:
+      - postgres-network
+    logging:
+      driver: none
+
+  # nestjs-flow:
+  #   container_name: nestjs-flow
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   restart: always
+  #   ports:
+  #     - '${SERVER_PORT}:${SERVER_PORT}'
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   depends_on:
+  #     - postgres
+  #   networks:
+  #     - postgres-network
+
+
+
+networks:
+  postgres-network:
+    driver: bridge
