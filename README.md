@@ -40,7 +40,7 @@ End to end build a project with NestJS
   - [1. Init project](#1-init-project)
     - [Installation](#installation)
       - [Bootstrap projects](#bootstrap-projects)
-      - [Using variable enviroment (.env)](#using-variable-enviroment-env)
+      - [Using variable environment (.env)](#using-variable-environment-env)
 
 
 
@@ -146,7 +146,7 @@ Install [Nest CLI](https://docs.nestjs.com/cli/overview)
   bootstrap();
 
   ```
-#### Using variable enviroment (.env)
+#### Using variable environment (.env)
 
 If you are familiar with Nodejs, you may be sûre already know `dotenv` package to manage variable environment (secret variable) in `.env` files.
 
@@ -192,7 +192,64 @@ Nest JS also help us to handle that with `@nestjs/config`.
   DATABASE_USER=test
   DATABASE_PASSWORD=test
   ```
+  ==> use `process.env.DATABASE_USER` , `process.env.DATABASE_PASSWORD`
+
+- To better use process.env variables, we will create a global declaration type file.
+
+  Create `node.d.ts` file to declare Nodejs type in `src/common/types` folder and add the variables you declare in your `.env` files
+
+  ```
+  # .env file
+  SERVER_PORT=1776
+  ROUTE_GLOBAL_PREFIX=api
+  JWT_SECRET=justanotherkey
+
+  # Typeorm
+  TYPEORM_CONNECTION = postgres
+  TYPEORM_HOST = postgres
+  TYPEORM_USERNAME = postgres
+  TYPEORM_PASSWORD = postgres
+  TYPEORM_DATABASE = test_db
+  TYPEORM_PORT = 5432
+
+  TYPEORM_ENTITIES = [src/modules/**/*.entity.ts]
+  TYPEORM_MIGRATIONS=[src/common/migrations/**/*.ts]
+  TYPEORM_MIGRATIONS_DIR=src/common/migrations
+  ```
 
 
+  ```ts
+  // src/common/types/node.d.ts
+  declare namespace NodeJS {
+    interface ProcessEnv {
+      readonly NODE_ENV: 'development' | 'production' | 'test';
+      readonly SERVER_PORT: string;
+      readonly TYPEORM_CONNECTION: string;
+      readonly TYPEORM_HOST: string;
+      readonly TYPEORM_USERNAME: string;
+      readonly TYPEORM_PASSWORD: string;
+      readonly TYPEORM_DATABASE: string;
+      readonly TYPEORM_PORT: string;
+      readonly TYPEORM_LOGGING: string;
+      readonly TYPEORM_ENTITIES: string;
+      readonly TYPEORM_MIGRATIONS: string;
+      readonly ROUTE_GLOBAL_PREFIX: string;
+      readonly JWT_SECRET: string;
+      readonly TWO_FACTOR_AUTHENTICATION_APP_NAME: string;
+    }
+  }
 
-  Check more about [Nest configuration](https://docs.nestjs.com/techniques/configuration) to understand how it works.
+  ```
+
+  And update your tsconfig.json files:
+  ```json
+  "typeRoots": [
+      "./node_modules/@types",
+      "src/common/types"
+    ],
+  ```
+
+  So, now, each time you call `process.env`, all variables environments will be suggested.
+
+
+  For more details check on [Nest configuration](https://docs.nestjs.com/techniques/configuration).
