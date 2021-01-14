@@ -282,7 +282,7 @@ I recommend structure src project as:
 
 - **app**: contains all files of app modules
 - **common**: contains common or shared files as types, config, migration, data, interface general ...
-- **modules**: contains all files of each modules of project. ex: User module, auth module, post module ...
+- **modules**: container where  contains all files of each modules of project. ex: User module, auth module, post module ...
 
 This structure will help you better organize your codes & adapt with principle of Nest framework. If you follow this series, you will understand better why I prefer this structure.
 
@@ -290,12 +290,21 @@ This structure will help you better organize your codes & adapt with principle o
 - Getting started
   Docs of **Nest** is very well structure and excellent explain all techniques & theirs features. So I will not go deep to explain each one.
   When you read my codes, if you don't understand some parts, you can check for more details:
-  - [Controllers](https://docs.nestjs.com/controllers)
-  - [Providers](https://docs.nestjs.com/providers)
-  - [Modules](https://docs.nestjs.com/modules)
+  - [Controllers](https://docs.nestjs.com/controllers): where you put your routes
+  - [Providers](https://docs.nestjs.com/providers): services files contains methods to connect with methods of repository (database), it help use to separate business logic from controllers
+  - [Modules](https://docs.nestjs.com/modules): combine of controllers & providers to export
 
 
 - Create `PostService`
+  For the first step, we will create a simple Post module. We will not use the database now and we use the fake array instead.
+  - Create folder `src/modules/post`
+  - Create `post.interface.service` for **post model**
+    ```ts
+
+    ```
+
+
+
 - Create PostDto
   Data transfer objects
 - Create `PostController`
