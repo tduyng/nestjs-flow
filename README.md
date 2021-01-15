@@ -1327,6 +1327,68 @@ We will use auto-validation of Nest:
   ```bash
   $ yarn add class-transformer class-validator
   ```
+- Using class-validator
+  We will use this package to make sûre that we have good data for body request (DTO) & for entity data before save to database.
+
+  - Example using validation in `user.entity.ts`
+
+    ```ts
+    // user.entity.ts
+    import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+    import { IsDate, IsEmail, Min } from 'class-validator';
+    import moment from 'moment';
+
+    @Entity()
+    export class User {
+      @PrimaryGeneratedColumn('uuid')
+      id: string;
+
+      @Column()
+      name: string;
+
+      @Column({ unique: true })
+      @IsEmail()
+      email: string;
+
+      @Column()
+      @Min(0)
+      password: string;
+
+      @Column({
+        type: Date,
+        default: moment(new Date()).format('YYYY-MM-DD HH:ss'),
+        nullable: true,
+      })
+      @IsDate()
+      createdAt: Date;
+
+      @Column({
+        type: Date,
+        default: moment(new Date()).format('YYYY-MM-DD HH:ss'),
+        nullable: true,
+      })
+      @IsDate()
+      updatedAt: Date;
+    }
+
+    ```
+    - Example in `create-post.dto.ts`
+
+      ```ts
+      import { IsString } from 'class-validator';
+
+      export class CreatePostDto {
+        @IsString()
+        title: string;
+
+        @IsString()
+        content: string;
+      }
+
+      ```
+
+    Check more [Doc class-validator](https://github.com/typestack/class-validator/blob/develop/docs/basics/validating-objects.md) for advanced validation.
+    
 
 Check more about [Nest validation](https://docs.nestjs.com/techniques/validation)
 </details>
