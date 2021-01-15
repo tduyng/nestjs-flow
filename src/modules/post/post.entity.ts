@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import moment from 'moment-timezone';
 import { IsDate, Min } from 'class-validator';
+import { Expose } from 'class-transformer';
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn('uuid')
@@ -8,10 +9,12 @@ export class Post {
 
   @Column()
   @Min(1)
+  @Expose()
   title: string;
 
   @Column()
   @Min(10)
+  @Expose()
   content: string;
 
   @Column({
@@ -19,7 +22,8 @@ export class Post {
     default: moment(new Date()).format('YYYY-MM-DD HH:ss'),
   })
   @IsDate()
-  createdAt: Date;
+  @Expose()
+  createdAt;
 
   @Column({
     type: Date,
@@ -27,5 +31,6 @@ export class Post {
     nullable: true,
   })
   @IsDate()
-  updatedAt: Date;
+  @Expose()
+  updatedAt;
 }
