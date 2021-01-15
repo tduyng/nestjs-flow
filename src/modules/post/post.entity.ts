@@ -39,9 +39,6 @@ export class Post {
   @IsDate()
   public updatedAt;
 
-  @Column({ nullable: true })
-  public category?: string;
-
   /* Relationship */
   @ManyToOne(() => User, (author: User) => author.posts)
   public author: User;
