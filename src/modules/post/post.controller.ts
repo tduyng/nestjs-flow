@@ -7,6 +7,7 @@ import {
   Delete,
   Param,
   UseGuards,
+  SerializeOptions,
 } from '@nestjs/common';
 import { CreatePostDto, UpdatePostDto } from './dto';
 import { PostService } from './post.service';
@@ -15,6 +16,9 @@ import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 
 @ApiTags('Posts')
 @Controller('posts')
+@SerializeOptions({
+  strategy: 'excludeAll',
+})
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
