@@ -9,7 +9,6 @@ import {
 } from 'typeorm';
 import moment from 'moment-timezone';
 import { IsDate, Min } from 'class-validator';
-import { Expose } from 'class-transformer';
 import { User } from '@modules/user/user.entity';
 import { Category } from '@modules/category/category.entity';
 @Entity()
@@ -19,12 +18,10 @@ export class Post {
 
   @Column()
   @Min(1)
-  @Expose()
   public title: string;
 
   @Column()
   @Min(10)
-  @Expose()
   public content: string;
 
   @Column({
@@ -32,7 +29,6 @@ export class Post {
     default: moment(new Date()).format('YYYY-MM-DD HH:ss'),
   })
   @IsDate()
-  @Expose()
   public createdAt;
 
   @Column({
@@ -41,7 +37,6 @@ export class Post {
     nullable: true,
   })
   @IsDate()
-  @Expose()
   public updatedAt;
 
   @Column({ nullable: true })

@@ -1,5 +1,4 @@
 import { Post } from '@modules/post/post.entity';
-import { Expose } from 'class-transformer';
 import slugify from 'slugify';
 import {
   BeforeInsert,
@@ -16,12 +15,10 @@ export class Category {
   public id: string;
 
   @Column({ unique: true })
-  @Expose()
   public name: string;
 
   // @Exclude()
   @Column({ unique: true })
-  @Expose()
   public slug: string;
 
   @ManyToMany(() => Post, (post: Post) => post.categories)
