@@ -43,7 +43,9 @@ export class Post {
   @ManyToOne(() => User, (author: User) => author.posts)
   public author: User;
 
-  @ManyToMany(() => Category, (category: Category) => category.posts)
+  @ManyToMany(() => Category, (category: Category) => category.posts, {
+    cascade: true,
+  })
   @JoinTable()
   public categories: Category[];
 
