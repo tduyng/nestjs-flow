@@ -1,7 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { IsDate, IsEmail, Min } from 'class-validator';
-import moment from 'moment';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToOne,
+  JoinColumn,
+  OneToMany,
+  BeforeUpdate,
+} from 'typeorm';
+import { IsEmail, Min } from 'class-validator';
 import { Exclude, Expose } from 'class-transformer';
+import { Address } from './address.entity';
+import { Post } from '@modules/post/post.entity';
 
 @Entity()
 export class User {
@@ -22,20 +31,37 @@ export class User {
   @Exclude()
   password: string;
 
-  @Column({
-    type: Date,
-    default: moment(new Date()).format('YYYY-MM-DD HH:ss'),
-    nullable: true,
-  })
-  @IsDate()
-  @Expose()
-  createdAt;
+  @Column({ nullable: true })
+  phone: string;
 
   @Column({
-    type: Date,
-    default: moment(new Date()).format('YYYY-MM-DD HH:ss'),
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
     nullable: true,
   })
-  @IsDate()
-  updatedAt;
+  @Expose()
+  createdAt: Date;
+
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    nullable: true,
+  })
+  updatedAt: Date;
+
+  /* Relationship */
+  @OneToOne(() => Address, (address: Address) => address.user, {
+    cascade: true,
+    eager: true,
+  })
+  @JoinColumn()
+  address: Address;
+
+  @OneToMany(() => Post, (post: Post) => post.author)
+  posts: Post[];
+
+  @BeforeUpdate()
+  updateTimestamp() {
+    this.updatedAt = new Date();
+  }
 }
