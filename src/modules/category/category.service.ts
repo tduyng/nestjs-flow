@@ -161,4 +161,20 @@ export class CategoryService {
       }
     }
   }
+
+  public async getAllPostOfCategories(slug: string) {
+    try {
+      const category = await this.getCategoryBySlug(slug);
+      return category.posts;
+    } catch (error) {
+      if (error.statusCode == HttpStatus.NOT_FOUND) {
+        throw error;
+      } else {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
 }
