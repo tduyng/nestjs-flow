@@ -35,7 +35,7 @@ export class CategoryService {
       }
       return category;
     } catch (error) {
-      if (error.statusCode == HttpStatus.NOT_FOUND) {
+      if (error.status == HttpStatus.NOT_FOUND) {
         throw error;
       } else {
         throw new HttpException(
@@ -56,7 +56,7 @@ export class CategoryService {
       }
       return category;
     } catch (error) {
-      if (error.statusCode == HttpStatus.NOT_FOUND) {
+      if (error.status == HttpStatus.NOT_FOUND) {
         throw error;
       } else {
         throw new HttpException(
@@ -76,7 +76,7 @@ export class CategoryService {
       }
       return category;
     } catch (error) {
-      if (error.statusCode == HttpStatus.NOT_FOUND) {
+      if (error.status == HttpStatus.NOT_FOUND) {
         throw error;
       } else {
         throw new HttpException(
@@ -116,7 +116,7 @@ export class CategoryService {
       await this.categoryRepository.save(category);
       return category;
     } catch (error) {
-      if (error.statusCode == HttpStatus.CONFLICT) {
+      if (error.status == HttpStatus.CONFLICT) {
         throw error;
       } else {
         throw new HttpException(
@@ -135,7 +135,7 @@ export class CategoryService {
       await this.categoryRepository.save(category);
       return category;
     } catch (error) {
-      if (error.statusCode == HttpStatus.NOT_FOUND) {
+      if (error.status == HttpStatus.NOT_FOUND) {
         throw error;
       } else {
         throw new HttpException(
@@ -151,7 +151,7 @@ export class CategoryService {
       const category = await this.getCategoryBySlug(slug);
       await this.categoryRepository.delete(category);
     } catch (error) {
-      if (error.statusCode == HttpStatus.NOT_FOUND) {
+      if (error.status == HttpStatus.NOT_FOUND) {
         throw error;
       } else {
         throw new HttpException(
@@ -164,10 +164,16 @@ export class CategoryService {
 
   public async getAllPostOfCategories(slug: string) {
     try {
-      const category = await this.getCategoryBySlug(slug);
+      const category = await this.categoryRepository.findOne({
+        where: { slug: slug },
+        relations: ['posts'],
+      });
+      if (!category) {
+        throw new NotFoundException('Category not found');
+      }
       return category.posts;
     } catch (error) {
-      if (error.statusCode == HttpStatus.NOT_FOUND) {
+      if (error.status == HttpStatus.NOT_FOUND) {
         throw error;
       } else {
         throw new HttpException(
