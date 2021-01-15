@@ -1,7 +1,16 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import moment from 'moment-timezone';
 import { IsDate, Min } from 'class-validator';
 import { Expose } from 'class-transformer';
+import { User } from '@modules/user/user.entity';
+import { Category } from '@modules/category/category.entity';
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn('uuid')
@@ -33,4 +42,12 @@ export class Post {
   @IsDate()
   @Expose()
   updatedAt;
+
+  /* Relationship */
+  @ManyToOne(() => User, (author: User) => author.posts)
+  public author: User;
+
+  @ManyToMany(() => Category, (category: Category) => category.posts)
+  @JoinTable()
+  public categories: Category[];
 }

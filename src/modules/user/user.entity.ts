@@ -1,7 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToOne,
+  JoinColumn,
+  OneToMany,
+} from 'typeorm';
 import { IsDate, IsEmail, Min } from 'class-validator';
 import moment from 'moment';
 import { Exclude, Expose } from 'class-transformer';
+import { Address } from './adress.entity';
+import { Post } from '@modules/post/post.entity';
 
 @Entity()
 export class User {
@@ -22,6 +31,9 @@ export class User {
   @Exclude()
   password: string;
 
+  @Column({ nullable: true })
+  phone: string;
+
   @Column({
     type: Date,
     default: moment(new Date()).format('YYYY-MM-DD HH:ss'),
@@ -38,4 +50,15 @@ export class User {
   })
   @IsDate()
   updatedAt;
+
+  /* Relationship */
+  @OneToOne(() => Address, (address: Address) => address.user, {
+    cascade: true,
+    eager: true,
+  })
+  @JoinColumn()
+  address: Address;
+
+  @OneToMany(() => Post, (post: Post) => post.author)
+  posts: Post[];
 }
