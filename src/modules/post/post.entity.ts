@@ -1,4 +1,5 @@
 import {
+  BeforeUpdate,
   Column,
   Entity,
   JoinTable,
@@ -14,17 +15,17 @@ import { Category } from '@modules/category/category.entity';
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  public id: string;
 
   @Column()
   @Min(1)
   @Expose()
-  title: string;
+  public title: string;
 
   @Column()
   @Min(10)
   @Expose()
-  content: string;
+  public content: string;
 
   @Column({
     type: Date,
@@ -32,7 +33,7 @@ export class Post {
   })
   @IsDate()
   @Expose()
-  createdAt;
+  public createdAt;
 
   @Column({
     type: Date,
@@ -41,7 +42,10 @@ export class Post {
   })
   @IsDate()
   @Expose()
-  updatedAt;
+  public updatedAt;
+
+  @Column({ nullable: true })
+  public category?: string;
 
   /* Relationship */
   @ManyToOne(() => User, (author: User) => author.posts)
@@ -50,4 +54,9 @@ export class Post {
   @ManyToMany(() => Category, (category: Category) => category.posts)
   @JoinTable()
   public categories: Category[];
+
+  @BeforeUpdate()
+  updateTimestamp() {
+    this.updatedAt = moment(new Date()).format('YYYY-MM-DD HH:ss');
+  }
 }
