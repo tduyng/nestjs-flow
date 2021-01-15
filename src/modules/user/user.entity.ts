@@ -5,11 +5,11 @@ import {
   OneToOne,
   JoinColumn,
   OneToMany,
+  BeforeUpdate,
 } from 'typeorm';
-import { IsDate, IsEmail, Min } from 'class-validator';
-import moment from 'moment';
+import { IsEmail, Min } from 'class-validator';
 import { Exclude, Expose } from 'class-transformer';
-import { Address } from './adress.entity';
+import { Address } from './address.entity';
 import { Post } from '@modules/post/post.entity';
 
 @Entity()
@@ -35,21 +35,19 @@ export class User {
   phone: string;
 
   @Column({
-    type: Date,
-    default: moment(new Date()).format('YYYY-MM-DD HH:ss'),
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
     nullable: true,
   })
-  @IsDate()
   @Expose()
-  createdAt;
+  createdAt: Date;
 
   @Column({
-    type: Date,
-    default: moment(new Date()).format('YYYY-MM-DD HH:ss'),
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
     nullable: true,
   })
-  @IsDate()
-  updatedAt;
+  updatedAt: Date;
 
   /* Relationship */
   @OneToOne(() => Address, (address: Address) => address.user, {
@@ -61,4 +59,9 @@ export class User {
 
   @OneToMany(() => Post, (post: Post) => post.author)
   posts: Post[];
+
+  @BeforeUpdate()
+  updateTimestamp() {
+    this.updatedAt = new Date();
+  }
 }
