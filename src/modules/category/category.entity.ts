@@ -18,7 +18,7 @@ export class Category {
   public name: string;
 
   // @Exclude()
-  @Column({ unique: true, nullable: true })
+  @Column({ unique: true })
   public slug: string;
 
   @ManyToMany(() => Post, (post: Post) => post.categories)
