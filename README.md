@@ -5,6 +5,7 @@ This series demo is just for purpose learning or practice NestJS.
 
 <details>
 <summary>All branches of projects</summary>
+
 1. Init project: Controller, services, modules
 2. Database, typeorm
 3. Auth with passpord, jwt
@@ -29,6 +30,7 @@ This series demo is just for purpose learning or practice NestJS.
 22. Storing JSON with PostgresSQL & TypeORM
 23. Implementing in-memory cache to increase the performance
 24. Cache with Redis. Running the app in a Nodejs cluster
+    
 </details>
 
 ---
@@ -57,7 +59,6 @@ This series demo is just for purpose learning or practice NestJS.
   - [4. Error handling](#4-error-handling)
     - [Exception filter](#exception-filter)
     - [Validation](#validation)
-  - [</details>](#details)
   - [5. Serialization](#5-serialization)
     - [Exclude option](#exclude-option)
     - [Expose option](#expose-option)
@@ -1400,6 +1401,7 @@ We will use auto-validation of Nest:
 Check more [Doc class-validator](https://github.com/typestack/class-validator/blob/develop/docs/basics/validating-objects.md) for advanced validation.
 
 </details>
+
 ---
 
 ## 5. Serialization
