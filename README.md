@@ -62,8 +62,8 @@ This series demo is just for purpose learning or practice NestJS.
     - [Exclude option](#exclude-option)
     - [Expose option](#expose-option)
     - [Issues with using @Res() decorator](#issues-with-using-res-decorator)
-  - [6.](#6)
-  - [7.](#7)
+  - [6. Database relationship](#6-database-relationship)
+  - [7. Testing](#7-testing)
   - [References](#references)
 
 
@@ -1579,16 +1579,14 @@ In the previous part, we have used the `@Res()` decorator to access the Express 
 </details>
 
 
-
 ---
 
-
-## 6. 
+## 6. Database relationship
 
 <details>
 <summary>Click to expand section</summary>
 
-Check the code at branch [6-](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/6-)
+Check the code at branch [6-db-relationship](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/6-db-relationship)
 
 
 
@@ -1598,12 +1596,12 @@ Check the code at branch [6-](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tr
 ---
 
 
-## 7. 
+## 7. Testing
 
 <details>
 <summary>Click to expand section</summary>
 
-Check the code at branch [3-](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/2-typeorm)
+Check the code at branch [7-testing](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/7-testing)
 
 
 
