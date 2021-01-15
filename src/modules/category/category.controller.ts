@@ -7,12 +7,16 @@ import {
   Param,
   Post,
   Put,
+  SerializeOptions,
   UseGuards,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto, UpdateCategoryDto } from './dto';
 
 @Controller('categories')
+@SerializeOptions({
+  strategy: 'excludeAll',
+})
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
@@ -33,7 +37,7 @@ export class CategoryController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  public async createCategory(categoryDto: CreateCategoryDto) {
+  public async createCategory(@Body() categoryDto: CreateCategoryDto) {
     return await this.categoryService.createCategory(categoryDto);
   }
 

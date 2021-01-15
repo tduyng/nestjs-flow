@@ -106,8 +106,8 @@ export class CategoryService {
   public async createCategory(categoryDto: CreateCategoryDto) {
     const { name } = categoryDto;
     try {
-      const check = await this.getAllCategoriesByNameCaseSensitive(name);
-      if (check) {
+      const check: any[] = await this.getAllCategoriesByNameCaseSensitive(name);
+      if (check.length > 0) {
         throw new ConflictException(
           `Category with name ${name} already exists!`,
         );

@@ -1,4 +1,5 @@
 import { Post } from '@modules/post/post.entity';
+import { Expose } from 'class-transformer';
 import slugify from 'slugify';
 import {
   BeforeInsert,
@@ -15,10 +16,12 @@ export class Category {
   public id: string;
 
   @Column({ unique: true })
+  @Expose()
   public name: string;
 
   // @Exclude()
   @Column({ unique: true })
+  @Expose()
   public slug: string;
 
   @ManyToMany(() => Post, (post: Post) => post.categories)
@@ -27,7 +30,8 @@ export class Category {
   @BeforeInsert()
   @BeforeUpdate()
   async normalizeField() {
-    this.name = this.name.charAt(0).toUpperCase() + this.name.slice(1);
-    this.slug = slugify(this.name);
+    const safeName = this.name.replace(/\s\s+/g, ' ');
+    this.name = safeName.charAt(0).toUpperCase() + safeName.slice(1);
+    this.slug = slugify(this.name.toLowerCase());
   }
 }
