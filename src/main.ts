@@ -8,7 +8,7 @@ import { setupSwagger } from '@common/config/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ skipMissingProperties: true }));
   // attaches cookies to request object
   app.use(cookieParser());
   // applies security hardening settings. using defaults: https://www.npmjs.com/package/helmet
