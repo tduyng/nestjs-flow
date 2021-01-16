@@ -80,7 +80,7 @@ describe('PostService', () => {
         NotFoundException,
       );
     });
-    it('Should created new post', async () => {
+    it('Should update post', async () => {
       postRepository.updatePost.mockResolvedValue('some post');
       const id = 'some id';
       const post = {
