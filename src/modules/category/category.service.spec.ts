@@ -148,5 +148,12 @@ describe('CategoryService', () => {
       );
       expect(result).toEqual('some value');
     });
+
+    it('Should throw an error not found', async () => {
+      categoryRepository.getCategoryBySlug.mockResolvedValue(null);
+      expect(categoryService.deleteCategory('some slug')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
   });
 });
