@@ -64,7 +64,8 @@ This series demo is just for purpose learning or practice NestJS.
     - [Expose option](#expose-option)
     - [Issues with using @Res() decorator](#issues-with-using-res-decorator)
   - [6. Database relationship](#6-database-relationship)
-  - [7. Testing](#7-testing)
+  - [7. Unit tests](#7-unit-tests)
+  - [8. End to end testing](#8-end-to-end-testing)
   - [References](#references)
 
 
@@ -84,11 +85,11 @@ Nest (NestJS) is a progressive Nodejs framework (open-source) for building effic
 Nest has many features out of box to help you make your project become ready-production quickly.
 
 
-Check [Nest](https://nestjs.com/) for more information.
+**Check [Nest](https://nestjs.com/) for more information.**
 
-Now we will code a REST api project with NestJS from basics to advances.
+Now we will start with a simple REST API project with NestJS from basic to advance.
 
-Each big step will separate by each branch git.
+Each big step will separate by each branch of git.
 
 ## 1. Init project
 
@@ -1596,13 +1597,14 @@ About database relationship of Typeorm, check:
 - [Typeorm relations faq](https://github.com/typeorm/typeorm/blob/master/docs/relations-faq.md)
 - [Typeorm relational query builder](https://github.com/typeorm/typeorm/blob/master/docs/relational-query-builder.md)
 
+**Missing docs for this part. Working in progress....**
 
 </details>
 
 ---
 
 
-## 7. Testing
+## 7. Unit tests
 
 <details>
 <summary>Click to expand section</summary>
@@ -1610,11 +1612,27 @@ About database relationship of Typeorm, check:
 Check the code at branch [7-testing](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/7-testing)
 
 
-
+**Missing docs for this part. Working in progress....**
 
 </details>
 
 ---
+
+
+## 8. End to end testing
+
+<details>
+<summary>Click to expand section</summary>
+
+Check the code at branch [8-e2e-testing](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/8-e2e-testing)
+
+
+**Missing docs for this part. Working in progress....**
+
+</details>
+
+---
+
 
 ## References
 
