@@ -104,7 +104,10 @@ describe('AuthService', () => {
         password: hashPassword,
       };
       authRepository.getUserByEmail.mockResolvedValue(user);
+      expect(authRepository.getUserByEmail).not.toHaveBeenCalled();
+
       const result = await authService.validateUser(user.email, fakePassword);
+      expect(authRepository.getUserByEmail).toHaveBeenCalledWith(user.email);
       expect(result).toEqual(user);
     });
   });
@@ -127,11 +130,9 @@ describe('AuthService', () => {
         email: 'some@email.com',
         password: 'some',
       };
-      authRepository.createUser.mockResolvedValue(user);
+      authRepository.createUser.mockResolvedValue('some user');
       const result = await authService.registerUser(user);
-      // Because after register, password changed by bcrypt, so we can't check result == user
-      //  To simplify, we just check if result toBeDefined
-      expect(result).toBeDefined();
+      expect(result).toEqual('some user');
     });
   });
 });
