@@ -9,11 +9,6 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    console.log(process.env.JWT_SECRET);
-    console.log(process.env.SERVER_PORT);
-    console.log(process.env.TYPEORM_CONNECTION);
-    console.log(process.env.TYPEORM_MIGRATIONS);
-    console.log(process.env.TYPEORM_ENTITIES);
     return this.appService.getHello();
   }
 }
