@@ -21,36 +21,54 @@ export class AuthService {
   ) {}
 
   public async validateUser(email: string, password: string) {
-    const user = await this.authRepository.getUserByEmail(email);
-    if (user) {
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (isMatch) {
-        return user;
+    try {
+      const user = await this.authRepository.getUserByEmail(email);
+      if (user) {
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (isMatch) {
+          return user;
+        }
+      }
+      throw new BadRequestException('Invalids credentials');
+    } catch (error) {
+      if (error.status === HttpStatus.BAD_REQUEST) {
+        throw error;
+      } else {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
     }
-    throw new BadRequestException('Invalids credentials');
   }
 
   public async register(registerDto: RegisterUserDto) {
-    const userCheck = await this.authRepository.getUserByEmail(
-      registerDto.email,
-    );
-    if (userCheck) {
-      throw new ConflictException(
-        `User with email: ${registerDto.email} already exists`,
-      );
-    }
-    const salt = await bcrypt.genSalt(10);
-    const hashPassword = await bcrypt.hash(registerDto.password, salt);
-
     try {
+      const userCheck = await this.authRepository.getUserByEmail(
+        registerDto.email,
+      );
+      if (userCheck) {
+        throw new ConflictException(
+          `User with email: ${registerDto.email} already exists`,
+        );
+      }
+      const salt = await bcrypt.genSalt(10);
+      const hashPassword = await bcrypt.hash(registerDto.password, salt);
+
       const user = await this.authRepository.create({
         ...registerDto,
         password: hashPassword,
       });
       return user;
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      if (error.status === HttpStatus.CONFLICT) {
+        throw error;
+      } else {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     }
   }
 
