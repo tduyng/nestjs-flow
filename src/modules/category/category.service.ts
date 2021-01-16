@@ -6,20 +6,19 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Category } from './category.entity';
+import { CategoryRepository } from './category.repository';
 import { CreateCategoryDto, UpdateCategoryDto } from './dto';
 
 @Injectable()
 export class CategoryService {
   constructor(
-    @InjectRepository(Category)
-    private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(CategoryRepository)
+    private readonly categoryRepository: CategoryRepository,
   ) {}
 
   public async getCategories() {
     try {
-      return await this.categoryRepository.find();
+      return await this.categoryRepository.getCategories();
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -27,9 +26,7 @@ export class CategoryService {
 
   public async getCategoryById(id: string) {
     try {
-      const category = await this.categoryRepository.findOne({
-        where: { id: id },
-      });
+      const category = await this.categoryRepository.getCategoryById(id);
       if (!category) {
         throw new NotFoundException('Category not found');
       }
@@ -48,9 +45,7 @@ export class CategoryService {
 
   public async getCategoryByName(name: string) {
     try {
-      const category = await this.categoryRepository.findOne({
-        where: { name: name },
-      });
+      const category = await this.categoryRepository.getCategoryByName(name);
       if (!category) {
         throw new NotFoundException('Category not found');
       }
@@ -68,9 +63,7 @@ export class CategoryService {
   }
   public async getCategoryBySlug(slug: string) {
     try {
-      const category = await this.categoryRepository.findOne({
-        where: { slug: slug },
-      });
+      const category = await this.categoryRepository.getCategoryBySlug(slug);
       if (!category) {
         throw new NotFoundException('Category not found');
       }
@@ -89,15 +82,9 @@ export class CategoryService {
 
   public async getAllCategoriesByNameCaseSensitive(name: string) {
     try {
-      return await this.categoryRepository.find({
-        where: `"name" ILIKE '${name}'`,
-      });
-
-      //   // We can also query like:
-      //   const posts = await repository.createQueryBuilder("post")
-      //  .where("LOWER(post.title) = LOWER(:title)", { title })
-      //  .getMany()
-      // https://github.com/typeorm/typeorm/issues/1231
+      return await this.categoryRepository.getAllCategoriesByNameCaseSensitive(
+        name,
+      );
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -112,8 +99,9 @@ export class CategoryService {
           `Category with name ${name} already exists!`,
         );
       }
-      const category = this.categoryRepository.create(categoryDto);
-      await this.categoryRepository.save(category);
+      const category = await this.categoryRepository.createCategory(
+        categoryDto,
+      );
       return category;
     } catch (error) {
       if (error.status == HttpStatus.CONFLICT) {
@@ -128,11 +116,9 @@ export class CategoryService {
   }
 
   public async updateCategory(slug: string, categoryDto: UpdateCategoryDto) {
-    const { name } = categoryDto;
     try {
       const category = await this.getCategoryBySlug(slug);
-      category.name = name;
-      await this.categoryRepository.save(category);
+      await this.categoryRepository.updateCategory(category, categoryDto);
       return category;
     } catch (error) {
       if (error.status == HttpStatus.NOT_FOUND) {
