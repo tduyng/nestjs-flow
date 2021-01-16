@@ -64,8 +64,8 @@ This series demo is just for purpose learning or practice NestJS.
     - [Expose option](#expose-option)
     - [Issues with using @Res() decorator](#issues-with-using-res-decorator)
   - [6. Database relationship](#6-database-relationship)
-  - [7. Testing](#7-testing)
-  - [8.](#8)
+  - [7. Unit Testing](#7-unit-testing)
+  - [8. End to end testing](#8-end-to-end-testing)
   - [References](#references)
 
 
@@ -1604,7 +1604,7 @@ About database relationship of Typeorm, check:
 ---
 
 
-## 7. Testing
+## 7. Unit Testing
 
 <details>
 <summary>Click to expand section</summary>
@@ -1620,12 +1620,12 @@ Check the code at branch [7-testing](https://gitlab.com/tienduy-nguyen/nestjs-fl
 ---
 
 
-## 8. 
+## 8. End to end testing
 
 <details>
 <summary>Click to expand section</summary>
 
-Check the code at branch [8-](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/8-)
+Check the code at branch [8-e2e-testing](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/8-e2e-testing)
 
 
 **Missing docs for this part. Working in progress....**
