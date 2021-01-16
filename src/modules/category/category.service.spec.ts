@@ -132,10 +132,12 @@ describe('CategoryService', () => {
     });
   });
 
-  describe('deleteCategory', async () => {
-    categoryRepository.delete.mockResolvedValue('some id');
-    expect(categoryRepository.delete).not.toHaveBeenCalled();
-    await categoryService.deleteCategory('some id');
-    expect(categoryRepository.delete).toHaveBeenCalledWith('some id');
+  describe('deleteCategory', () => {
+    it('Should delete category', async () => {
+      categoryRepository.delete.mockResolvedValue('some id');
+      expect(categoryRepository.delete).not.toHaveBeenCalled();
+      await categoryService.deleteCategory('some id');
+      expect(categoryRepository.delete).toHaveBeenCalledWith('some id');
+    });
   });
 });
