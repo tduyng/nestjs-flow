@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, ConflictException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -42,11 +42,12 @@ describe('AuthService', () => {
     // jwtService = module.get<JwtService>(JwtService);
     authRepository = module.get<AuthRepository>(AuthRepository);
   });
-
+  /* Simple  test */
   it('Should be defined', () => {
     expect(authService).toBeDefined();
   });
 
+  /* Test cookie methods */
   describe('clearCookie', () => {
     it('Should return a string', () => {
       expect(typeof authService.clearCookie()).toEqual('string');
@@ -67,6 +68,7 @@ describe('AuthService', () => {
     });
   });
 
+  /* Test validate User */
   describe('validateUser', () => {
     it('Should throw an error when email not match', () => {
       authRepository.getUserByEmail.mockResolvedValue(null);
@@ -102,12 +104,34 @@ describe('AuthService', () => {
         password: hashPassword,
       };
       authRepository.getUserByEmail.mockResolvedValue(user);
-      expect(authRepository.getUserByEmail).not.toHaveBeenCalledWith(
-        user.email,
-      );
       const result = await authService.validateUser(user.email, fakePassword);
-      expect(authRepository.getUserByEmail).toHaveBeenCalledWith(user.email);
       expect(result).toEqual(user);
+    });
+  });
+
+  /* Test register user */
+  describe('registerUser', () => {
+    it('Should throw an error when register with email existed', async () => {
+      const user = {
+        name: 'some',
+        email: 'some@email.com',
+        password: 'some',
+      };
+      authRepository.getUserByEmail.mockResolvedValue(user.email);
+      expect(authService.registerUser(user)).rejects.toThrow(ConflictException);
+    });
+
+    it('Should return an user', async () => {
+      const user = {
+        name: 'some',
+        email: 'some@email.com',
+        password: 'some',
+      };
+      authRepository.createUser.mockResolvedValue(user);
+      const result = await authService.registerUser(user);
+      // Because after register, password changed by bcrypt, so we can't check result == user
+      //  To simplify, we just check if result toBeDefined
+      expect(result).toBeDefined();
     });
   });
 });

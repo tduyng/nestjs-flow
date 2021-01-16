@@ -42,7 +42,7 @@ export class AuthService {
     }
   }
 
-  public async register(registerDto: RegisterUserDto) {
+  public async registerUser(registerDto: RegisterUserDto) {
     try {
       const userCheck = await this.authRepository.getUserByEmail(
         registerDto.email,
@@ -55,7 +55,7 @@ export class AuthService {
       const salt = await bcrypt.genSalt(10);
       const hashPassword = await bcrypt.hash(registerDto.password, salt);
 
-      const user = await this.authRepository.create({
+      const user = await this.authRepository.createUser({
         ...registerDto,
         password: hashPassword,
       });
