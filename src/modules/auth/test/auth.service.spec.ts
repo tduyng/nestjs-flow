@@ -2,9 +2,9 @@ import { BadRequestException, ConflictException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { IPayloadJwt } from './auth.interface';
-import { AuthRepository } from './auth.repository';
-import { AuthService } from './auth.service';
+import { IPayloadJwt } from '../auth.interface';
+import { AuthRepository } from '../auth.repository';
+import { AuthService } from '../auth.service';
 import * as bcrypt from 'bcrypt';
 
 describe('AuthService', () => {
