@@ -9,44 +9,66 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { IPayloadJwt } from './auth.interface';
 import { RegisterUserDto } from './dto';
-import { UserService } from '@modules/user/user.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { AuthRepository } from './auth.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UserService,
+    @InjectRepository(AuthRepository)
+    private authRepository: AuthRepository,
     private readonly jwtService: JwtService,
   ) {}
 
   public async validateUser(email: string, password: string) {
-    const user = await this.userService.getUserByEmail(email);
-    if (user) {
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (isMatch) {
-        return user;
+    try {
+      const user = await this.authRepository.getUserByEmail(email);
+      if (user) {
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (isMatch) {
+          return user;
+        }
+      }
+      throw new BadRequestException('Invalids credentials');
+    } catch (error) {
+      if (error.status === HttpStatus.BAD_REQUEST) {
+        throw error;
+      } else {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
     }
-    throw new BadRequestException('Invalids credentials');
   }
 
-  public async register(registerDto: RegisterUserDto) {
-    const userCheck = await this.userService.getUserByEmail(registerDto.email);
-    if (userCheck) {
-      throw new ConflictException(
-        `User with email: ${registerDto.email} already exists`,
-      );
-    }
-    const salt = await bcrypt.genSalt(10);
-    const hashPassword = await bcrypt.hash(registerDto.password, salt);
-
+  public async registerUser(registerDto: RegisterUserDto) {
     try {
-      const user = await this.userService.create({
+      const userCheck = await this.authRepository.getUserByEmail(
+        registerDto.email,
+      );
+      if (userCheck) {
+        throw new ConflictException(
+          `User with email: ${registerDto.email} already exists`,
+        );
+      }
+      const salt = await bcrypt.genSalt(10);
+      const hashPassword = await bcrypt.hash(registerDto.password, salt);
+
+      const user = await this.authRepository.createUser({
         ...registerDto,
         password: hashPassword,
       });
       return user;
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      if (error.status === HttpStatus.CONFLICT) {
+        throw error;
+      } else {
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     }
   }
 
