@@ -94,10 +94,10 @@ describe('PostService', () => {
 
   describe('deletePost', () => {
     it('Should delete product', async () => {
-      postRepository.delete.mockResolvedValue('some id');
-      expect(postRepository.delete).not.toHaveBeenCalled();
+      postRepository.deletePost.mockResolvedValue(null);
+      expect(postRepository.deletePost).not.toHaveBeenCalled();
       await postService.deletePost('some id');
-      expect(postRepository.delete).toHaveBeenCalledWith('some id');
+      expect(postRepository.deletePost).toHaveBeenCalledWith('some id');
     });
   });
 });

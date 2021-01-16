@@ -135,7 +135,7 @@ export class CategoryService {
   public async deleteCategory(slug: string) {
     try {
       const category = await this.getCategoryBySlug(slug);
-      await this.categoryRepository.delete(category);
+      return await this.categoryRepository.deleteCategory(category.id);
     } catch (error) {
       if (error.status == HttpStatus.NOT_FOUND) {
         throw error;

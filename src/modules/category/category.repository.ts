@@ -46,7 +46,11 @@ export class CategoryRepository extends Repository<Category> {
     return updated;
   }
 
-  public async deleteCategory(id: string): Promise<void> {
+  public async deleteCategory(id: string) {
     await this.delete(id);
+    return {
+      status: 200,
+      message: 'Ok',
+    };
   }
 }

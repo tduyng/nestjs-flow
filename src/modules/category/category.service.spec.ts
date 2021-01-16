@@ -134,10 +134,19 @@ describe('CategoryService', () => {
 
   describe('deleteCategory', () => {
     it('Should delete category', async () => {
-      categoryRepository.delete.mockResolvedValue('some id');
-      expect(categoryRepository.delete).not.toHaveBeenCalled();
-      await categoryService.deleteCategory('some id');
-      expect(categoryRepository.delete).toHaveBeenCalledWith('some id');
+      const category = {
+        id: '1',
+        name: 'some',
+        slug: 'some',
+      };
+      categoryRepository.getCategoryBySlug.mockResolvedValue(category);
+      categoryRepository.deleteCategory.mockResolvedValue('some value');
+      expect(categoryRepository.deleteCategory).not.toHaveBeenCalled();
+      const result = await categoryService.deleteCategory(category.slug);
+      expect(categoryRepository.deleteCategory).toHaveBeenCalledWith(
+        category.id,
+      );
+      expect(result).toEqual('some value');
     });
   });
 });
