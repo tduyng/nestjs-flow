@@ -38,7 +38,7 @@ export class AuthController {
       email: user.email,
     };
     const cookie = this.authService.getCookieWithToken(payload);
-    req.res.setHeader('Set-Cookie', cookie);
+    this.authService.setHeader(req.res, cookie);
     return user;
   }
 
@@ -51,6 +51,9 @@ export class AuthController {
   @Post('logout')
   @UseGuards(JwtAuthGuard)
   public logout(@Req() req: IRequestWithUser) {
-    req.res.setHeader('Set-Cookie', this.authService.clearCookie());
+    this.authService.clearCookie(req.res);
+    return {
+      logout: true,
+    };
   }
 }
