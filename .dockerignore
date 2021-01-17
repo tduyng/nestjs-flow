@@ -1,0 +1,19 @@
+# Build and dependencies
+node_modules/
+coverage
+dist
+build
+
+
+# Versioning and metadata
+.git
+.dockerignore
+.gitignore
+
+
+# Files not required for production
+.editorconfig
+Dockerfile
+README.md
+docs
+
