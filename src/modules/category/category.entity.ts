@@ -31,4 +31,8 @@ export class Category {
     this.name = safeName.charAt(0).toUpperCase() + safeName.slice(1);
     this.slug = slugify(this.name.toLowerCase());
   }
+
+  constructor(name: string) {
+    this.name = name;
+  }
 }
