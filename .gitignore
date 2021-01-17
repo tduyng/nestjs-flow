@@ -82,6 +82,8 @@ docker.env
 # Nuxt.js build / generate output
 .nuxt
 dist
+dist/
+build/
 
 # Gatsby files
 .cache/
