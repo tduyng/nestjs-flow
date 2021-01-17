@@ -30,23 +30,41 @@ services:
     logging:
       driver: none
 
-  # nestjs-flow:
-  #   container_name: nestjs-flow
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   restart: always
-  #   ports:
-  #     - '${SERVER_PORT}:${SERVER_PORT}'
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #     - .:/usr/src/app
-  #     - /usr/src/app/node_modules
-  #   depends_on:
-  #     - postgres
-  #   networks:
-  #     - postgres-network
+  nestjs:
+    container_name: nestjs-flow
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - '${SERVER_PORT}:${SERVER_PORT}'
+    env_file:
+      - .env
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+      - .env:/usr/src/app
+    depends_on:
+      - postgres
+    networks:
+      - postgres-network
+
+  nest-nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    container_name: nest-nginx
+    depends_on:
+      - nestjs
+    environment:
+      - NGINX_SERVER_NAME=localhost
+      - NEST_HOST=nest
+      - NEST_PORT=3000
+      - NGINX_MAX_BODY=100M
+    ports:
+      - 80:80
+    networks:
+      - postgres-network
 
 
 
