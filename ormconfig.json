@@ -1,0 +1,10 @@
+{
+  "type": "postgres",
+  "host": "postgres",
+  "port": 5432,
+  "username": "postgres",
+  "password": "postgres",
+  "database": "test_db",
+  "entities": ["src/modules/**/*.entity{.ts,.js}"],
+  "migrations": ["src/common/migrations/*{.ts,.js}"]
+}
