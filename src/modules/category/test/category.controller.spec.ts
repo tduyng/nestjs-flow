@@ -6,6 +6,9 @@ import { CategoryService } from '../category.service';
 const catArray = [new Category('Category 1'), new Category('Category 2')];
 const oneCategory = new Category('Category 1');
 oneCategory.slug = 'some';
+const categoryDto = {
+  name: 'Category 1',
+};
 
 describe('CategoryController', () => {
   let categoryController: CategoryController;
@@ -22,9 +25,11 @@ describe('CategoryController', () => {
             getCategoryById: jest.fn().mockReturnValue(oneCategory),
             getCategoryByName: jest.fn().mockReturnValue(oneCategory),
             getCategoryBySlug: jest.fn().mockReturnValue(oneCategory),
-            createCategory: jest.fn(),
-            updateCategory: jest.fn(),
-            deleteCategory: jest.fn(),
+            createCategory: jest.fn().mockReturnValue(oneCategory),
+            updateCategory: jest.fn().mockReturnValue(oneCategory),
+            deleteCategory: jest
+              .fn()
+              .mockReturnValue({ status: 200, message: 'Ok' }),
             getAllCategoriesByNameCaseSensitive: jest.fn(),
             getAllPostOfCategories: jest
               .fn()
@@ -50,12 +55,36 @@ describe('CategoryController', () => {
     });
   });
 
-  describe('get posts of category route', () => {
+  describe('getPostsOfCategory route', () => {
     it('Should return a category', async () => {
       const result = await categoryController.getPostsOfCategory(
         oneCategory.slug,
       );
       expect(result).toEqual('list posts of category');
+    });
+  });
+
+  describe('createCategory route', () => {
+    it('Should create new category', async () => {
+      const result = await categoryController.createCategory(categoryDto);
+      expect(result).toEqual(oneCategory);
+    });
+  });
+
+  describe('updateCategory route', () => {
+    it('Should update successfully  category', async () => {
+      const result = await categoryController.updateCategory(
+        'some slug',
+        categoryDto,
+      );
+      expect(result).toEqual(oneCategory);
+    });
+  });
+
+  describe('delete route', () => {
+    it('Should delete successfully category', async () => {
+      const result = await categoryController.deleteCategory('some slug');
+      expect(result).toEqual({ status: 200, message: 'Ok' });
     });
   });
 });
