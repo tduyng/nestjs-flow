@@ -8,6 +8,7 @@ import { ormConfig } from '@common/config/ormConfig';
 import { UserModule } from '@modules/user/user.module';
 import { AuthModule } from '@modules/auth/auth.module';
 import { CategoryModule } from '@modules/category/category.module';
+import { AddressModule } from '@modules/address/address.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CategoryModule } from '@modules/category/category.module';
     TypeOrmModule.forRoot(ormConfig()),
     PostModule,
     UserModule,
+    AddressModule,
     AuthModule,
     CategoryModule,
   ],

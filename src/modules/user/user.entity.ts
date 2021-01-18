@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { IsEmail, Min } from 'class-validator';
 import { Exclude, Expose } from 'class-transformer';
-import { Address } from './address.entity';
+import { Address } from '../address/address.entity';
 import { Post } from '@modules/post/post.entity';
 
 @Entity()
