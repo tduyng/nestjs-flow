@@ -3,13 +3,13 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 class PublicFile {
   @PrimaryGeneratedColumn('uuid')
-  public id: number;
-
-  @Column()
-  public url: string;
+  public id: string;
 
   @Column()
   public key: string;
+
+  @Column()
+  public url: string;
 }
 
 export default PublicFile;
