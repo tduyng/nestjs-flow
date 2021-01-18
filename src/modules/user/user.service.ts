@@ -1,3 +1,4 @@
+import { FilesService } from '@modules/files/files.service';
 import {
   HttpException,
   HttpStatus,
@@ -13,6 +14,7 @@ export class UserService {
   constructor(
     @InjectRepository(UserRepository)
     private readonly userRepository: UserRepository,
+    private readonly filesService: FilesService,
   ) {}
 
   public async getUsers(): Promise<User[]> {
@@ -52,6 +54,35 @@ export class UserService {
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
+    }
+  }
+
+  async addAvatar(userId: string, imageBuffer: Buffer, filename: string) {
+    const user = await this.userRepository.getUserById(userId);
+    if (user.avatar) {
+      await this.userRepository.updateAvatar(user, {
+        avatar: null,
+      });
+      await this.filesService.deletePublicFile(user.avatar.id);
+    }
+    const avatar = await this.filesService.uploadPublicFile(
+      imageBuffer,
+      filename,
+    );
+    await this.userRepository.updateAvatar(user, {
+      avatar,
+    });
+    return avatar;
+  }
+
+  async deleteAvatar(userId: string) {
+    const user = await this.userRepository.getUserById(userId);
+    const fileId = user.avatar?.id;
+    if (fileId) {
+      await this.userRepository.updateAvatar(user, {
+        avatar: null,
+      });
+      await this.filesService.deletePublicFile(fileId);
     }
   }
 }
