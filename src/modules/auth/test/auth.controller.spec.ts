@@ -18,7 +18,7 @@ describe('AuthController', () => {
   let authController: AuthController;
   let authService;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
       providers: [
@@ -41,7 +41,8 @@ describe('AuthController', () => {
 
   describe('Register user route', () => {
     it('Should return an user', async () => {
-      await expect(authController.register(registerDto)).resolves.toEqual(user);
+      const result = authController.register(registerDto);
+      expect(result).resolves.toEqual(user);
     });
   });
 
