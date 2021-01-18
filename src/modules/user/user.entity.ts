@@ -9,30 +9,30 @@ import {
 } from 'typeorm';
 import { IsEmail, Min } from 'class-validator';
 import { Exclude, Expose } from 'class-transformer';
-import { Address } from './address.entity';
+import { Address } from '../address/address.entity';
 import { Post } from '@modules/post/post.entity';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  public id?: string;
 
   @Column({ nullable: true })
   @Expose()
-  name: string;
+  public name: string;
 
   @Column({ unique: true })
   @IsEmail()
   @Expose()
-  email: string;
+  public email: string;
 
   @Column()
   @Min(0)
   @Exclude()
-  password: string;
+  public password: string;
 
   @Column({ nullable: true })
-  phone: string;
+  public phone?: string;
 
   @Column({
     type: 'timestamp',
@@ -40,14 +40,14 @@ export class User {
     nullable: true,
   })
   @Expose()
-  createdAt: Date;
+  public createdAt?: Date;
 
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
     nullable: true,
   })
-  updatedAt: Date;
+  public updatedAt?: Date;
 
   /* Relationship */
   @OneToOne(() => Address, (address: Address) => address.user, {
@@ -55,10 +55,10 @@ export class User {
     eager: true,
   })
   @JoinColumn()
-  address: Address;
+  public address?: Address;
 
   @OneToMany(() => Post, (post: Post) => post.author)
-  posts: Post[];
+  public posts?: Post[];
 
   @BeforeUpdate()
   updateTimestamp() {

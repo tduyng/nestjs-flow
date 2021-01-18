@@ -11,6 +11,7 @@ import { IPayloadJwt } from './auth.interface';
 import { RegisterUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthRepository } from './auth.repository';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -76,7 +77,11 @@ export class AuthService {
     const token = this.jwtService.sign(payload);
     return `Authorization=${token};HttpOnly;Path=/;Max-Age=${process.env.JWT_EXPIRATION_TIME}`;
   }
-  public clearCookie() {
-    return `Authorization=;HttpOnly;Path=/;Max-Age=0`;
+  public clearCookie(res: Response): void {
+    const emptyCookie = `Authorization=;HttpOnly;Path=/;Max-Age=0`;
+    res.setHeader('Set-Cookie', emptyCookie);
+  }
+  public setHeader(res: Response, cookie: string): void {
+    res.setHeader('Set-Cookie', cookie);
   }
 }

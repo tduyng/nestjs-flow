@@ -1,0 +1,61 @@
+version: "3.8"
+services:
+  nestjs:
+    image: nestjs-flow
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - .env:/usr/src/app/.env
+    depends_on:
+      - postgres
+
+  nginx:
+    image: nginx
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - nestjs
+    environment:
+      - NGINX_SERVER_NAME=_
+      - NEST_HOST=nest
+      - NEST_PORT=3000
+      - NGINX_MAX_BODY=100M
+    ports:
+      - 80:80
+
+
+  postgres:
+    image: postgres:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    env_file:
+      - docker.env
+    ports:
+      - '5432-5432'
+    volumes:
+      - /data/postgres:/data/postgres
+
+  pgadmin:
+    links:
+     - postgres:postgres
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    ports:
+      - '8080:80'
+    volumes:
+      - /data/pgadmin:/root/.pgadmin
+    env_file:
+      - docker.env
+    logging:
+      driver: none
+

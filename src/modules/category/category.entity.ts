@@ -18,8 +18,8 @@ export class Category {
   public name: string;
 
   // @Exclude()
-  @Column({ unique: true })
-  public slug: string;
+  @Column({ unique: true, nullable: true })
+  public slug?: string;
 
   @ManyToMany(() => Post, (post: Post) => post.categories)
   public posts: Post[];
@@ -30,5 +30,9 @@ export class Category {
     const safeName = this.name.replace(/\s\s+/g, ' ');
     this.name = safeName.charAt(0).toUpperCase() + safeName.slice(1);
     this.slug = slugify(this.name.toLowerCase());
+  }
+
+  constructor(name: string) {
+    this.name = name;
   }
 }

@@ -1,7 +1,7 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CategoryRepository } from './category.repository';
-import { CategoryService } from './category.service';
+import { CategoryRepository } from '../category.repository';
+import { CategoryService } from '../category.service';
 
 describe('CategoryService', () => {
   let categoryService: CategoryService;
@@ -45,11 +45,13 @@ describe('CategoryService', () => {
   });
 
   describe('getCategoryById', () => {
-    it('Should throw an error when category not found', () => {
+    it('Should throw an error when category not found', async () => {
       categoryRepository.getCategoryById.mockResolvedValue(null);
-      expect(categoryService.getCategoryById('some id')).rejects.toThrow(
-        NotFoundException,
-      );
+      try {
+        await categoryService.getCategoryById('some id');
+      } catch (error) {
+        expect(error).toBeInstanceOf(NotFoundException);
+      }
     });
 
     it('Should return an category', async () => {
@@ -60,11 +62,13 @@ describe('CategoryService', () => {
   });
 
   describe('getCategoryByName', () => {
-    it('Should throw an error when category not found', () => {
+    it('Should throw an error when category not found', async () => {
       categoryRepository.getCategoryByName.mockResolvedValue(null);
-      expect(categoryService.getCategoryByName('some name')).rejects.toThrow(
-        NotFoundException,
-      );
+      try {
+        await categoryService.getCategoryByName('some name');
+      } catch (error) {
+        expect(error).toBeInstanceOf(NotFoundException);
+      }
     });
 
     it('Should return an category', async () => {
@@ -75,11 +79,14 @@ describe('CategoryService', () => {
   });
 
   describe('getCategoryBySlug', () => {
-    it('Should throw an error when category not found', () => {
+    it('Should throw an error when category not found', async () => {
       categoryRepository.getCategoryBySlug.mockResolvedValue(null);
-      expect(categoryService.getCategoryBySlug('some slug')).rejects.toThrow(
-        NotFoundException,
-      );
+
+      try {
+        await categoryService.getCategoryBySlug('some slug');
+      } catch (error) {
+        expect(error).toBeInstanceOf(NotFoundException);
+      }
     });
 
     it('Should return an category', async () => {
@@ -90,11 +97,18 @@ describe('CategoryService', () => {
   });
 
   describe('createCategory', () => {
-    it('Should throw an error when slug category already exists', () => {
-      categoryRepository.getCategoryBySlug.mockResolvedValue(null);
-      expect(categoryService.getCategoryBySlug('some slug')).rejects.toThrow(
-        ConflictException,
-      );
+    it('Should throw an error when slug category already exists', async () => {
+      const category = {
+        name: 'some',
+      };
+      categoryRepository.getAllCategoriesByNameCaseSensitive.mockResolvedValue([
+        'some category already found',
+      ]);
+      try {
+        await categoryService.createCategory(category);
+      } catch (error) {
+        expect(error).toBeInstanceOf(ConflictException);
+      }
     });
     it('Should return an category', async () => {
       categoryRepository.getAllCategoriesByNameCaseSensitive.mockResolvedValue(
@@ -116,9 +130,12 @@ describe('CategoryService', () => {
       const category = {
         name: 'some',
       };
-      expect(categoryService.updateCategory(id, category)).rejects.toThrow(
-        NotFoundException,
-      );
+
+      try {
+        await categoryService.updateCategory(id, category);
+      } catch (error) {
+        expect(error).toBeInstanceOf(NotFoundException);
+      }
     });
     it('Should update category', async () => {
       categoryRepository.getCategoryBySlug.mockResolvedValue('some category');
@@ -151,9 +168,11 @@ describe('CategoryService', () => {
 
     it('Should throw an error not found', async () => {
       categoryRepository.getCategoryBySlug.mockResolvedValue(null);
-      expect(categoryService.deleteCategory('some slug')).rejects.toThrow(
-        NotFoundException,
-      );
+      try {
+        await categoryService.deleteCategory('some slug');
+      } catch (error) {
+        expect(error).toBeInstanceOf(NotFoundException);
+      }
     });
   });
 });

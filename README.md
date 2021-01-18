@@ -30,7 +30,7 @@ This series demo is just for purpose learning or practice NestJS.
 22. Storing JSON with PostgresSQL & TypeORM
 23. Implementing in-memory cache to increase the performance
 24. Cache with Redis. Running the app in a Nodejs cluster
-    
+
 </details>
 
 ---
@@ -75,7 +75,7 @@ This series demo is just for purpose learning or practice NestJS.
 
 ---
 
-When we work with Nodejs in big projects, the project structure become so important. 
+When we work with Nodejs in big projects, the project structure become so important.
 So if you love typescript, [NestJS](https://nestjs.com/) will help you resolve this problem.
 
 So what is NestJS?
@@ -478,7 +478,7 @@ This structure will help you better organize your codes & adapt with principle o
 
   ```
 
-  Note: 
+  Note:
   - Make sure you use `@Controller('...')` decorator for class **PostController**
   - You can also use [Nest CLI](https://docs.nestjs.com/cli/overview) for simplify this tâche.
 
@@ -518,7 +518,7 @@ This structure will help you better organize your codes & adapt with principle o
 
   ```
 - Run server `yarn start:dev` & test routes with **Postman**
-  
+
   Create newt post:
   <div align="center">
     <img src="docs/images/1-create-post.png" alt="create post">
@@ -529,7 +529,7 @@ This structure will help you better organize your codes & adapt with principle o
     <img src="docs/images/1-get-posts.png" alt="get posts">
   </div>
   ...
-  
+
 </details>
 
 
@@ -606,11 +606,11 @@ You can consider use [Prisma](https://github.com/prisma/prisma) - the next gener
   - **logging**: logging when query database  in the terminal (recommend: false)
   - **synchronize**: true. It means all the  modification in entities will synchronize automatically with your database. Attention for this feature: It will be very dangerous. You can be lost your data, should use only for develop phrase.
   - **entities**: an arry to indicate where stock entity files
-  
+
   If you don't want `synchronize` automatically, you need consider use cli to make the migrations.
 
 - Import `ormConfig` in `app.module`
-  
+
   ```ts
   //app.module.ts
   import { PostModule } from '@modules/post/post.module';
@@ -677,7 +677,7 @@ You can consider use [Prisma](https://github.com/prisma/prisma) - the next gener
   Check [Database](https://docs.nestjs.com/techniques/database) for more details.
 
 - Using PostEntity & PostRepository in PostService
-  
+
 
   Now we will modify the old code of first part, and update theme with typeorm solution.
 
@@ -803,27 +803,27 @@ Check [swagger.io](https://swagger.io/) & [Nest Open api](https://docs.nestjs.co
   bootstrap();
 
   ```
-  
+
 - Update swagger tag for controller
   Using `@ApiTags('route name')` class decorator in controller file:
   ```ts
   @ApiTags('Root')
   @Controller()
   export class AppController {
-  ...  
+  ...
   }
 
   @ApiTags('Post')
   @Controller('posts')
   export class PostController {
-  ...  
+  ...
   }
   ```
 - Run server and check api docs at route: `/api/docs`:
   <div align="center">
     <img src="docs/images/2-swagger.png" alt="Swagger docs">
   </div>
-  
+
 </details>
 
 ---
@@ -918,7 +918,7 @@ To use authentication, first of all, wee need to have User table.
   **Note**: `TypeOrmModule.forFeature([User])` allows to use UserRepository of TypeOrm in all User providers files.
 
   Don't forget import `UserModule` in `AppModule`
-  
+
 ### Auth
 
 The easiest way protect auth with Nest app is using passport & Json web token strategy.
@@ -934,7 +934,7 @@ Ok, that's is a little bit theory. Now, we will start to code to better understa
 
 #### Installation
 
-For this part, we need to install packages: 
+For this part, we need to install packages:
 - [bcrypt](https://github.com/kelektiv/node.bcrypt.js/): For hashing password
 - [passport-jwt](https://github.com/mikenicholson/passport-jwt): passport strategy with json web token
 - **@nestjs/jwt** & **passport-jwt** to use feature JWT of Nestjs
@@ -947,7 +947,7 @@ For this part, we need to install packages:
 #### Auth service
 
 - Update middleware : ` app.use(cookieParser());` in `main.ts` file.
-  
+
 - Create `auth.service.ts` file in `src/modules/auth`
   ```ts
   // auth.service.ts
@@ -1116,7 +1116,7 @@ For this part, we need to install packages:
       export class JwtAuthGuard extends AuthGuard('jwt') {}
 
       ```
-  
+
 #### Auth controller
 
 Ok, now we will update **auth guard in our routes**
@@ -1223,7 +1223,7 @@ Ok, now we will update **auth guard in our routes**
 
   ```
 - Import `AuthModule` in `AppModule` and run server to test
-  
+
   **Note**: To test cookie with postman: If the project works properly, when you logged successfully, a cookie will be created automatically.
 
   But if you want to use this cookie to test other protected routes, you need to copie that and add it to header with the key: "Cookie" --> value: value of cookie copied
@@ -1332,10 +1332,10 @@ We will use auto-validation of Nest:
   }
   bootstrap();
   ```
-- Install indispensable package dependency to make it works: 
+- Install indispensable package dependency to make it works:
   - [Class-validator](https://github.com/typestack/class-validator)
   - [Class-transformer](https://github.com/typestack/class-transformer)
-  
+
   ```bash
   $ yarn add class-transformer class-validator
   ```
@@ -1421,7 +1421,7 @@ The Nest framework make use of powerful of **class-transformer**, it helps us to
 Now, we see how to implement Nest serialization:
 ### Exclude option
 - Using `Exclude` in entities
-  
+
   User Entity:
   ```diff
   // user.entity.ts
@@ -1443,7 +1443,7 @@ Now, we see how to implement Nest serialization:
   @Controller('auth')
   @UseInterceptors(ClassSerializerInterceptor)
   export class AuthController {
-  ...  
+  ...
   }
   ```
 
@@ -1462,8 +1462,8 @@ Now, we see how to implement Nest serialization:
   ```
 ### Expose option
 
-- `@SerializeOptions()` 
-  By default, all properties of our entities are exposed. We can change this strategy by providing additional options to the **class-transformer**. 
+- `@SerializeOptions()`
+  By default, all properties of our entities are exposed. We can change this strategy by providing additional options to the **class-transformer**.
   ```ts
   @Controller('auth')
   @SerializeOptions({
@@ -1475,24 +1475,24 @@ Now, we see how to implement Nest serialization:
   ```ts
   import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
   import { Expose } from 'class-transformer';
-  
+
   @Entity()
   class User {
     @PrimaryGeneratedColumn('uuid')
     public id?: string;
-  
+
     @Column({ unique: true })
     @Expose()
     public email: string;
-  
+
     @Column()
     @Expose()
     public name: string;
-  
+
     @Column()
     public password: string;
   }
-  
+
   export default User;
   ```
 
@@ -1522,7 +1522,7 @@ Now, we see how to implement Nest serialization:
   @Entity()
   class Post {
     // ...
-  
+
     @Column({ nullable: true })
     public category?: string;
   }
@@ -1537,7 +1537,7 @@ Now, we see how to implement Nest serialization:
   })
   public category?: string;
   ```
-  
+
 ### Issues with using @Res() decorator
 
 In the previous part, we have used the `@Res()` decorator to access the Express Response object.
@@ -1612,7 +1612,8 @@ About database relationship of Typeorm, check:
 Check the code at branch [7-testing](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/7-testing)
 
 - Unit testing
-- End to end testing
+- Integration testing
+
 **Missing docs for this part. Working in progress....**
 
 </details>
@@ -1620,13 +1621,14 @@ Check the code at branch [7-testing](https://gitlab.com/tienduy-nguyen/nestjs-fl
 ---
 
 
-## 8. 
+## 8.
 
 <details>
 <summary>Click to expand section</summary>
 
 Check the code at branch [8-](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/8-)
 
+- End to end testing
 
 **Missing docs for this part. Working in progress....**
 

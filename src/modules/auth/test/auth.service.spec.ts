@@ -2,9 +2,9 @@ import { BadRequestException, ConflictException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { IPayloadJwt } from './auth.interface';
-import { AuthRepository } from './auth.repository';
-import { AuthService } from './auth.service';
+import { IPayloadJwt } from '../auth.interface';
+import { AuthRepository } from '../auth.repository';
+import { AuthService } from '../auth.service';
 import * as bcrypt from 'bcrypt';
 
 describe('AuthService', () => {
@@ -12,7 +12,7 @@ describe('AuthService', () => {
   let authRepository: any;
   // let jwtService;
 
-  const mockUserRepository = () => ({
+  const mockAuthRepository = () => ({
     createUser: jest.fn(),
     getUserById: jest.fn(),
     getUserByEmail: jest.fn(),
@@ -34,7 +34,7 @@ describe('AuthService', () => {
         AuthService,
         {
           provide: AuthRepository,
-          useFactory: mockUserRepository,
+          useFactory: mockAuthRepository,
         },
       ],
     }).compile();
@@ -48,15 +48,6 @@ describe('AuthService', () => {
   });
 
   /* Test cookie methods */
-  describe('clearCookie', () => {
-    it('Should return a string', () => {
-      expect(typeof authService.clearCookie()).toEqual('string');
-    });
-    it('Should return string empty cookie', () => {
-      const result = `Authorization=;HttpOnly;Path=/;Max-Age=0`;
-      expect(authService.clearCookie()).toEqual(result);
-    });
-  });
 
   describe('getCookieWithToken', () => {
     it('Should return a string', () => {

@@ -62,9 +62,13 @@ export class PostService {
     }
   }
 
-  public async deletePost(id: string): Promise<void> {
+  public async deletePost(id: string) {
     try {
       await this.postRepository.deletePost(id);
+      return {
+        status: 200,
+        message: 'Ok',
+      };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

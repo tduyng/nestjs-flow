@@ -1,7 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PostRepository } from './post.repository';
-import { PostService } from './post.service';
+import { PostRepository } from '../post.repository';
+import { PostService } from '../post.service';
 
 describe('PostService', () => {
   let postService: PostService;
@@ -42,11 +42,13 @@ describe('PostService', () => {
   });
 
   describe('getPostById', () => {
-    it('Should throw an error when user not found', () => {
+    it('Should throw an error when user not found', async () => {
       postRepository.getPostById.mockResolvedValue(null);
-      expect(postService.getPostById('some id')).rejects.toThrow(
-        NotFoundException,
-      );
+      try {
+        await postService.getPostById('some id');
+      } catch (error) {
+        expect(error).toBeInstanceOf(NotFoundException);
+      }
     });
 
     it('Should return an user', async () => {
@@ -76,9 +78,11 @@ describe('PostService', () => {
         title: 'some',
         content: 'some',
       };
-      expect(postService.updatePost(id, post)).rejects.toThrow(
-        NotFoundException,
-      );
+      try {
+        await postService.updatePost(id, post);
+      } catch (error) {
+        expect(error).toBeInstanceOf(NotFoundException);
+      }
     });
     it('Should update post', async () => {
       postRepository.updatePost.mockResolvedValue('some post');
