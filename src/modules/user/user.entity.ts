@@ -11,6 +11,7 @@ import { IsEmail, Min } from 'class-validator';
 import { Exclude, Expose } from 'class-transformer';
 import { Address } from '../address/address.entity';
 import { Post } from '@modules/post/post.entity';
+import PublicFile from '@modules/files/public-file.entity';
 
 @Entity()
 export class User {
@@ -59,6 +60,13 @@ export class User {
 
   @OneToMany(() => Post, (post: Post) => post.author)
   public posts?: Post[];
+
+  @JoinColumn()
+  @OneToOne(() => PublicFile, {
+    eager: true,
+    nullable: true,
+  })
+  public avatar?: PublicFile;
 
   @BeforeUpdate()
   updateTimestamp() {
