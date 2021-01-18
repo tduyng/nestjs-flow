@@ -65,7 +65,9 @@ This series demo is just for purpose learning or practice NestJS.
     - [Issues with using @Res() decorator](#issues-with-using-res-decorator)
   - [6. Database relationship](#6-database-relationship)
   - [7. Testing](#7-testing)
-  - [8.](#8)
+  - [8. End to end testing](#8-end-to-end-testing)
+  - [8. End to end testing](#8-end-to-end-testing-1)
+  - [9. Database production with Amazon S3](#9-database-production-with-amazon-s3)
   - [References](#references)
 
 
@@ -1621,14 +1623,45 @@ Check the code at branch [7-testing](https://gitlab.com/tienduy-nguyen/nestjs-fl
 ---
 
 
-## 8.
+## 8. End to end testing
 
 <details>
 <summary>Click to expand section</summary>
 
-Check the code at branch [8-](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/8-)
+Check the code at branch [8-e2e-testing](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/8-e2e-testing)
 
 - End to end testing
+
+**Missing docs for this part. Working in progress....**
+
+</details>
+
+---
+
+## 8. End to end testing
+
+<details>
+<summary>Click to expand section</summary>
+
+Check the code at branch [8-e2e-testing](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/8-e2e-testing)
+
+- End to end testing
+
+**Missing docs for this part. Working in progress....**
+
+</details>
+
+---
+
+## 9. Database production with Amazon S3
+
+
+<details>
+<summary>Click to expand section</summary>
+
+Check the code at branch [8-aws-s3](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/9-aws-s3)
+
+- Amazon S3
 
 **Missing docs for this part. Working in progress....**
 
