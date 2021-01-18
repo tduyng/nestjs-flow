@@ -37,10 +37,11 @@ describe('AppController (e2e)', () => {
           email: 'user1@gmail.com',
           password: '1234567',
         };
-        return await request(app.getHttpServer())
+        const data = await request(app.getHttpServer())
           .post('/auth/login')
           .send(user)
-          .expect(200);
+          .expect(201);
+        expect(data.body).toBeDefined();
       });
     });
   });
