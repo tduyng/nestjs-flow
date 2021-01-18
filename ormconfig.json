@@ -4,7 +4,7 @@
   "port": 5432,
   "username": "postgres",
   "password": "postgres",
-  "database": "test_db",
+  "database": "nest_db",
   "entities": ["src/modules/**/*.entity{.ts,.js}"],
   "migrations": ["src/common/migrations/*{.ts,.js}"]
 }
