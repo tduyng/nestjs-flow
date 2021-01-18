@@ -19,12 +19,12 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
-  public async getPost() {
+  public async getPosts() {
     return await this.postService.getPosts();
   }
 
   @Get('/:id')
-  public async getPostId(@Param('id') id: string) {
+  public async getPostById(@Param('id') id: string) {
     return await this.postService.getPostById(id);
   }
 

@@ -53,4 +53,9 @@ export class Post {
   updateTimestamp() {
     this.updatedAt = moment(new Date()).format('YYYY-MM-DD HH:ss');
   }
+
+  constructor(title: string, content: string) {
+    this.title = title;
+    this.content = content;
+  }
 }
