@@ -60,13 +60,19 @@ describe('AppController (e2e)', () => {
       return await request(app.getHttpServer())
         .post('/categories')
         .send(newCategory)
-        .expect(401);
+        .expect(401); //Unauthorize--> need login
 
       // expect(data.body).toEqual({
       //   ...newCategory,
       //   id: expect.any(String),
       //   slug: expect.any(String),
       // });
+
+      /**
+       * And more .............
+       * We can add a lot of tests here
+       * I will come back and add it later
+       */
     });
   });
 });
