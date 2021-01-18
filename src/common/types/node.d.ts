@@ -15,5 +15,9 @@ declare namespace NodeJS {
     readonly JWT_SECRET: string;
     readonly TWO_FACTOR_AUTHENTICATION_APP_NAME: string;
     readonly JWT_EXPIRATION_TIME: string;
+    readonly AWS_REGION: string;
+    readonly AWS_ACCESS_KEY_ID: string;
+    readonly AWS_SECRET_ACCESS_KEY: string;
+    readonly AWS_PUBLIC_BUCKET_NAME: string;
   }
 }

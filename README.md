@@ -72,8 +72,9 @@ This series demo is just for purpose learning or practice NestJS.
     - [Develop](#develop)
     - [Other modules](#other-modules)
   - [9.  Web service AWS S3](#9--web-service-aws-s3)
-    - [Introduction](#introduction-1)
-    - [Getting started](#getting-started)
+    - [Create IAM user](#create-iam-user)
+    - [Create AWS S3 bucket](#create-aws-s3-bucket)
+    - [Update variables enviroments](#update-variables-enviroments)
     - [Connect AWS through SDK](#connect-aws-through-sdk)
   - [References](#references)
 
@@ -1827,10 +1828,9 @@ In this part, there will have much code to do. I will come back to update them.
 
 Check the code at branch [9-aws-s3](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/9-aws-s3)
 
-### Introduction
 
 **Amazon S3** has a simple web services interface that you can use to store and retrieve any amount of data, at any time, from anywhere on the web. It gives any developer access to the same highly scalable, reliable, fast, inexpensive data storage infrastructure that Amazon uses to run its own global network of web sites. The service aims to maximize benefits of scale and to pass those benefits on to developers.
-
+### Create IAM user
 To use AWS service S3, make sure you have an [account AWS](https://aws.amazon.com/account/).
 
 Each service of AWS need an [Identity and Access Management (IAM)](https://console.aws.amazon.com/iam/home#/users)
@@ -1839,16 +1839,6 @@ After create an user IAM for S3 service, you will receive an **Access key ID** a
 
 We also need to choose one of [the available regions](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html). For example, my  regions is: **eu-west-3** for Europe France
 
-### Getting started
-Now start to setup connection for AWS in our API
-- `.env` file
-  ```env
-  # ...
-  AWS_REGION=eu-west-3
-  AWS_ACCESS_KEY_ID=*******
-  AWS_SECRET_ACCESS_KEY=*******
-  ```
-
 <div align="center">
 <img src="docs/images/9-iam.png" alt="Add user iam">
 <span> </span>
@@ -1856,11 +1846,72 @@ Now start to setup connection for AWS in our API
 
 </div>
 
+### Create AWS S3 bucket
+
+In Amazon S3 data is organized in buckets. We can have multiple buckets with different settings.
+
+Let’s open the [Amazon S3 panel](https://console.aws.amazon.com/s3/home?region=us-east-1) and create a bucket. Please note that the name of the bucket must be unique.
+
+<div align=center>
+<img src="docs/images/9-s3-bucket.png" alt="s3 bucket">
+</div>
+
+We can set up our bucket to contain public files. All files that we upload to this bucket will be publicly available. We might use it to manage files such as avatars.
+<div align=center>
+<img src="docs/images/9-s3-bucket-2.png" alt="s3 bucket">
+</div>
+
+### Update variables enviroments
+Now start to setup connection for AWS in our API
+- `.env` file
+  ```env
+  # ...
+  AWS_REGION=eu-west-3
+  AWS_ACCESS_KEY_ID=*******
+  AWS_SECRET_ACCESS_KEY=*******
+  AWS_PUBLIC_BUCKET_NAME=nestjs-flow-public-bucket
+  ```
+
+- Update types in `src/common/types/node.d.ts`
+  ```ts
+  // node.d.ts
+
+
+  ```
+
 ### Connect AWS through SDK
 - To connect with AWS service, we need to install [aws-sdk-js](https://github.com/aws/aws-sdk-js)
   ```bash
   $ yarn add aws-sdk
   $ yarn add -D @types/aws-sdk
+  ```
+- Update aws setup in `main.ts` file
+
+  ```ts
+  declare namespace NodeJS {
+    interface ProcessEnv {
+      readonly NODE_ENV: 'development' | 'production' | 'test';
+      readonly SERVER_PORT: string;
+      readonly TYPEORM_CONNECTION: string;
+      readonly TYPEORM_HOST: string;
+      readonly TYPEORM_USERNAME: string;
+      readonly TYPEORM_PASSWORD: string;
+      readonly TYPEORM_DATABASE: string;
+      readonly TYPEORM_PORT: string;
+      readonly TYPEORM_LOGGING: string;
+      readonly TYPEORM_ENTITIES: string;
+      readonly TYPEORM_MIGRATIONS: string;
+      readonly ROUTE_GLOBAL_PREFIX: string;
+      readonly JWT_SECRET: string;
+      readonly TWO_FACTOR_AUTHENTICATION_APP_NAME: string;
+      readonly JWT_EXPIRATION_TIME: string;
+      readonly AWS_REGION: string;
+      readonly AWS_ACCESS_KEY_ID: string;
+      readonly AWS_SECRET_ACCESS_KEY: string;
+      readonly AWS_PUBLIC_BUCKET_NAME: string;
+    }
+  }
+
   ```
 </details>
 
