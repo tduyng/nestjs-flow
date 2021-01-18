@@ -14,7 +14,7 @@ describe('CategoryController', () => {
   let categoryController: CategoryController;
   // let categoryService;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CategoryController],
       providers: [
