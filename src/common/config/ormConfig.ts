@@ -1,7 +1,7 @@
 import { join } from 'path';
 
 export function ormConfig(): any {
-  const envMode = process.env.NODE_ENV;
+  const envMode = process.env.NODE_ENV || 'development';
   switch (envMode) {
     case 'development':
       return configForDevelopment;
