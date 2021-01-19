@@ -18,7 +18,11 @@ export class UserService {
   ) {}
 
   public async getUsers(): Promise<User[]> {
-    return await this.userRepository.getUsers();
+    try {
+      return await this.userRepository.getUsers();
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
   public async getUserById(id: string): Promise<User> {
     try {
@@ -38,6 +42,7 @@ export class UserService {
       }
     }
   }
+
   public async getUserByEmail(email: string): Promise<User> {
     try {
       const user = await this.userRepository.getUserByEmail(email);
@@ -57,32 +62,60 @@ export class UserService {
     }
   }
 
-  async addAvatar(userId: string, imageBuffer: Buffer, filename: string) {
-    const user = await this.userRepository.getUserById(userId);
-    if (user.avatar) {
-      await this.userRepository.updateAvatar(user, {
-        avatar: null,
-      });
-      await this.filesService.deletePublicFile(user.avatar.id);
+  public async getUserByIdOrEmail(idOrEmail: string) {
+    try {
+      const user = await this.userRepository.getUserByIdOrEmail(idOrEmail);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      return user;
+    } catch (error) {
+      throw error;
     }
-    const avatar = await this.filesService.uploadPublicFile(
-      imageBuffer,
-      filename,
-    );
-    await this.userRepository.updateAvatar(user, {
-      avatar,
-    });
-    return avatar;
+  }
+
+  public async deleteUser(idOrEmail: string) {
+    try {
+      await this.deleteUser(idOrEmail);
+    } catch (error) {
+      throw new NotFoundException('User not found');
+    }
+  }
+
+  async addAvatar(userId: string, imageBuffer: Buffer, filename: string) {
+    try {
+      const user = await this.userRepository.getUserById(userId);
+      if (user.avatar) {
+        await this.userRepository.updateAvatar(user, {
+          avatar: null,
+        });
+        await this.filesService.deletePublicFile(user.avatar.id);
+      }
+      const avatar = await this.filesService.uploadPublicFile(
+        imageBuffer,
+        filename,
+      );
+      await this.userRepository.updateAvatar(user, {
+        avatar,
+      });
+      return avatar;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async deleteAvatar(userId: string) {
-    const user = await this.userRepository.getUserById(userId);
-    const fileId = user.avatar?.id;
-    if (fileId) {
-      await this.userRepository.updateAvatar(user, {
-        avatar: null,
-      });
-      await this.filesService.deletePublicFile(fileId);
+    try {
+      const user = await this.userRepository.getUserById(userId);
+      const fileId = user.avatar?.id;
+      if (fileId) {
+        await this.userRepository.updateAvatar(user, {
+          avatar: null,
+        });
+        await this.filesService.deletePublicFile(fileId);
+      }
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }
