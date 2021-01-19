@@ -14,7 +14,7 @@ import { PublicFile } from '../public-file.entity';
 @Injectable()
 export class FilesService {
   constructor(
-    @InjectRepository(PublicFile)
+    @InjectRepository(PublicFileRepository)
     private readonly publicFileRepo: PublicFileRepository,
     private readonly s3Service: S3Service,
   ) {}

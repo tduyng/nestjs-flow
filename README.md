@@ -71,11 +71,14 @@ This series demo is just for purpose learning or practice NestJS.
     - [Test root folder](#test-root-folder)
     - [Develop](#develop)
     - [Other modules](#other-modules)
-  - [9.  Web service AWS S3](#9--web-service-aws-s3)
+  - [9.1  Web service AWS S3](#91--web-service-aws-s3)
     - [Create IAM user](#create-iam-user)
     - [Create AWS S3 bucket](#create-aws-s3-bucket)
     - [Update variables enviroments](#update-variables-enviroments)
-    - [Connect AWS through SDK](#connect-aws-through-sdk)
+    - [Create FileModule](#create-filemodule)
+  - [9.2  Private bucket AWS](#92--private-bucket-aws)
+    - [Seting up AWS S3](#seting-up-aws-s3)
+    - [Update FileModule for Private bucket](#update-filemodule-for-private-bucket)
   - [References](#references)
 
 
@@ -1820,7 +1823,7 @@ In this part, there will have much code to do. I will come back to update them.
 
 ---
 
-## 9.  Web service AWS S3
+## 9.1  Web service AWS S3
 
 
 <details>
@@ -1875,20 +1878,7 @@ Now start to setup connection for AWS in our API
 - Update types in `src/common/types/node.d.ts`
   ```ts
   // node.d.ts
-
-
-  ```
-
-### Connect AWS through SDK
-- To connect with AWS service, we need to install [aws-sdk-js](https://github.com/aws/aws-sdk-js)
-  ```bash
-  $ yarn add aws-sdk
-  $ yarn add -D @types/aws-sdk
-  ```
-- Update aws setup in `main.ts` file
-
-  ```ts
-  declare namespace NodeJS {
+    declare namespace NodeJS {
     interface ProcessEnv {
       readonly NODE_ENV: 'development' | 'production' | 'test';
       readonly SERVER_PORT: string;
@@ -1913,10 +1903,363 @@ Now start to setup connection for AWS in our API
   }
 
   ```
+
+- To connect with AWS service, we need to install [aws-sdk-js](https://github.com/aws/aws-sdk-js)
+  ```bash
+  $ yarn add aws-sdk
+  $ yarn add -D @types/aws-sdk
+  ```
+### Create FileModule
+We will use AWS S3 to upload avatar of user.
+
+- Create `src/modules/files/public-file.entity.ts`
+
+  ```ts
+  // public-file.entity.ts
+  import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+
+  @Entity()
+  export class PublicFile {
+    @PrimaryGeneratedColumn('uuid')
+    public id: string;
+
+    @Column({ unique: true })
+    public key: string;
+
+    @Column()
+    public url: string;
+  }
+  ```
+- Create `src/modules/files/services/s3.service.ts`
+  ```ts
+  // s3.service.ts
+  import { Injectable } from '@nestjs/common';
+  import { S3 } from 'aws-sdk';
+  import { v4 as uuid } from 'uuid';
+  import { DeletePublicFileDto } from '../dto';
+
+  @Injectable()
+  export class S3Service {
+    private s3: S3;
+    private bucketName: string;
+    constructor() {
+      this.s3 = new S3();
+      this.bucketName = process.env.AWS_PUBLIC_BUCKET_NAME;
+    }
+    public async uploadResult(
+      dataBuffer: Buffer,
+      filename: string,
+    ): Promise<S3.ManagedUpload.SendData> {
+      const uploadResult = await this.s3
+        .upload({
+          Bucket: this.bucketName,
+          Body: dataBuffer,
+          Key: `${uuid()}-${filename}`,
+        })
+        .promise();
+      return uploadResult;
+    }
+
+    public async deleteFile(fileDto: DeletePublicFileDto) {
+      await this.s3
+        .deleteObject({
+          Bucket: process.env.AWS_PUBLIC_BUCKET_NAME,
+          Key: fileDto.key,
+        })
+        .promise();
+      return { deleted: true };
+    }
+  }
+
+  ```
+  Why we need an file dependent for s3Service? --> We use the dependents service for easier in test.
+- Create `src/modules/files/services/files.service.ts`
+  ```ts
+  // files.service.ts
+  import {
+    HttpException,
+    HttpStatus,
+    Injectable,
+    NotFoundException,
+  } from '@nestjs/common';
+  import { InjectRepository } from '@nestjs/typeorm';
+  import { PublicFileRepository } from '../public-file.repository';
+
+  import { CreatePublicFileDto, DeletePublicFileDto } from '../dto';
+  import { S3Service } from './s3.service';
+  import { PublicFile } from '../public-file.entity';
+
+  @Injectable()
+  export class FilesService {
+    constructor(
+      @InjectRepository(PublicFileRepository)
+      private readonly publicFileRepo: PublicFileRepository,
+      private readonly s3Service: S3Service,
+    ) {}
+
+    public async getFileById(id: string) {
+      try {
+        const file = this.publicFileRepo.getFileById(id);
+        if (!file) {
+          throw new NotFoundException('File not found');
+        }
+        return file;
+      } catch (error) {
+        if (error.status === HttpStatus.NOT_FOUND) {
+          throw error;
+        }
+        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+      }
+    }
+
+    public async uploadPublicFile(dataBuffer: Buffer, filename: string) {
+      try {
+        const uploadResult = await this.s3Service.uploadResult(
+          dataBuffer,
+          filename,
+        );
+        const fileDto: CreatePublicFileDto = {
+          key: uploadResult.Key,
+          url: uploadResult.Location,
+        };
+        const newFile = await this.publicFileRepo.createPublicFile(fileDto);
+        return newFile;
+      } catch (error) {
+        throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+
+    public async deletePublicFile(fileId: string) {
+      try {
+        const file = await this.publicFileRepo.getFileById(fileId);
+        if (!file) {
+          throw new NotFoundException('File not found');
+        }
+        const fileDto: DeletePublicFileDto = {
+          key: file.key,
+        };
+        await this.s3Service.deleteFile(fileDto);
+
+        return await this.publicFileRepo.deleteFile(fileId);
+      } catch (error) {
+        if (error.status === HttpStatus.NOT_FOUND) {
+          throw error;
+        } else {
+          throw new HttpException(
+            error.message,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          );
+        }
+      }
+    }
+  }
+
+  ```
+And we package all these file to **FileModule**
+
+- Using **PublicFile Entity** and **FileService** in UserModule to create **user avatar**.
+
+  User Entity:
+  ```ts
+  // user.entity.ts
+  // ....
+  @JoinColumn()
+  @OneToOne(() => PublicFile, {
+    eager: true,
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
+  public avatar: PublicFile;
+
+  @BeforeUpdate()
+  updateTimestamp() {
+    this.updatedAt = new Date();
+  }
+  // ...
+  ```
+
+- Create methods upload and delete avatar
+
+  In `user.service.ts`: create method: **addAvatar** & **deleteAvatar**
+
+  ```ts
+  // user.service.ts
+
+   public async addAvatar(
+      userId: string,
+      imageBuffer: Buffer,
+      filename: string,
+    ) {
+      try {
+        const user = await this.userRepository.getUserById(userId);
+        if (user.avatar) {
+          await this.userRepository.updateAvatar(user, {
+            avatar: null,
+          });
+          await this.filesService.deletePublicFile(user.avatar.id);
+        }
+        const avatar = await this.filesService.uploadPublicFile(
+          imageBuffer,
+          filename,
+        );
+        await this.userRepository.updateAvatar(user, { avatar: avatar });
+        return avatar;
+      } catch (error) {
+        throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+
+    public async deleteAvatar(userId: string) {
+      try {
+        const user = await this.userRepository.getUserById(userId);
+        const fileId = user.avatar?.id;
+        if (fileId) {
+          await this.userRepository.updateAvatar(user, {
+            avatar: null,
+          });
+          await this.filesService.deletePublicFile(fileId);
+        }
+      } catch (error) {
+        throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  ```
+
+  Then create 2 routes for 2 this methods in **UserController**
+
+  ```ts
+  // user.controller.ts
+  @Post('avatar')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('file'))
+  public async addAvatar(@Req() req: IRequestWithUser, @UploadedFile() file) {
+    const { user } = req;
+    return await this.userService.addAvatar(
+      user.id,
+      file.buffer,
+      file.originalname,
+    );
+  }
+
+  @Delete('avatar')
+  @UseGuards(JwtAuthGuard)
+  public async deleteAvatar(@Req() req: IRequestWithUser) {
+    return await this.userService.deleteAvatar(req.user.id);
+  }
+  ```
+When all things done, you can start to test upload image to AWS through your API with Postman
+
+<div align="center">
+<img src="docs/images/9-s3-test-upload-image.png" alt="upload image">
+</div>
+
+That's is all the setup to use Public bucket service of AWS.
+
+
 </details>
 
 ---
 
+## 9.2  Private bucket AWS
+
+
+<details>
+<summary>Click to expand section</summary>
+
+Check the code at branch [9-aws-s3](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/9-aws-s3)
+
+There is quite a bit more to Amazon S3 than storing public files. In this article, we look into how we can manage private files. To do so, we learn how to set up a proper private Amazon S3 bucket and how to upload and access files. We use streams and generate presigned URLs with an expiration time.
+
+### Seting up AWS S3
+
+We will create new bucket as we did in the previous part. But this time, we will make private bucket. That's means we will block all public access for bucket (feature of AWS S3)
+
+The first thing to do is to create a new bucket.
+
+<div align="center">
+<img src="docs/images/9-s3-private-bucket.png" alt="private-bucket">
+</div>
+
+
+This time, we intend to restrict access to the files we upload. Every time we want our users to be able to access a file, they will need to do it through our API.
+
+<div align="center">
+<img src="docs/images/9-s3-private-bucket-2.png" alt="private-bucket">
+</div>
+
+The IAM user that we’ve created in the previous part of this series has access to all our buckets. Therefore, all we need to do to start using it is to add the name of the bucket to our environment variables.
+
+- Update `.env` file
+  ```env
+  # ...
+  AWS_PRIVATE_BUCKET_NAME=nestjs-series-private-bucket
+  ```
+- Update `node.d.ts`
+  ```ts
+  // node.d.ts
+  declare namespace NodeJS {
+    interface ProcessEnv {
+     // ...
+      readonly AWS_PRIVATE_BUCKET_NAME: string;
+    }
+  }
+  ```
+
+### Update FileModule for Private bucket
+
+- Create privateFiles entity: `src/modules/files/private-file.entity.ts`
+  ```ts
+  // private-file.entity.ts
+
+  import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+  import User from '../users/user.entity';
+
+  @Entity()
+  class PrivateFile {
+    @PrimaryGeneratedColumn()
+    public id: number;
+
+    @Column()
+    public key: string;
+
+    @ManyToOne(() => User, (owner: User) => owner.files)
+    public owner: User;
+  }
+
+  export default PrivateFile;
+  ```
+- Using **PrivateFile** in **UserEntity**
+  ```ts
+  // user.entity.ts
+
+  import { Entity, OneToMany } from 'typeorm';
+  import PrivateFile from '../privateFIles/privateFile.entity';
+
+  @Entity()
+  class User {
+    // ...
+
+    @OneToMany(
+      () => PrivateFile,
+      (file: PrivateFile) => file.owner
+    )
+    public files: PrivateFile[];
+  }
+
+  export default User;
+  ```
+- Create **PrivateFileSevice**: `src/modules/files/services/private-files.service.ts`
+  ```ts
+
+  ```
+- Update **FilesModules**
+- Update **UserService**
+- Update **UserController**
+- Test with Postman
+
+</details>
+
+---
 
 ## References
 
