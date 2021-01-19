@@ -43,6 +43,22 @@ export class AddressService {
     }
   }
 
+  public async createAddressAndSave(addressDto: CreateAddressDto) {
+    try {
+      return await this.addressRepo.createAddressAndSave(addressDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  public async createAddressWithoutSave(addressDto: CreateAddressDto) {
+    try {
+      return await this.addressRepo.createAddressWithoutSave(addressDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   public async updateAddress(id: string, addressDto: UpdateAddressDto) {
     try {
       const address = await this.getAddressById(id);
@@ -56,6 +72,16 @@ export class AddressService {
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       }
+    }
+  }
+  public async updateAddressDirect(
+    address: Address,
+    addressDto: UpdateAddressDto,
+  ) {
+    try {
+      return await this.addressRepo.updateAddress(address, addressDto);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 

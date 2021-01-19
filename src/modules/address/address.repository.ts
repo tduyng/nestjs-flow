@@ -8,10 +8,20 @@ export class AddressRepository extends Repository<Address> {
     return await this.findOne({ where: { id: id } });
   }
 
+  public async createAddressAndSave(
+    addressDto: CreateAddressDto,
+  ): Promise<Address> {
+    const address = this.create(addressDto);
+    await this.save(address);
+    return address;
+  }
   public async createAddress(addressDto: CreateAddressDto): Promise<Address> {
     const address = this.create(addressDto);
     await this.save(address);
     return address;
+  }
+  public async createAddressWithoutSave(addressDto: CreateAddressDto) {
+    return await this.create(addressDto);
   }
   public async updateAddress(
     address: Address,
