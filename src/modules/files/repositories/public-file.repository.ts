@@ -1,7 +1,8 @@
-import { Repository } from 'typeorm';
-import { CreatePublicFileDto } from './dto';
-import PublicFile from './public-file.entity';
+import { EntityRepository, Repository } from 'typeorm';
+import { CreatePublicFileDto } from '../dto';
+import PublicFile from '../public-file.entity';
 
+@EntityRepository(PublicFile)
 export class PublicFileRepository extends Repository<PublicFile> {
   public async createPublicFile(fileDto: CreatePublicFileDto) {
     const newFile = this.create(fileDto);
@@ -14,5 +15,8 @@ export class PublicFileRepository extends Repository<PublicFile> {
 
   public async deleteFile(id: string) {
     await this.delete(id);
+    return {
+      deleted: true,
+    };
   }
 }
