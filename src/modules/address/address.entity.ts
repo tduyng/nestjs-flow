@@ -18,6 +18,9 @@ export class Address {
   @Column()
   public country: string;
 
+  @Column({ nullable: true })
+  public complement?: string;
+
   @OneToOne(() => User, (user: User) => user.address)
   public user: User;
 }

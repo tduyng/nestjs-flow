@@ -24,6 +24,7 @@ import { FilesModule } from '@modules/files/files.module';
     AuthModule,
     CategoryModule,
     FilesModule,
+    AddressModule,
   ],
   controllers: [AppController],
   providers: [AppService],
