@@ -1,4 +1,3 @@
-import { string1To255 } from 'aws-sdk/clients/customerprofiles';
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../user/user.entity';
 
