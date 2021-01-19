@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { CreatePublicFileDto } from '../dto';
-import { PublicFile } from '../public-file.entity';
+import { CreatePublicFileDto } from './dto';
+import { PublicFile } from './public-file.entity';
 
 @EntityRepository(PublicFile)
 export class PublicFileRepository extends Repository<PublicFile> {

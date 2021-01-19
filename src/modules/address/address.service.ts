@@ -12,7 +12,7 @@ import { CreateAddressDto, UpdateAddressDto } from './dto';
 @Injectable()
 export class AddressService {
   constructor(
-    @InjectRepository(Address)
+    @InjectRepository(AddressRepository)
     private readonly addressRepo: AddressRepository,
   ) {}
 

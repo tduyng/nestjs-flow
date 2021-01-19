@@ -1,11 +1,10 @@
-import { AddressModule } from '@modules/address/address.module';
-import { FilesModule } from '@modules/files/files.module';
+import { AddressService } from '@modules/address/address.service';
+import { FilesService } from '@modules/files/services/files.service';
 import { NotFoundException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserRepository } from '../user.repository';
 import { UserService } from '../user.service';
-// import { FilesService } from '@modules/files/services/files.service';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -17,7 +16,13 @@ describe('UserService', () => {
     getUserByEmail: jest.fn(),
     getUserByIdOrEmail: jest.fn(),
     updateAvatar: jest.fn(),
-    deleteUser: jest.fn(),
+    deleteAvatar: jest.fn(),
+  });
+  const mockFilesService = () => ({
+    getUsers: jest.fn(),
+  });
+  const mockAddressService = () => ({
+    getUsers: jest.fn(),
   });
 
   beforeEach(async () => {
@@ -27,14 +32,20 @@ describe('UserService', () => {
           isGlobal: true,
           envFilePath: '.env',
         }),
-        FilesModule,
-        AddressModule,
       ],
       providers: [
         UserService,
         {
           provide: UserRepository,
           useFactory: mockUserRepository,
+        },
+        {
+          provide: FilesService,
+          useFactory: mockFilesService,
+        },
+        {
+          provide: AddressService,
+          useFactory: mockAddressService,
         },
       ],
     }).compile();

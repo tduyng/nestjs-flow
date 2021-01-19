@@ -19,7 +19,7 @@ export class PostRepository extends Repository<Post> {
   }
   public async updatePost(post: Post, postDto: UpdatePostDto): Promise<Post> {
     const updated = Object.assign(post, postDto);
-    updated.updatedAt = Date.now();
+    updated.updatedAt = new Date();
     await this.save(updated);
     return updated;
   }

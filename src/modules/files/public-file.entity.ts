@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from '@modules/user/user.entity';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class PublicFile {
@@ -10,4 +11,7 @@ export class PublicFile {
 
   @Column()
   public url: string;
+
+  @OneToOne(() => User)
+  public user: User;
 }

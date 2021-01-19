@@ -36,7 +36,6 @@
     "class-validator": "^0.13.1",
     "cookie-parser": "^1.4.5",
     "helmet": "^4.3.1",
-    "moment-timezone": "^0.5.32",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
