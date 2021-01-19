@@ -1,10 +1,11 @@
+import { string1To255 } from 'aws-sdk/clients/customerprofiles';
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../user/user.entity';
 
 @Entity()
 export class Address {
   @PrimaryGeneratedColumn('uuid')
-  public id: number;
+  public id: string;
 
   @Column()
   number: string;
