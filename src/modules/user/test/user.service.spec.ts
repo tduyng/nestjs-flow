@@ -1,3 +1,4 @@
+import { FilesService } from '@modules/files/services/files.service';
 import { NotFoundException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -12,6 +13,9 @@ describe('UserService', () => {
     getUsers: jest.fn(),
     getUserById: jest.fn(),
     getUserByEmail: jest.fn(),
+    getUserByIdOrEmail: jest.fn(),
+    updateAvatar: jest.fn(),
+    deleteUser: jest.fn(),
   });
 
   beforeEach(async () => {
@@ -24,6 +28,7 @@ describe('UserService', () => {
       ],
       providers: [
         UserService,
+        FilesService,
         {
           provide: UserRepository,
           useFactory: mockUserRepository,

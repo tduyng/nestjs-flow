@@ -1,4 +1,4 @@
-import { FilesService } from '@modules/files/files.service';
+import { FilesService } from '@modules/files/services/files.service';
 import {
   HttpException,
   HttpStatus,

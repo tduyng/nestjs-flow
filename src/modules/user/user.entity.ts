@@ -72,4 +72,18 @@ export class User {
   updateTimestamp() {
     this.updatedAt = new Date();
   }
+
+  constructor(
+    name: string,
+    email: string,
+    password: string,
+    phone?: string,
+    address?: Address,
+  ) {
+    this.name = name;
+    this.email = email;
+    this.password = password;
+    this.phone = phone;
+    this.address = address;
+  }
 }
