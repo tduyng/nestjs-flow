@@ -1,3 +1,5 @@
+import { AddressService } from '@modules/address/address.service';
+import { CreateAddressDto, UpdateAddressDto } from '@modules/address/dto';
 import { FilesService } from '@modules/files/services/files.service';
 import {
   HttpException,
@@ -15,6 +17,7 @@ export class UserService {
     @InjectRepository(UserRepository)
     private readonly userRepository: UserRepository,
     private readonly filesService: FilesService,
+    private readonly addressService: AddressService,
   ) {}
 
   public async getUsers(): Promise<User[]> {
@@ -76,13 +79,17 @@ export class UserService {
 
   public async deleteUser(idOrEmail: string) {
     try {
-      await this.deleteUser(idOrEmail);
+      return await this.deleteUser(idOrEmail);
     } catch (error) {
       throw new NotFoundException('User not found');
     }
   }
 
-  async addAvatar(userId: string, imageBuffer: Buffer, filename: string) {
+  public async addAvatar(
+    userId: string,
+    imageBuffer: Buffer,
+    filename: string,
+  ) {
     try {
       const user = await this.userRepository.getUserById(userId);
       if (user.avatar) {
@@ -95,16 +102,14 @@ export class UserService {
         imageBuffer,
         filename,
       );
-      await this.userRepository.updateAvatar(user, {
-        avatar,
-      });
+      await this.userRepository.updateAvatar(user, { avatar: avatar });
       return avatar;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async deleteAvatar(userId: string) {
+  public async deleteAvatar(userId: string) {
     try {
       const user = await this.userRepository.getUserById(userId);
       const fileId = user.avatar?.id;
@@ -115,6 +120,57 @@ export class UserService {
         await this.filesService.deletePublicFile(fileId);
       }
     } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  public async createUserAddress(userId: string, addressDto: CreateAddressDto) {
+    try {
+      const user = await this.userRepository.getUserById(userId);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      const address = await this.addressService.createAddressWithoutSave(
+        addressDto,
+      );
+      return await this.userRepository.createAddress(user, address);
+    } catch (error) {
+      if (error.status === HttpStatus.NOT_FOUND) {
+        throw error;
+      }
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  public async updateUserAddress(userId: string, addressDto: UpdateAddressDto) {
+    try {
+      const user = await this.userRepository.getUserById(userId);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      const address = user.address;
+      await this.addressService.updateAddressDirect(address, addressDto);
+      return user;
+    } catch (error) {
+      if (error.status === HttpStatus.NOT_FOUND) {
+        throw error;
+      }
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  public async deleteUserAddress(userId: string) {
+    try {
+      const user = await this.userRepository.getUserById(userId);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      user.address = null;
+      return await this.userRepository.deleteAddress(user);
+    } catch (error) {
+      if (error.status === HttpStatus.NOT_FOUND) {
+        throw error;
+      }
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }

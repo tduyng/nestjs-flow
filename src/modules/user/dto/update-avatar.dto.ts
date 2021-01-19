@@ -1,5 +1,5 @@
-import { IsString } from 'class-validator';
+import PublicFile from '@modules/files/public-file.entity';
+
 export class UpdateAvatarDto {
-  @IsString()
-  avatar: any;
+  avatar: PublicFile | null;
 }

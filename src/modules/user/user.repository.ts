@@ -1,3 +1,4 @@
+import { Address } from '@modules/address/address.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { UpdateAvatarDto } from './dto';
 import { User } from './user.entity';
@@ -20,11 +21,28 @@ export class UserRepository extends Repository<User> {
     }
     return user;
   }
-  public async updateAvatar(user: User, userAvatarDto: UpdateAvatarDto) {
-    return await this.update(user, userAvatarDto);
+  public async updateAvatar(user: User, file: UpdateAvatarDto) {
+    user.avatar = file.avatar;
+    const updated = await this.save(user);
+    return updated;
   }
   public async deleteUser(idOrEmail: string) {
     const user = await this.getUserByEmail(idOrEmail);
     await this.delete(user);
+    return { deleted: true };
+  }
+
+  public async createAddress(user: User, newAddress: Address) {
+    user.address = newAddress;
+    return await this.save(user);
+  }
+  public async updateAddress(user: User, updateAddress: Address) {
+    user.address = updateAddress;
+    return await this.save(user);
+  }
+  public async deleteAddress(user: User) {
+    user.address = null;
+    await this.save(user);
+    return { deleted: true };
   }
 }

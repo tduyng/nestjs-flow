@@ -54,6 +54,7 @@ export class User {
   @OneToOne(() => Address, (address: Address) => address.user, {
     cascade: true,
     eager: true,
+    onDelete: 'CASCADE',
   })
   @JoinColumn()
   public address?: Address;
@@ -65,8 +66,10 @@ export class User {
   @OneToOne(() => PublicFile, {
     eager: true,
     nullable: true,
+    onDelete: 'CASCADE',
   })
   public avatar?: PublicFile;
+  user: import('cluster').Address;
 
   @BeforeUpdate()
   updateTimestamp() {
