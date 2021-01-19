@@ -6,6 +6,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Put,
   Req,
@@ -35,6 +36,17 @@ export class UserController {
       file.buffer,
       file.originalname,
     );
+  }
+
+  /* Test connection between user & publicfiles */
+  @Post('publicfiles/:fileId')
+  @UseGuards(JwtAuthGuard)
+  public async testUpdateUserAvatar(
+    @Req() req: IRequestWithUser,
+    @Param('fileId') fileId: string,
+  ) {
+    const { user } = req;
+    return await this.userService.testUpdateUserAvatar(user, fileId);
   }
 
   @Delete('avatar')

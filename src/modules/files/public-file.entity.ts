@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-class PublicFile {
+export class PublicFile {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
@@ -11,5 +11,3 @@ class PublicFile {
   @Column()
   public url: string;
 }
-
-export default PublicFile;

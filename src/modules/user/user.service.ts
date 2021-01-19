@@ -109,6 +109,14 @@ export class UserService {
     }
   }
 
+  public async testUpdateUserAvatar(user: User, fileId: string) {
+    const avatar = await this.filesService.getFileById(fileId);
+    const updatedUser = await this.userRepository.updateAvatar(user, {
+      avatar: avatar,
+    });
+    return updatedUser;
+  }
+
   public async deleteAvatar(userId: string) {
     try {
       const user = await this.userRepository.getUserById(userId);

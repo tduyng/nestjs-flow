@@ -22,9 +22,11 @@ export class UserRepository extends Repository<User> {
     return user;
   }
   public async updateAvatar(user: User, file: UpdateAvatarDto) {
-    user.avatar = file.avatar;
-    const updated = await this.save(user);
-    return updated;
+    const updatedUser = await this.save({
+      ...user,
+      avatar: file.avatar,
+    });
+    return updatedUser;
   }
   public async deleteUser(idOrEmail: string) {
     const user = await this.getUserByEmail(idOrEmail);

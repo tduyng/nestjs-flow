@@ -18,6 +18,21 @@ export class FilesService {
     private readonly s3Service: S3Service,
   ) {}
 
+  public async getFileById(id: string) {
+    try {
+      const file = this.publicFileRepo.getFileById(id);
+      if (!file) {
+        throw new NotFoundException('File not found');
+      }
+      return file;
+    } catch (error) {
+      if (error.status === HttpStatus.NOT_FOUND) {
+        throw error;
+      }
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
+  }
+
   public async uploadPublicFile(dataBuffer: Buffer, filename: string) {
     try {
       const uploadResult = await this.s3Service.uploadResult(

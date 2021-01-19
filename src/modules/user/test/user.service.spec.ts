@@ -1,3 +1,4 @@
+import { AddressModule } from '@modules/address/address.module';
 import { FilesModule } from '@modules/files/files.module';
 import { NotFoundException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -26,6 +27,8 @@ describe('UserService', () => {
           isGlobal: true,
           envFilePath: '.env',
         }),
+        FilesModule,
+        AddressModule,
       ],
       providers: [
         UserService,
