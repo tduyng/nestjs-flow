@@ -1,9 +1,10 @@
-import { FilesService } from '@modules/files/services/files.service';
+import { FilesModule } from '@modules/files/files.module';
 import { NotFoundException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserRepository } from '../user.repository';
 import { UserService } from '../user.service';
+// import { FilesService } from '@modules/files/services/files.service';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -28,7 +29,6 @@ describe('UserService', () => {
       ],
       providers: [
         UserService,
-        FilesService,
         {
           provide: UserRepository,
           useFactory: mockUserRepository,
