@@ -9,7 +9,6 @@ import { PublicFileRepository } from '../public-file.repository';
 
 import { CreatePublicFileDto, DeletePublicFileDto } from '../dto';
 import { S3Service } from './s3.service';
-import { PublicFile } from '../public-file.entity';
 
 @Injectable()
 export class FilesService {

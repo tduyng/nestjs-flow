@@ -160,7 +160,9 @@ export class UserService {
     const user = await this.getUserById(userId);
     try {
       const address = user.address;
-      await this.addressService.deleteAddress(address.id);
+      if (address) {
+        await this.addressService.deleteAddress(address?.id);
+      }
       user.address = null;
       return await this.userRepository.deleteAddress(user);
     } catch (error) {

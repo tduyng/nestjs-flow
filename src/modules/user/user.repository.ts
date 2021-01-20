@@ -21,17 +21,19 @@ export class UserRepository extends Repository<User> {
     }
     return user;
   }
+
+  public async deleteUser(idOrEmail: string) {
+    const user = await this.getUserByEmail(idOrEmail);
+    await this.delete(user);
+    return { deleted: true };
+  }
+
   public async updateAvatar(user: User, file: UpdateAvatarDto) {
     const updatedUser = await this.save({
       ...user,
       avatar: file.avatar,
     });
     return updatedUser;
-  }
-  public async deleteUser(idOrEmail: string) {
-    const user = await this.getUserByEmail(idOrEmail);
-    await this.delete(user);
-    return { deleted: true };
   }
 
   public async createAddress(user: User, newAddress: Address) {
