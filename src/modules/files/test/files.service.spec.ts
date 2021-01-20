@@ -1,7 +1,7 @@
 import { HttpException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { FilesService } from '../services/files.service';
+import { PublicFileService } from '../services/public-file.service';
 import { PublicFileRepository } from '../public-file.repository';
 import { S3Service } from '../services/s3.service';
 
@@ -14,8 +14,8 @@ const s3File = {
   url: 'any url',
 };
 
-describe('FilesService', () => {
-  let filesService: FilesService;
+describe('PublicFileService', () => {
+  let publicFileService: PublicFileService;
   let s3Service;
   let publicFileRepo;
 
@@ -34,7 +34,7 @@ describe('FilesService', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ConfigModule.forRoot()],
       providers: [
-        FilesService,
+        PublicFileService,
         {
           provide: PublicFileRepository,
           useFactory: mockPublicFileRepo,
@@ -46,13 +46,13 @@ describe('FilesService', () => {
         },
       ],
     }).compile();
-    filesService = module.get<FilesService>(FilesService);
+    publicFileService = module.get<PublicFileService>(PublicFileService);
     s3Service = module.get<S3Service>(S3Service);
     publicFileRepo = module.get<PublicFileRepository>(PublicFileRepository);
   });
 
   it('Should be defined', () => {
-    expect(filesService).toBeDefined();
+    expect(publicFileService).toBeDefined();
   });
 
   describe('uploadPublicFile', () => {
@@ -63,7 +63,7 @@ describe('FilesService', () => {
         const dataBuffer = {} as Buffer;
         const filename = 'any filename';
 
-        await filesService.uploadPublicFile(dataBuffer, filename);
+        await publicFileService.uploadPublicFile(dataBuffer, filename);
       } catch (error) {
         expect(error).toBeInstanceOf(HttpException);
       }
@@ -73,7 +73,10 @@ describe('FilesService', () => {
       s3Service.uploadResult.mockResolvedValue(s3File);
       const dataBuffet = {} as Buffer;
       const filename = 'any filename';
-      const result = await filesService.uploadPublicFile(dataBuffet, filename);
+      const result = await publicFileService.uploadPublicFile(
+        dataBuffet,
+        filename,
+      );
       expect(s3Service.uploadResult).toHaveBeenCalledWith(dataBuffet, filename);
       expect(result).toEqual(oneFile);
     });
@@ -84,7 +87,7 @@ describe('FilesService', () => {
       publicFileRepo.getFileById.mockReturnValue(oneFile);
       publicFileRepo.deleteFile.mockReturnValue({ deleted: true });
       s3Service.deleteFile.mockReturnValue({ deleted: true });
-      const result = await filesService.deletePublicFile('some file id');
+      const result = await publicFileService.deletePublicFile('some file id');
       expect(s3Service.deleteFile).toHaveBeenCalledWith({
         key: oneFile.key,
       });

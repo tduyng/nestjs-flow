@@ -1,6 +1,6 @@
 import { AddressService } from '@modules/address/address.service';
 import { CreateAddressDto, UpdateAddressDto } from '@modules/address/dto';
-import { FilesService } from '@modules/files/services/files.service';
+import { PublicFileService } from '@modules/files/services/public-file.service';
 import {
   HttpException,
   HttpStatus,
@@ -16,7 +16,7 @@ export class UserService {
   constructor(
     @InjectRepository(UserRepository)
     private readonly userRepository: UserRepository,
-    private readonly filesService: FilesService,
+    private readonly publicFileService: PublicFileService,
     private readonly addressService: AddressService,
   ) {}
 
@@ -96,9 +96,9 @@ export class UserService {
         await this.userRepository.updateAvatar(user, {
           avatar: null,
         });
-        await this.filesService.deletePublicFile(user.avatar.id);
+        await this.publicFileService.deletePublicFile(user.avatar.id);
       }
-      const avatar = await this.filesService.uploadPublicFile(
+      const avatar = await this.publicFileService.uploadPublicFile(
         imageBuffer,
         filename,
       );
@@ -110,7 +110,7 @@ export class UserService {
   }
 
   public async testUpdateUserAvatar(user: User, fileId: string) {
-    const avatar = await this.filesService.getFileById(fileId);
+    const avatar = await this.publicFileService.getFileById(fileId);
     const updatedUser = await this.userRepository.updateAvatar(user, {
       avatar: avatar,
     });
@@ -125,7 +125,7 @@ export class UserService {
         await this.userRepository.updateAvatar(user, {
           avatar: null,
         });
-        await this.filesService.deletePublicFile(fileId);
+        await this.publicFileService.deletePublicFile(fileId);
       }
       return { deleted: true };
     } catch (error) {

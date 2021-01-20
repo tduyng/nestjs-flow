@@ -1,6 +1,6 @@
 import { AddressService } from '@modules/address/address.service';
 import { PublicFile } from '@modules/files/public-file.entity';
-import { FilesService } from '@modules/files/services/files.service';
+import { PublicFileService } from '@modules/files/services/public-file.service';
 import { NotFoundException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -46,7 +46,7 @@ const oneAddress = {
 describe('UserService', () => {
   let userService: UserService;
   let userRepository;
-  let filesService;
+  let publicFileService;
   let addressService;
 
   const mockUserRepository = () => ({
@@ -89,7 +89,7 @@ describe('UserService', () => {
           useFactory: mockUserRepository,
         },
         {
-          provide: FilesService,
+          provide: PublicFileService,
           useFactory: mockFilesService,
         },
         {
@@ -101,7 +101,7 @@ describe('UserService', () => {
 
     userService = module.get<UserService>(UserService);
     userRepository = module.get<UserRepository>(UserRepository);
-    filesService = module.get<FilesService>(FilesService);
+    publicFileService = module.get<PublicFileService>(PublicFileService);
     addressService = module.get<AddressService>(AddressService);
   });
 
@@ -169,7 +169,7 @@ describe('UserService', () => {
 
     it('Should add avatar successfully', async () => {
       userRepository.getUserById.mockReturnValue(oneUser);
-      filesService.uploadPublicFile.mockReturnValue(oneAvatar);
+      publicFileService.uploadPublicFile.mockReturnValue(oneAvatar);
       userRepository.updateAvatar.mockReturnValue(Promise.resolve());
       const result = await userService.addAvatar(
         'some id',
@@ -184,7 +184,7 @@ describe('UserService', () => {
     it('Should deleteAvatar successfully', async () => {
       userRepository.getUserById.mockReturnValue(oneUserWithAvatar);
       userRepository.updateAvatar.mockReturnValue(Promise.resolve());
-      filesService.deletePublicFile.mockReturnValue({ deleted: true });
+      publicFileService.deletePublicFile.mockReturnValue({ deleted: true });
       const result = await userService.deleteAvatar('some id');
       expect(result).toEqual({ deleted: true });
     });

@@ -11,7 +11,7 @@ import { CreatePublicFileDto, DeletePublicFileDto } from '../dto';
 import { S3Service } from './s3.service';
 
 @Injectable()
-export class FilesService {
+export class PublicFileService {
   constructor(
     @InjectRepository(PublicFileRepository)
     private readonly publicFileRepo: PublicFileRepository,
