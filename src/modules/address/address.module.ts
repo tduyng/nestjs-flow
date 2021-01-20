@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Address } from './address.entity';
+import { AddressRepository } from './address.repository';
+import { AddressService } from './address.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Address])],
+  imports: [TypeOrmModule.forFeature([AddressRepository])],
+  providers: [AddressService],
+  exports: [AddressService],
 })
 export class AddressModule {}

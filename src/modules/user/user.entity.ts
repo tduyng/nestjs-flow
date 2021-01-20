@@ -11,6 +11,7 @@ import { IsEmail, Min } from 'class-validator';
 import { Exclude, Expose } from 'class-transformer';
 import { Address } from '../address/address.entity';
 import { Post } from '@modules/post/post.entity';
+import { PublicFile } from '@modules/files/public-file.entity';
 
 @Entity()
 export class User {
@@ -53,15 +54,39 @@ export class User {
   @OneToOne(() => Address, (address: Address) => address.user, {
     cascade: true,
     eager: true,
+    onDelete: 'CASCADE',
+    nullable: true,
   })
   @JoinColumn()
-  public address?: Address;
+  public address: Address;
 
   @OneToMany(() => Post, (post: Post) => post.author)
-  public posts?: Post[];
+  public posts: Post[];
+
+  @JoinColumn()
+  @OneToOne(() => PublicFile, {
+    eager: true,
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
+  public avatar: PublicFile;
 
   @BeforeUpdate()
   updateTimestamp() {
     this.updatedAt = new Date();
+  }
+
+  constructor(
+    name: string,
+    email: string,
+    password: string,
+    phone?: string,
+    address?: Address,
+  ) {
+    this.name = name;
+    this.email = email;
+    this.password = password;
+    this.phone = phone;
+    this.address = address;
   }
 }

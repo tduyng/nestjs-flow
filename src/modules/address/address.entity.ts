@@ -4,7 +4,7 @@ import { User } from '../user/user.entity';
 @Entity()
 export class Address {
   @PrimaryGeneratedColumn('uuid')
-  public id: number;
+  public id: string;
 
   @Column()
   number: string;
@@ -17,6 +17,9 @@ export class Address {
 
   @Column()
   public country: string;
+
+  @Column({ nullable: true })
+  public complement?: string;
 
   @OneToOne(() => User, (user: User) => user.address)
   public user: User;

@@ -9,6 +9,7 @@ import { UserModule } from '@modules/user/user.module';
 import { AuthModule } from '@modules/auth/auth.module';
 import { CategoryModule } from '@modules/category/category.module';
 import { AddressModule } from '@modules/address/address.module';
+import { FilesModule } from '@modules/files/files.module';
 
 @Module({
   imports: [
@@ -22,6 +23,8 @@ import { AddressModule } from '@modules/address/address.module';
     AddressModule,
     AuthModule,
     CategoryModule,
+    FilesModule,
+    AddressModule,
   ],
   controllers: [AppController],
   providers: [AppService],

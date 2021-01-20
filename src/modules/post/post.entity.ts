@@ -7,10 +7,10 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import moment from 'moment-timezone';
-import { IsDate, Min } from 'class-validator';
+import { Min } from 'class-validator';
 import { User } from '@modules/user/user.entity';
 import { Category } from '@modules/category/category.entity';
+import { Expose } from 'class-transformer';
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn('uuid')
@@ -25,19 +25,19 @@ export class Post {
   public content: string;
 
   @Column({
-    type: Date,
-    default: moment(new Date()).format('YYYY-MM-DD HH:ss'),
-  })
-  @IsDate()
-  public createdAt;
-
-  @Column({
-    type: Date,
-    default: moment(new Date()).format('YYYY-MM-DD HH:ss'),
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
     nullable: true,
   })
-  @IsDate()
-  public updatedAt;
+  @Expose()
+  public createdAt?: Date;
+
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    nullable: true,
+  })
+  public updatedAt?: Date;
 
   /* Relationship */
   @ManyToOne(() => User, (author: User) => author.posts)
@@ -51,7 +51,7 @@ export class Post {
 
   @BeforeUpdate()
   updateTimestamp() {
-    this.updatedAt = moment(new Date()).format('YYYY-MM-DD HH:ss');
+    this.updatedAt = new Date();
   }
 
   constructor(title: string, content: string) {
