@@ -8,14 +8,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PublicFileRepository } from '../repositories/public-file.repository';
 
 import { CreatePublicFileDto, DeletePublicFileDto } from '../dto';
-import { S3Service } from './s3.service';
+import { S3PublicFileService } from './s3-public-file.service';
 
 @Injectable()
 export class PublicFileService {
   constructor(
     @InjectRepository(PublicFileRepository)
     private readonly publicFileRepo: PublicFileRepository,
-    private readonly s3Service: S3Service,
+    private readonly s3PublicFileService: S3PublicFileService,
   ) {}
 
   public async getFileById(id: string) {
@@ -35,7 +35,7 @@ export class PublicFileService {
 
   public async uploadPublicFile(dataBuffer: Buffer, filename: string) {
     try {
-      const uploadResult = await this.s3Service.uploadResult(
+      const uploadResult = await this.s3PublicFileService.uploadResult(
         dataBuffer,
         filename,
       );
@@ -51,26 +51,19 @@ export class PublicFileService {
   }
 
   public async deletePublicFile(fileId: string) {
+    const file = await this.getFileById(fileId);
     try {
-      const file = await this.publicFileRepo.getFileById(fileId);
       if (!file) {
         throw new NotFoundException('File not found');
       }
       const fileDto: DeletePublicFileDto = {
         key: file.key,
       };
-      await this.s3Service.deleteFile(fileDto);
+      await this.s3PublicFileService.deleteFile(fileDto);
 
       return await this.publicFileRepo.deleteFile(fileId);
     } catch (error) {
-      if (error.status === HttpStatus.NOT_FOUND) {
-        throw error;
-      } else {
-        throw new HttpException(
-          error.message,
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }
