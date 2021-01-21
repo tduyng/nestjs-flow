@@ -178,7 +178,7 @@ export class UserService {
   }
 
   /* Private files */
-  public async getPrivateFromFile(userId: string, fileId: string) {
+  public async getPrivateFileFromAWS(userId: string, fileId: string) {
     try {
       const file = await this.privateFileService.getPrivateFileFromAWS(fileId);
       if (file.info.owner.id === userId) {

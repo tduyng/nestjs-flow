@@ -93,7 +93,10 @@ export class UserController {
     @Req() req: IRequestWithUser,
     @Param('fileId') fileId: string,
   ) {
-    const file = await this.userService.getPrivateFromFile(req.user.id, fileId);
+    const file = await this.userService.getPrivateFileFromAWS(
+      req.user.id,
+      fileId,
+    );
     file.stream.pipe(req.res);
   }
 
