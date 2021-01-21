@@ -2,7 +2,7 @@ import { HttpException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PublicFileService } from '../services/public-file.service';
-import { PublicFileRepository } from '../public-file.repository';
+import { PublicFileRepository } from '../repositories/public-file.repository';
 import { S3Service } from '../services/s3.service';
 
 const oneFile = {
