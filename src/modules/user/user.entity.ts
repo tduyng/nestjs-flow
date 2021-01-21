@@ -12,6 +12,7 @@ import { Exclude, Expose } from 'class-transformer';
 import { Address } from '../address/address.entity';
 import { Post } from '@modules/post/post.entity';
 import { PublicFile } from '@modules/files/public-file.entity';
+import { PrivateFile } from '@modules/files/private-file.entity';
 
 @Entity()
 export class User {
@@ -65,11 +66,20 @@ export class User {
 
   @JoinColumn()
   @OneToOne(() => PublicFile, {
+    cascade: true,
     eager: true,
-    nullable: true,
     onDelete: 'CASCADE',
+    nullable: true,
   })
-  public avatar: PublicFile;
+  public avatar?: PublicFile;
+
+  @OneToMany(() => PrivateFile, (file: PrivateFile) => file.owner, {
+    cascade: true,
+    eager: true,
+    onDelete: 'CASCADE',
+    nullable: true,
+  })
+  public files?: PrivateFile[];
 
   @BeforeUpdate()
   updateTimestamp() {

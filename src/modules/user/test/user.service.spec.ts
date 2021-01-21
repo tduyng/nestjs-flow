@@ -1,7 +1,7 @@
 import { AddressService } from '@modules/address/address.service';
 import { PublicFile } from '@modules/files/public-file.entity';
-import { FilesService } from '@modules/files/services/files.service';
-import { NotFoundException } from '@nestjs/common';
+import { PublicFileService } from '@modules/files/services/public-file.service';
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserRepository } from '../user.repository';
@@ -9,6 +9,9 @@ import { UserService } from '../user.service';
 import { User } from '../user.entity';
 import { CreateAddressDto } from '@modules/address/dto';
 import { Address } from '@modules/address/address.entity';
+import { PrivateFile } from '@modules/files/private-file.entity';
+import { PrivateFileService } from '@modules/files/services/private-file.service';
+import { UploadFileDto } from '@modules/files/dto';
 
 const oneUser = {
   id: 'some id',
@@ -46,12 +49,14 @@ const oneAddress = {
 describe('UserService', () => {
   let userService: UserService;
   let userRepository;
-  let filesService;
+  let publicFileService;
   let addressService;
+  let privateFileService;
 
   const mockUserRepository = () => ({
     getUsers: jest.fn(),
     getUserById: jest.fn(),
+    getUserWithFilesById: jest.fn(),
     getUserByEmail: jest.fn(),
     getUserByIdOrEmail: jest.fn(),
     deleteUser: jest.fn(),
@@ -59,8 +64,14 @@ describe('UserService', () => {
     createAddress: jest.fn(),
     updateAddress: jest.fn(),
     deleteAddress: jest.fn(),
+    getPrivateFromFile: jest.fn(),
+    getAllPrivatesFileFromAWS: jest.fn(),
+    addPrivateFile: jest.fn(),
+    addMultiplePrivateFile: jest.fn(),
+    deletePrivateFile: jest.fn(),
+    canRemoveFile: jest.fn(),
   });
-  const mockFilesService = () => ({
+  const mockPublicFileService = () => ({
     getUsers: jest.fn(),
     uploadPublicFile: jest.fn(),
     deletePublicFile: jest.fn(),
@@ -72,6 +83,15 @@ describe('UserService', () => {
     deleteAddress: jest.fn(),
     updateAddress: jest.fn(),
     updateAddressDirect: jest.fn(),
+  });
+
+  const mockPrivateFileService = () => ({
+    getPrivateFileFromAWS: jest.fn(),
+    getFileById: jest.fn(),
+    generatePresignedUrl: jest.fn(),
+    uploadPrivateFile: jest.fn(),
+    uploadMultiplePrivateFile: jest.fn(),
+    deletePrivateFile: jest.fn(),
   });
 
   beforeEach(async () => {
@@ -89,20 +109,25 @@ describe('UserService', () => {
           useFactory: mockUserRepository,
         },
         {
-          provide: FilesService,
-          useFactory: mockFilesService,
+          provide: PublicFileService,
+          useFactory: mockPublicFileService,
         },
         {
           provide: AddressService,
           useFactory: mockAddressService,
+        },
+        {
+          provide: PrivateFileService,
+          useFactory: mockPrivateFileService,
         },
       ],
     }).compile();
 
     userService = module.get<UserService>(UserService);
     userRepository = module.get<UserRepository>(UserRepository);
-    filesService = module.get<FilesService>(FilesService);
+    publicFileService = module.get<PublicFileService>(PublicFileService);
     addressService = module.get<AddressService>(AddressService);
+    privateFileService = module.get<PrivateFileService>(PrivateFileService);
   });
 
   it('Should be defined', () => {
@@ -157,6 +182,7 @@ describe('UserService', () => {
     });
   });
 
+  /* Testing with avatar */
   describe('addAvatar', () => {
     it('Should throw an error when user not found', async () => {
       userRepository.getUserById.mockReturnValue(null);
@@ -169,7 +195,7 @@ describe('UserService', () => {
 
     it('Should add avatar successfully', async () => {
       userRepository.getUserById.mockReturnValue(oneUser);
-      filesService.uploadPublicFile.mockReturnValue(oneAvatar);
+      publicFileService.uploadPublicFile.mockReturnValue(oneAvatar);
       userRepository.updateAvatar.mockReturnValue(Promise.resolve());
       const result = await userService.addAvatar(
         'some id',
@@ -184,11 +210,13 @@ describe('UserService', () => {
     it('Should deleteAvatar successfully', async () => {
       userRepository.getUserById.mockReturnValue(oneUserWithAvatar);
       userRepository.updateAvatar.mockReturnValue(Promise.resolve());
-      filesService.deletePublicFile.mockReturnValue({ deleted: true });
+      publicFileService.deletePublicFile.mockReturnValue({ deleted: true });
       const result = await userService.deleteAvatar('some id');
       expect(result).toEqual({ deleted: true });
     });
   });
+
+  /* Testing with address */
 
   describe('userAddress', () => {
     it('Should throw an error when user not found', async () => {
@@ -231,6 +259,107 @@ describe('UserService', () => {
         const result = await userService.deleteUserAddress('some userId');
         expect(result).toEqual({ deleted: true });
       });
+    });
+  });
+
+  /* Testing with private files */
+  describe('getPrivateFileFromAWS', () => {
+    it('Should throw an error unauthorized', async () => {
+      const file = {
+        stream: {} as any,
+        info: {
+          id: 'some fileId',
+          key: 'some key',
+          owner: {
+            id: 'some userId',
+          } as User,
+        } as PrivateFile,
+      };
+      privateFileService.getPrivateFileFromAWS.mockReturnValue(file);
+      try {
+        await userService.getPrivateFileFromAWS(
+          'some other userId',
+          'some fileId',
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(UnauthorizedException);
+      }
+    });
+
+    it('Should return a file from AWS', async () => {
+      const file = {
+        stream: {} as any,
+        info: {
+          id: 'some fileId',
+          key: 'some key',
+          owner: {
+            id: 'some userId',
+          } as User,
+        } as PrivateFile,
+      };
+      privateFileService.getPrivateFileFromAWS.mockReturnValue(file);
+      const result = await userService.getPrivateFileFromAWS(
+        'some userId',
+        'some fileId',
+      );
+      expect(result).toBeDefined();
+    });
+  });
+
+  describe('getAllPrivatesFileFromAWS', () => {
+    it('Should throw an error when user not found', async () => {
+      userRepository.getUserWithFilesById.mockReturnValue(null);
+      try {
+        await userService.getAllPrivatesFileFromAWS('some id');
+      } catch (error) {
+        expect(error).toBeInstanceOf(NotFoundException);
+      }
+    });
+
+    it('Should return array of files', async () => {
+      const user = {
+        id: 'some userId',
+        files: [{ id: 'some fileId' } as PrivateFile],
+      } as User;
+      userRepository.getUserWithFilesById.mockReturnValue(user);
+      const result = await userService.getAllPrivatesFileFromAWS('some userId');
+      expect(result).toBeInstanceOf(Array);
+    });
+  });
+
+  describe('addPrivateFile', () => {
+    it('Should add successfully a file', async () => {
+      const file = { id: 'some fileId' } as PrivateFile;
+      privateFileService.uploadPrivateFile.mockReturnValue(file);
+      const result = await userService.addPrivateFile(
+        'some userId',
+        {} as Buffer,
+        'some filename',
+      );
+      expect(result).toEqual(file);
+    });
+  });
+
+  describe('addMultiplePrivateFile', () => {
+    it('Should add successfully multiple files', async () => {
+      const files = [{ id: 'some fileId' }] as PrivateFile[];
+      privateFileService.uploadMultiplePrivateFile.mockReturnValue(files);
+      const result = await userService.addMultiplePrivateFile(
+        'some userId',
+        [] as UploadFileDto[],
+      );
+      expect(result).toEqual(files);
+    });
+  });
+
+  describe('deletePrivateFile', () => {
+    it('Should add successfully multiple files', async () => {
+      userRepository.canRemoveFile.mockReturnValue(true);
+      const result = await userService.deletePrivateFile(
+        'some userId',
+        'some fileId',
+      );
+      expect(result).toEqual({ deleted: true });
     });
   });
 });

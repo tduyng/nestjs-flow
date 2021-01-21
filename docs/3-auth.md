@@ -84,7 +84,7 @@ To use authentication, first of all, wee need to have User table.
   **Note**: `TypeOrmModule.forFeature([User])` allows to use UserRepository of TypeOrm in all User providers files.
 
   Don't forget import `UserModule` in `AppModule`
-  
+
 ### Auth
 
 The easiest way protect auth with Nest app is using passport & Json web token strategy.
@@ -100,7 +100,7 @@ Ok, that's is a little bit theory. Now, we will start to code to better understa
 
 #### Installation
 
-For this part, we need to install packages: 
+For this part, we need to install packages:
 - [bcrypt](https://github.com/kelektiv/node.bcrypt.js/): For hashing password
 - [passport-jwt](https://github.com/mikenicholson/passport-jwt): passport strategy with json web token
 - **@nestjs/jwt** & **passport-jwt** to use feature JWT of Nestjs
@@ -113,7 +113,7 @@ For this part, we need to install packages:
 #### Auth service
 
 - Update middleware : ` app.use(cookieParser());` in `main.ts` file.
-  
+
 - Create `auth.service.ts` file in `src/modules/auth`
   ```ts
   // auth.service.ts
@@ -282,7 +282,7 @@ For this part, we need to install packages:
       export class JwtAuthGuard extends AuthGuard('jwt') {}
 
       ```
-  
+
 #### Auth controller
 
 Ok, now we will update **auth guard in our routes**
@@ -389,7 +389,7 @@ Ok, now we will update **auth guard in our routes**
 
   ```
 - Import `AuthModule` in `AppModule` and run server to test
-  
+
   **Note**: To test cookie with postman: If the project works properly, when you logged successfully, a cookie will be created automatically.
 
   But if you want to use this cookie to test other protected routes, you need to copie that and add it to header with the key: "Cookie" --> value: value of cookie copied
@@ -397,5 +397,5 @@ Ok, now we will update **auth guard in our routes**
   See the photo to better understand.
 
   <div align="center">
-  <img src="docs/images/3-cookie.png" alt="Using cookie">
+  <img src="../docs/images/3-cookie.png" alt="Using cookie">
   </div>

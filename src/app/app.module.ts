@@ -10,6 +10,7 @@ import { AuthModule } from '@modules/auth/auth.module';
 import { CategoryModule } from '@modules/category/category.module';
 import { AddressModule } from '@modules/address/address.module';
 import { FilesModule } from '@modules/files/files.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -18,6 +19,9 @@ import { FilesModule } from '@modules/files/files.module';
       envFilePath: '.env',
     }),
     TypeOrmModule.forRoot(ormConfig()),
+    MulterModule.register({
+      dest: 'src/common/upload',
+    }),
     PostModule,
     UserModule,
     AddressModule,

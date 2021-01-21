@@ -16,9 +16,9 @@ After create an user IAM for S3 service, you will receive an **Access key ID** a
 We also need to choose one of [the available regions](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html). For example, my  regions is: **eu-west-3** for Europe France
 
 <div align="center">
-<img src="docs/images/9-iam.png" alt="Add user iam">
+<img src="../docs/images/9-iam.png" alt="Add user iam">
 <span> </span>
-<img src="docs/images/9-iam-2.png" alt="Add user iam">
+<img src="../docs/images/9-iam-2.png" alt="Add user iam">
 
 </div>
 
@@ -29,12 +29,12 @@ In Amazon S3 data is organized in buckets. We can have multiple buckets with dif
 Let’s open the [Amazon S3 panel](https://console.aws.amazon.com/s3/home?region=us-east-1) and create a bucket. Please note that the name of the bucket must be unique.
 
 <div align=center>
-<img src="docs/images/9-s3-bucket.png" alt="s3 bucket">
+<img src="../docs/images/9-s3-bucket.png" alt="s3 bucket">
 </div>
 
 We can set up our bucket to contain public files. All files that we upload to this bucket will be publicly available. We might use it to manage files such as avatars.
 <div align=center>
-<img src="docs/images/9-s3-bucket-2.png" alt="s3 bucket">
+<img src="../docs/images/9-s3-bucket-2.png" alt="s3 bucket">
 </div>
 
 ### Update variables environments
@@ -325,7 +325,7 @@ And we package all these file to **FileModule**
 When all things done, you can start to test upload image to AWS through your API with Postman
 
 <div align="center">
-<img src="docs/images/9-s3-test-upload-image.png" alt="upload image">
+<img src="../docs/images/9-s3-test-upload-image.png" alt="upload image">
 </div>
 
 That's is all the setup to use Public bucket service of AWS.
