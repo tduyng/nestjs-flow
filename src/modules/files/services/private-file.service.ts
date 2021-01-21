@@ -34,6 +34,30 @@ export class PrivateFileService {
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
   }
+
+  public async getPrivateFileFromAWS(fileId: string) {
+    const file = await this.getFileById(fileId);
+    try {
+      const stream = await this.s3PrivateFileService.createStreamFromFile(
+        file.key,
+      );
+      return {
+        stream,
+        info: file,
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  public async generatePresignedUrl(fileKey: string) {
+    try {
+      return await this.s3PrivateFileService.generatePresignedUrl(fileKey);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   public async uploadPrivateFile(
     ownerId: string,
     dataBuffer: Buffer,

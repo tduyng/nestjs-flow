@@ -5,7 +5,7 @@ import { PrivateFile } from '../private-file.entity';
 @EntityRepository(PrivateFile)
 export class PrivateFileRepository extends Repository<PrivateFile> {
   public async getFileById(id: string) {
-    return await this.findOne({ where: { id: id } });
+    return await this.findOne({ where: { id: id }, relations: ['owner'] });
   }
 
   public async createPrivateFile(privateFileDto: CreatePrivateFileDto) {

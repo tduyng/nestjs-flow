@@ -11,6 +11,23 @@ export class S3PrivateFileService {
     this.s3 = new S3();
     this.bucketName = process.env.AWS_PRIVATE_BUCKET_NAME;
   }
+  public async createStreamFromFile(fileKey: string) {
+    return await this.s3
+      .getObject({
+        Bucket: this.bucketName,
+        Key: fileKey,
+      })
+      .createReadStream();
+  }
+
+  public async generatePresignedUrl(fileKey: string) {
+    const url = await this.s3.getSignedUrlPromise('getObject', {
+      Bucket: this.bucketName,
+      Key: fileKey,
+    });
+    return url;
+  }
+
   public async uploadResult(
     dataBuffer: Buffer,
     filename: string,
