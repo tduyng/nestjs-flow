@@ -9,6 +9,7 @@ import { UserService } from '../user.service';
 import { User } from '../user.entity';
 import { CreateAddressDto } from '@modules/address/dto';
 import { Address } from '@modules/address/address.entity';
+import { PrivateFile } from '@modules/files/private-file.entity';
 
 const oneUser = {
   id: 'some id',
@@ -42,6 +43,14 @@ const oneAddress = {
   city: 'some city',
   country: 'some country',
 } as Address;
+
+const onePrivateFile = {
+  id: 'some id',
+  key: 'some key',
+  owner: {
+    id: 'some userId',
+  },
+} as PrivateFile;
 
 describe('UserService', () => {
   let userService: UserService;
@@ -157,6 +166,7 @@ describe('UserService', () => {
     });
   });
 
+  /* Testing with avatar */
   describe('addAvatar', () => {
     it('Should throw an error when user not found', async () => {
       userRepository.getUserById.mockReturnValue(null);
@@ -189,6 +199,8 @@ describe('UserService', () => {
       expect(result).toEqual({ deleted: true });
     });
   });
+
+  /* Testing with address */
 
   describe('userAddress', () => {
     it('Should throw an error when user not found', async () => {
@@ -233,4 +245,7 @@ describe('UserService', () => {
       });
     });
   });
+
+  /* Testing with private files */
+  // TO UPDATE
 });

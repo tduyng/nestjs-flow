@@ -8,6 +8,7 @@ import {
   HttpStatus,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
@@ -88,6 +89,7 @@ export class UserService {
     }
   }
 
+  /* Public files */
   public async addAvatar(
     userId: string,
     imageBuffer: Buffer,
@@ -112,14 +114,6 @@ export class UserService {
     }
   }
 
-  public async testUpdateUserAvatar(user: User, fileId: string) {
-    const avatar = await this.publicFileService.getFileById(fileId);
-    const updatedUser = await this.userRepository.updateAvatar(user, {
-      avatar: avatar,
-    });
-    return updatedUser;
-  }
-
   public async deleteAvatar(userId: string) {
     const user = await this.getUserById(userId);
     try {
@@ -135,6 +129,16 @@ export class UserService {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  public async testUpdateUserAvatar(user: User, fileId: string) {
+    const avatar = await this.publicFileService.getFileById(fileId);
+    const updatedUser = await this.userRepository.updateAvatar(user, {
+      avatar: avatar,
+    });
+    return updatedUser;
+  }
+
+  /* Address */
 
   public async createUserAddress(userId: string, addressDto: CreateAddressDto) {
     const user = await this.getUserById(userId);
@@ -169,6 +173,49 @@ export class UserService {
       user.address = null;
       return await this.userRepository.deleteAddress(user);
     } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  /* Private files */
+  public async getPrivateFromFile(userId: string, fileId: string) {
+    try {
+      const file = await this.privateFileService.getPrivateFileFromAWS(fileId);
+      if (file.info.owner.id === userId) {
+        return file;
+      }
+      throw new UnauthorizedException();
+    } catch (error) {
+      if (error.status) {
+        throw error;
+      }
+      throw new HttpException(error.message, HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  public async getAllPrivatesFileFromAWS(userId: string) {
+    try {
+      const userWithFiles = await this.userRepository.getUserWithFilesById(
+        userId,
+      );
+      if (!userWithFiles) {
+        throw new NotFoundException('User not found');
+      }
+      return Promise.all(
+        userWithFiles.files.map(async (file) => {
+          const url = await this.privateFileService.generatePresignedUrl(
+            file.key,
+          );
+          return {
+            ...file,
+            url,
+          };
+        }),
+      );
+    } catch (error) {
+      if (error.status) {
+        throw error;
+      }
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
@@ -209,6 +256,7 @@ export class UserService {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
   /* Test method without AWS */
 
   public async testAddFileWithoutAWS(

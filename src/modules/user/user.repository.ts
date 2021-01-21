@@ -12,6 +12,9 @@ export class UserRepository extends Repository<User> {
   public async getUserById(id: string): Promise<User> {
     return await this.findOne({ where: { id: id } });
   }
+  public async getUserWithFilesById(id: string): Promise<User> {
+    return await this.findOne({ where: { id: id }, relations: ['files'] });
+  }
   public async getUserByEmail(email: string): Promise<User> {
     return await this.findOne({ where: { email: email } });
   }

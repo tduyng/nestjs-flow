@@ -86,6 +86,23 @@ export class UserController {
     return await this.userService.deleteUserAddress(user.id);
   }
 
+  /* Private files */
+  @Get('files/:fileId')
+  @UseGuards(JwtAuthGuard)
+  public async getUserPrivateFileFromAWS(
+    @Req() req: IRequestWithUser,
+    @Param('fileId') fileId: string,
+  ) {
+    const file = await this.userService.getPrivateFromFile(req.user.id, fileId);
+    file.stream.pipe(req.res);
+  }
+
+  @Get('files')
+  @UseGuards(JwtAuthGuard)
+  public async getAllUserFilesFromAWS(@Req() req: IRequestWithUser) {
+    return await this.userService.getAllPrivatesFileFromAWS(req.user.id);
+  }
+
   @Post('files')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
