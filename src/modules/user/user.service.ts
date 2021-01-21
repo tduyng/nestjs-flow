@@ -1,5 +1,7 @@
 import { AddressService } from '@modules/address/address.service';
 import { CreateAddressDto, UpdateAddressDto } from '@modules/address/dto';
+import { UploadFileDto } from '@modules/files/dto';
+import { PrivateFileService } from '@modules/files/services/private-file.service';
 import { PublicFileService } from '@modules/files/services/public-file.service';
 import {
   HttpException,
@@ -18,6 +20,7 @@ export class UserService {
     private readonly userRepository: UserRepository,
     private readonly publicFileService: PublicFileService,
     private readonly addressService: AddressService,
+    private readonly privateFileService: PrivateFileService,
   ) {}
 
   public async getUsers(): Promise<User[]> {
@@ -165,6 +168,80 @@ export class UserService {
       }
       user.address = null;
       return await this.userRepository.deleteAddress(user);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  public async addPrivateFile(
+    userId: string,
+    dataBuffer: Buffer,
+    filename: string,
+  ) {
+    return await this.privateFileService.uploadPrivateFile(
+      userId,
+      dataBuffer,
+      filename,
+    );
+  }
+
+  public async addMultiplePrivateFile(
+    userId: string,
+    uploadFiles: UploadFileDto[],
+  ) {
+    return await this.privateFileService.uploadMultiplePrivateFile(
+      userId,
+      uploadFiles,
+    );
+  }
+  public async deletePrivateFile(userId: string, fileId: string) {
+    try {
+      const canRemoveFile = await this.userRepository.canRemoveFile(
+        userId,
+        fileId,
+      );
+      if (canRemoveFile) {
+        await this.privateFileService.deletePrivateFile(fileId);
+        return { deleted: true };
+      }
+      return { deleted: false };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  /* Test method without AWS */
+
+  public async testAddFileWithoutAWS(
+    userId: string,
+    dataBuffer: Buffer,
+    filename: string,
+  ) {
+    return await this.privateFileService.testUploadFileWithoutAWS(
+      userId,
+      dataBuffer,
+      filename,
+    );
+  }
+  public async testAddMultipleFilesWithoutAWS(
+    userId: string,
+    uploadFiles: UploadFileDto[],
+  ) {
+    return await this.privateFileService.testUploadMultipleFilesWithoutAWS(
+      userId,
+      uploadFiles,
+    );
+  }
+  public async testDeletePrivateFileWithoutAWS(userId: string, fileId: string) {
+    try {
+      const canRemoveFile = await this.userRepository.canRemoveFile(
+        userId,
+        fileId,
+      );
+      if (canRemoveFile) {
+        await this.privateFileService.testDeletePrivateFileWithoutAWS(fileId);
+        return { deleted: true };
+      }
+      return { deleted: false };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

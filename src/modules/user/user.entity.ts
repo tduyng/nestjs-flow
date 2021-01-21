@@ -66,14 +66,20 @@ export class User {
 
   @JoinColumn()
   @OneToOne(() => PublicFile, {
+    cascade: true,
     eager: true,
-    nullable: true,
     onDelete: 'CASCADE',
+    nullable: true,
   })
-  public avatar: PublicFile;
+  public avatar?: PublicFile;
 
-  @OneToMany(() => PrivateFile, (file: PrivateFile) => file.owner)
-  public files: PrivateFile[];
+  @OneToMany(() => PrivateFile, (file: PrivateFile) => file.owner, {
+    cascade: true,
+    eager: true,
+    onDelete: 'CASCADE',
+    nullable: true,
+  })
+  public files?: PrivateFile[];
 
   @BeforeUpdate()
   updateTimestamp() {
