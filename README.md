@@ -65,7 +65,6 @@ This series demo is just for purpose learning or practice NestJS.
     - [Issues with using @Res() decorator](#issues-with-using-res-decorator)
   - [6. Database relationship](#6-database-relationship)
   - [7. Testing](#7-testing)
-  - [8. End to end testing](#8-end-to-end-testing)
   - [8. End to end testing (e2e)](#8-end-to-end-testing-e2e)
     - [Introduction](#introduction)
     - [Test root folder](#test-root-folder)
@@ -77,7 +76,7 @@ This series demo is just for purpose learning or practice NestJS.
     - [Update variables enviroments](#update-variables-enviroments)
     - [Create FileModule](#create-filemodule)
   - [9.2  Private bucket AWS](#92--private-bucket-aws)
-    - [Seting up AWS S3](#seting-up-aws-s3)
+    - [Setting up AWS S3](#setting-up-aws-s3)
     - [Update FileModule for Private bucket](#update-filemodule-for-private-bucket)
   - [References](#references)
 
@@ -1640,21 +1639,6 @@ Run test: `yarn test`:
 ---
 
 
-## 8. End to end testing
-
-<details>
-<summary>Click to expand section</summary>
-
-Check the code at branch [8-e2e-testing](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/8-e2e-testing)
-
-- End to end testing
-
-**Missing docs for this part. Working in progress....**
-
-</details>
-
----
-
 ## 8. End to end testing (e2e)
 
 <details>
@@ -2176,7 +2160,7 @@ Check the code at branch [9-aws-s3](https://gitlab.com/tienduy-nguyen/nestjs-flo
 
 There is quite a bit more to Amazon S3 than storing public files. In this article, we look into how we can manage private files. To do so, we learn how to set up a proper private Amazon S3 bucket and how to upload and access files. We use streams and generate presigned URLs with an expiration time.
 
-### Seting up AWS S3
+### Setting up AWS S3
 
 We will create new bucket as we did in the previous part. But this time, we will make private bucket. That's means we will block all public access for bucket (feature of AWS S3)
 
@@ -2217,32 +2201,31 @@ The IAM user that we’ve created in the previous part of this series has access
   ```ts
   // private-file.entity.ts
 
+  import { User } from '@modules/user/user.entity';
   import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-  import User from '../users/user.entity';
 
   @Entity()
-  class PrivateFile {
-    @PrimaryGeneratedColumn()
-    public id: number;
+  export class PrivateFile {
+    @PrimaryGeneratedColumn('uuid')
+    public id: string;
 
-    @Column()
+    @Column({ unique: true })
     public key: string;
 
     @ManyToOne(() => User, (owner: User) => owner.files)
     public owner: User;
   }
 
-  export default PrivateFile;
   ```
 - Using **PrivateFile** in **UserEntity**
   ```ts
   // user.entity.ts
-
-  import { Entity, OneToMany } from 'typeorm';
-  import PrivateFile from '../privateFIles/privateFile.entity';
+  // ...
+  import { PublicFile } from '@modules/files/public-file.entity';
+  import { PrivateFile } from '@modules/files/private-file.entity';
 
   @Entity()
-  class User {
+  export class User {
     // ...
 
     @OneToMany(
@@ -2251,10 +2234,8 @@ The IAM user that we’ve created in the previous part of this series has access
     )
     public files: PrivateFile[];
   }
-
-  export default User;
   ```
-- Create **PrivateFileSevice**: `src/modules/files/services/private-files.service.ts`
+- Create **PrivateFileService**: `src/modules/files/services/private-files.service.ts`
   ```ts
 
   ```

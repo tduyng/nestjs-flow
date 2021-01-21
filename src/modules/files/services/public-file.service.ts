@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PublicFileRepository } from '../public-file.repository';
+import { PublicFileRepository } from '../repositories/public-file.repository';
 
 import { CreatePublicFileDto, DeletePublicFileDto } from '../dto';
 import { S3Service } from './s3.service';
