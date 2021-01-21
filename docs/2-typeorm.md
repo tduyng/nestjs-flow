@@ -68,11 +68,11 @@ You can consider use [Prisma](https://github.com/prisma/prisma) - the next gener
   - **logging**: logging when query database  in the terminal (recommend: false)
   - **synchronize**: true. It means all the  modification in entities will synchronize automatically with your database. Attention for this feature: It will be very dangerous. You can be lost your data, should use only for develop phrase.
   - **entities**: an arry to indicate where stock entity files
-  
+
   If you don't want `synchronize` automatically, you need consider use cli to make the migrations.
 
 - Import `ormConfig` in `app.module`
-  
+
   ```ts
   //app.module.ts
   import { PostModule } from '@modules/post/post.module';
@@ -139,7 +139,7 @@ You can consider use [Prisma](https://github.com/prisma/prisma) - the next gener
   Check [Database](https://docs.nestjs.com/techniques/database) for more details.
 
 - Using PostEntity & PostRepository in PostService
-  
+
 
   Now we will modify the old code of first part, and update theme with typeorm solution.
 
@@ -265,23 +265,23 @@ Check [swagger.io](https://swagger.io/) & [Nest Open api](https://docs.nestjs.co
   bootstrap();
 
   ```
-  
+
 - Update swagger tag for controller
   Using `@ApiTags('route name')` class decorator in controller file:
   ```ts
   @ApiTags('Root')
   @Controller()
   export class AppController {
-  ...  
+  ...
   }
 
   @ApiTags('Post')
   @Controller('posts')
   export class PostController {
-  ...  
+  ...
   }
   ```
 - Run server and check api docs at route: `/api/docs`:
   <div align="center">
-    <img src="docs/images/2-swagger.png" alt="Swagger docs">
+    <img src="../docs/images/2-swagger.png" alt="Swagger docs">
   </div>

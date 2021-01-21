@@ -379,7 +379,7 @@ This structure will help you better organize your codes & adapt with principle o
 
   ```
 
-  Note: 
+  Note:
   - Make sure you use `@Controller('...')` decorator for class **PostController**
   - You can also use [Nest CLI](https://docs.nestjs.com/cli/overview) for simplify this tâche.
 
@@ -419,14 +419,14 @@ This structure will help you better organize your codes & adapt with principle o
 
   ```
 - Run server `yarn start:dev` & test routes with **Postman**
-  
+
   Create newt post:
   <div align="center">
-    <img src="docs/images/1-create-post.png" alt="create post">
+    <img src="../docs/images/1-create-post.png" alt="create post">
   </div>
 
   Get all posts:
   <div align="center">
-    <img src="docs/images/1-get-posts.png" alt="get posts">
+    <img src="../docs/images/1-get-posts.png" alt="get posts">
   </div>
   ...
