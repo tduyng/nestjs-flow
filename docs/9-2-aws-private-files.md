@@ -1,7 +1,7 @@
 ## 9.2  Private bucket AWS
 
 
-Check the code at branch [9-aws-s3](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/9-aws-s3)
+Check the code at branch [9-aws-private-files](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/9-aws-private-files)
 
 There is quite a bit more to Amazon S3 than storing public files. In this article, we look into how we can manage private files. To do so, we learn how to set up a proper private Amazon S3 bucket and how to upload and access files. We use streams and generate presigned URLs with an expiration time.
 
