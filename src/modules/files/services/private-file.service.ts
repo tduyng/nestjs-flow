@@ -11,6 +11,7 @@ import { PrivateFileRepository } from '../repositories/private-file.repository';
 import { S3PrivateFileService } from './s3-private-file.service';
 import { v4 as uuid } from 'uuid';
 import { UploadFileDto } from '../dto';
+import { PrivateFile } from '../private-file.entity';
 
 @Injectable()
 export class PrivateFileService {
@@ -62,7 +63,7 @@ export class PrivateFileService {
     ownerId: string,
     dataBuffer: Buffer,
     filename: string,
-  ) {
+  ): Promise<PrivateFile> {
     try {
       const uploadResult = await this.s3PrivateFileService.uploadResult(
         dataBuffer,
@@ -84,9 +85,9 @@ export class PrivateFileService {
   public async uploadMultiplePrivateFile(
     ownerId: string,
     uploadFiles: UploadFileDto[],
-  ) {
+  ): Promise<PrivateFile[]> {
     try {
-      const resultFiles = [];
+      const resultFiles = [] as PrivateFile[];
       for (const upload of uploadFiles) {
         const uploadResult = await this.s3PrivateFileService.uploadResult(
           upload.dataBuffer,
@@ -98,7 +99,9 @@ export class PrivateFileService {
             id: ownerId,
           },
         };
-        const newFile = await this.privateFileRepo.createPrivateFile(fileDto);
+        const newFile: PrivateFile = await this.privateFileRepo.createPrivateFile(
+          fileDto,
+        );
         resultFiles.push(newFile);
       }
 

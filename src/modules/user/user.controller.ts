@@ -31,6 +31,7 @@ export class UserController {
     return await this.userService.getUsers();
   }
 
+  /* Avatar */
   @Post('avatar')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
@@ -43,8 +44,14 @@ export class UserController {
     );
   }
 
-  /* Test connection between user & publicfiles */
-  @Post('publicfiles/:fileId')
+  @Delete('avatar')
+  @UseGuards(JwtAuthGuard)
+  public async deleteAvatar(@Req() req: IRequestWithUser) {
+    return await this.userService.deleteAvatar(req.user.id);
+  }
+
+  /* Test connection between user & public files */
+  @Post('avatar/test/:fileId')
   @UseGuards(JwtAuthGuard)
   public async testUpdateUserAvatar(
     @Req() req: IRequestWithUser,
@@ -54,12 +61,7 @@ export class UserController {
     return await this.userService.testUpdateUserAvatar(user, fileId);
   }
 
-  @Delete('avatar')
-  @UseGuards(JwtAuthGuard)
-  public async deleteAvatar(@Req() req: IRequestWithUser) {
-    return await this.userService.deleteAvatar(req.user.id);
-  }
-
+  /* Address */
   @Post('address')
   @UseGuards(JwtAuthGuard)
   public async addAddress(
