@@ -61,9 +61,9 @@ export class PostService {
   public async updatePost(id: string, postDto: UpdatePostDto): Promise<Post> {
     try {
       const post = await this.postRepository.getPostById(id);
-      await this.postRepository.updatePost(post, postDto);
-      await this.postSearchService.update(post);
-      return post;
+      const updated = await this.postRepository.updatePost(post, postDto);
+      await this.postSearchService.update(updated);
+      return updated;
     } catch (error) {
       if (error.status === HttpStatus.NOT_FOUND) {
         throw error;

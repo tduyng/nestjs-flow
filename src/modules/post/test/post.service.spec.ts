@@ -1,17 +1,25 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostRepository } from '../post.repository';
+import { PostSearchService } from '../services/post-search.service';
 import { PostService } from '../services/post.service';
 
 describe('PostService', () => {
   let postService: PostService;
   let postRepository;
+
   const mockPostRepository = () => ({
     getPosts: jest.fn(),
     getPostById: jest.fn(),
     createPost: jest.fn(),
     updatePost: jest.fn(),
     deletePost: jest.fn(),
+  });
+  const mockPostSearchService = () => ({
+    indexPost: jest.fn(),
+    search: jest.fn(),
+    remove: jest.fn(),
+    update: jest.fn(),
   });
 
   beforeEach(async () => {
@@ -21,6 +29,10 @@ describe('PostService', () => {
         {
           provide: PostRepository,
           useFactory: mockPostRepository,
+        },
+        {
+          provide: PostSearchService,
+          useFactory: mockPostSearchService,
         },
       ],
     }).compile();
@@ -85,14 +97,15 @@ describe('PostService', () => {
       }
     });
     it('Should update post', async () => {
-      postRepository.updatePost.mockResolvedValue('some post');
+      postRepository.getPostById.mockResolvedValue('some post');
+      postRepository.updatePost.mockResolvedValue('some updated post');
       const id = 'some id';
       const post = {
         title: 'some',
         content: 'some',
       };
       const result = await postService.updatePost(id, post);
-      expect(result).toEqual('some post');
+      expect(result).toEqual('some updated post');
     });
   });
 
