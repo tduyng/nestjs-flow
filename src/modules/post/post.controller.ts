@@ -20,7 +20,7 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
-  public async getPosts(@Query('search') search: string) {
+  public async getPosts(@Query('search') search?: string) {
     if (search) {
       return this.postService.searchForPost(search);
     }
