@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostController } from '../post.controller';
 import { Post } from '../post.entity';
-import { PostService } from '../post.service';
+import { PostService } from '../services/post.service';
 
 const postArray = [
   new Post('Post 1', 'This is a testing post 1'),
