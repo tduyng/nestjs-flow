@@ -52,7 +52,7 @@ export class AuthController {
 
   @UseGuards(JwtRefreshTokenAuthGuard)
   @Get('refresh')
-  public refresh(@Req() req: IRequestWithUser) {
+  public refreshToken(@Req() req: IRequestWithUser) {
     const { user } = req;
     const payload: IPayloadJwt = {
       userId: user.id,
