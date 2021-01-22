@@ -13,7 +13,8 @@ build
 
 # Files not required for production
 .editorconfig
-Dockerfile
 README.md
 docs
+*Dockerfile*
+*docker-compose*
 

@@ -67,6 +67,8 @@ services:
       - data01:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
+    logging:
+      driver: none
     networks:
       - elastic
   es02:
@@ -85,6 +87,8 @@ services:
         hard: -1
     volumes:
       - data02:/usr/share/elasticsearch/data
+    logging:
+      driver: none
     networks:
       - elastic
   es03:
@@ -103,6 +107,8 @@ services:
         hard: -1
     volumes:
       - data03:/usr/share/elasticsearch/data
+    logging:
+      driver: none
     networks:
       - elastic
 
