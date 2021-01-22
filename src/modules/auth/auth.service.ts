@@ -12,6 +12,7 @@ import { RegisterUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthRepository } from './auth.repository';
 import { Response } from 'express';
+import { User } from '@modules/user/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -74,14 +75,52 @@ export class AuthService {
   }
 
   public getCookieWithToken(payload: IPayloadJwt) {
-    const token = this.jwtService.sign(payload);
+    const token = this.jwtService.sign(payload, {
+      secret: process.env.JWT_SECRET,
+      expiresIn: `${process.env.JWT_EXPIRATION_TIME}s`,
+    });
     return `Authorization=${token};HttpOnly;Path=/;Max-Age=${process.env.JWT_EXPIRATION_TIME}`;
   }
+
+  public getCookieWithJwtRefreshToken(payload: IPayloadJwt) {
+    const token = this.jwtService.sign(payload, {
+      secret: process.env.JWT_REFRESH_TOKEN_SECRET,
+      expiresIn: `${process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME}s`,
+    });
+    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME}`;
+    return {
+      cookie,
+      token,
+    };
+  }
+
+  public async setCurrentRefreshToken(
+    user: User,
+    refreshToken: string,
+  ): Promise<User> {
+    const salt = await bcrypt.genSalt(10);
+    const currentHashedRefreshToken = await bcrypt.hash(refreshToken, salt);
+    return await this.authRepository.updateRefreshToken(
+      user,
+      currentHashedRefreshToken,
+    );
+  }
+
+  public async removeRefreshToken(user: User): Promise<User> {
+    return await this.authRepository.clearRefreshToken(user);
+  }
+
   public clearCookie(res: Response): void {
-    const emptyCookie = `Authorization=;HttpOnly;Path=/;Max-Age=0`;
+    const emptyCookie = [
+      'Authentication=; HttpOnly; Path=/; Max-Age=0',
+      'Refresh=; HttpOnly; Path=/; Max-Age=0',
+    ];
     res.setHeader('Set-Cookie', emptyCookie);
   }
-  public setHeader(res: Response, cookie: string): void {
+  public setHeaderSingle(res: Response, cookie: string): void {
     res.setHeader('Set-Cookie', cookie);
+  }
+  public setHeaderArray(res: Response, cookies: string[]): void {
+    res.setHeader('Set-Cookie', cookies);
   }
 }

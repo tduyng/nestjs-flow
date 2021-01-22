@@ -1,12 +1,13 @@
 import { IRequestWithUser } from '@common/interfaces/http.interface';
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Get,
   Post,
   Req,
-  SerializeOptions,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { IPayloadJwt } from './auth.interface';
 import { AuthService } from './auth.service';
@@ -14,12 +15,11 @@ import { RegisterUserDto } from './dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtRefreshTokenAuthGuard } from './guards/jwt-refresh-token-auth.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
-@SerializeOptions({
-  strategy: 'excludeAll',
-})
+@UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -37,9 +37,30 @@ export class AuthController {
       userId: user.id,
       email: user.email,
     };
-    const cookie = this.authService.getCookieWithToken(payload);
-    this.authService.setHeader(req.res, cookie);
+    const accessTokenCookie = this.authService.getCookieWithToken(payload);
+    const {
+      cookie: refreshTokenCookie,
+      token: refreshToken,
+    } = this.authService.getCookieWithJwtRefreshToken(payload);
+    await this.authService.setCurrentRefreshToken(user, refreshToken);
+    this.authService.setHeaderArray(req.res, [
+      accessTokenCookie,
+      refreshTokenCookie,
+    ]);
     return user;
+  }
+
+  @UseGuards(JwtRefreshTokenAuthGuard)
+  @Get('refresh')
+  public refreshToken(@Req() req: IRequestWithUser) {
+    const { user } = req;
+    const payload: IPayloadJwt = {
+      userId: user.id,
+      email: user.email,
+    };
+    const accessTokenCookie = this.authService.getCookieWithToken(payload);
+    this.authService.setHeaderSingle(req.res, accessTokenCookie);
+    return req.user;
   }
 
   @Get()
@@ -50,7 +71,9 @@ export class AuthController {
 
   @Post('logout')
   @UseGuards(JwtAuthGuard)
-  public logout(@Req() req: IRequestWithUser) {
+  public async logout(@Req() req: IRequestWithUser) {
+    const { user } = req;
+    await this.authService.removeRefreshToken(user);
     this.authService.clearCookie(req.res);
     return {
       logout: true,

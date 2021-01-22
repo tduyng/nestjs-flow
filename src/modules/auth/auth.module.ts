@@ -8,17 +8,15 @@ import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthRepository } from './auth.repository';
 import { ConfigModule } from '@nestjs/config';
+import { JwtRefreshTokenStrategy } from './strategies/jwt-refresh-token.strategy';
 @Module({
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forFeature([AuthRepository]),
     PassportModule,
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: process.env.JWT_EXPIRATION_TIME },
-    }),
+    JwtModule.register({}),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, JwtRefreshTokenStrategy],
   exports: [AuthService],
   controllers: [AuthController],
 })

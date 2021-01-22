@@ -23,5 +23,7 @@ declare namespace NodeJS {
     readonly ELASTICSEARCH_NODE: string;
     readonly ELASTICSEARCH_USERNAME: string;
     readonly ELASTICSEARCH_PASSWORD: string;
+    readonly JWT_REFRESH_TOKEN_SECRET: string;
+    readonly JWT_REFRESH_TOKEN_EXPIRATION_TIME: string;
   }
 }
