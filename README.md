@@ -2590,6 +2590,7 @@ Elastic search is just a really, really fast RESTful search and analytics engine
 
 Let's start:
 
+Check awesome article about this part at [wanago-nestjs-elasticsearch](https://wanago.io/2020/09/07/api-nestjs-elasticsearch/)
 
 **Missing docs for this part. Working in progress....**
 
