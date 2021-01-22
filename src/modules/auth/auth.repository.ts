@@ -36,6 +36,7 @@ export class AuthRepository extends Repository<User> {
     return user;
   }
 
+  // Get user with from refresh token
   public async getUserIfRefreshTokenMatches(
     refreshToken: string,
     userId: string,
