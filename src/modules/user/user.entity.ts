@@ -8,7 +8,7 @@ import {
   BeforeUpdate,
 } from 'typeorm';
 import { IsEmail, Min } from 'class-validator';
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude } from 'class-transformer';
 import { Address } from '../address/address.entity';
 import { Post } from '@modules/post/post.entity';
 import { PublicFile } from '@modules/files/public-file.entity';
@@ -20,12 +20,10 @@ export class User {
   public id?: string;
 
   @Column({ nullable: true })
-  @Expose()
   public name: string;
 
   @Column({ unique: true })
   @IsEmail()
-  @Expose()
   public email: string;
 
   @Column()
@@ -41,7 +39,6 @@ export class User {
     default: () => 'CURRENT_TIMESTAMP',
     nullable: true,
   })
-  @Expose()
   public createdAt?: Date;
 
   @Column({
@@ -80,6 +77,12 @@ export class User {
     nullable: true,
   })
   public files?: PrivateFile[];
+
+  @Column({
+    nullable: true,
+  })
+  @Exclude()
+  public currentHashedRefreshToken?: string;
 
   @BeforeUpdate()
   updateTimestamp() {

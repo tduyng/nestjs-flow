@@ -1,6 +1,7 @@
 import { User } from '@modules/user/user.entity';
 import { Repository, EntityRepository } from 'typeorm';
 import { RegisterUserDto } from './dto';
+import * as bcrypt from 'bcrypt';
 
 @EntityRepository(User)
 export class AuthRepository extends Repository<User> {
@@ -14,5 +15,38 @@ export class AuthRepository extends Repository<User> {
   }
   public async getUserByEmail(email: string): Promise<User> {
     return await this.findOne({ where: { email: email } });
+  }
+
+  public async updateRefreshToken(
+    user: User,
+    currentHashedRefreshToken: string,
+  ) {
+    await this.save({
+      ...user,
+      currentHashedRefreshToken: currentHashedRefreshToken,
+    });
+    return user;
+  }
+
+  public async clearRefreshToken(user: User) {
+    await this.save({
+      ...user,
+      currentHashedRefreshToken: null,
+    });
+    return user;
+  }
+
+  public async getUserIfRefreshTokenMatches(
+    refreshToken: string,
+    userId: string,
+  ) {
+    const user = await this.getUserById(userId);
+
+    const isRefreshTokenMatching = await bcrypt.compare(
+      refreshToken,
+      user.currentHashedRefreshToken,
+    );
+    if (isRefreshTokenMatching) return user;
+    return null;
   }
 }

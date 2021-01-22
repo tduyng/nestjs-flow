@@ -79,7 +79,7 @@ This series demo is just for purpose learning or practice NestJS.
     - [Update FileModule for Private bucket](#update-filemodule-for-private-bucket)
     - [Fetch files and Generating presigned URLs from AWS S3 as  a stream](#fetch-files-and-generating-presigned-urls-from-aws-s3-as--a-stream)
   - [10. Elasticsearch](#10-elasticsearch)
-  - [11.](#11)
+  - [11. Refresh token](#11-refresh-token)
   - [12.](#12)
   - [References](#references)
 
@@ -2598,13 +2598,15 @@ Check awesome article about this part at [wanago-nestjs-elasticsearch](https://w
 
 ---
 
-## 11.
+## 11. Refresh token
 
 <details>
 <summary>Click to expand section</summary>
 
 Check the code at branch [10-elasticsearch](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/10-elasticsearch)
 
+
+Check awesome article about this part at [wanago-nestjs-refresh-token](https://wanago.io/2020/09/21/api-nestjs-refresh-tokens-jwt/)
 
 **Missing docs for this part. Working in progress....**
 
