@@ -6,6 +6,12 @@ import { IPayloadJwt } from '../auth.interface';
 import { AuthRepository } from '../auth.repository';
 import { AuthService } from '../auth.service';
 import * as bcrypt from 'bcrypt';
+import { User } from '@modules/user/user.entity';
+
+const oneUser = {
+  id: 'some id',
+  email: 'some email',
+} as User;
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -17,6 +23,8 @@ describe('AuthService', () => {
     getUserById: jest.fn(),
     getUserByEmail: jest.fn(),
     save: jest.fn(),
+    updateRefreshToken: jest.fn(),
+    clearRefreshToken: jest.fn(),
   });
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -56,6 +64,38 @@ describe('AuthService', () => {
         email: 'test@email.com',
       };
       expect(typeof authService.getCookieWithToken(payload)).toEqual('string');
+    });
+  });
+
+  describe('getCookieWithJwtRefreshToken', () => {
+    it('Should return an object', () => {
+      const payload: IPayloadJwt = {
+        userId: '1',
+        email: 'test@email.com',
+      };
+      expect(authService.getCookieWithJwtRefreshToken(payload)).toBeInstanceOf(
+        Object,
+      );
+    });
+  });
+  describe('setCurrentRefreshToken', () => {
+    it('Should return a user', async () => {
+      authRepository.updateRefreshToken.mockReturnValue(oneUser);
+      const result = await authService.setCurrentRefreshToken(
+        oneUser,
+        'some refresh token',
+      );
+      expect(authRepository.updateRefreshToken).toBeCalled();
+      expect(result).toEqual(oneUser);
+    });
+  });
+
+  describe('removeRefreshToken', () => {
+    it('Should return a user', async () => {
+      authRepository.clearRefreshToken.mockReturnValue(oneUser);
+      const result = await authService.removeRefreshToken(oneUser);
+      expect(authRepository.clearRefreshToken).toBeCalled();
+      expect(result).toEqual(oneUser);
     });
   });
 
