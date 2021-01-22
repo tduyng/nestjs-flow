@@ -48,6 +48,23 @@ services:
     networks:
       - postgres-network
 
+  nest-nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    container_name: nest-nginx
+    depends_on:
+      - nestjs
+    environment:
+      - NGINX_SERVER_NAME=localhost
+      - NEST_HOST=nest
+      - NEST_PORT=3000
+      - NGINX_MAX_BODY=100M
+    ports:
+      - 80:80
+    networks:
+      - postgres-network
+
 # Elasticsearch
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1

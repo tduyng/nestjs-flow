@@ -11,25 +11,24 @@ This series demo is just for purpose learning or practice NestJS.
 3. Auth with passpord, jwt
 4. Error handling & data validation
 5. Serializing response with interceptors
-6. Understand dependency injection in Nestjs
-7. Database relationship
-8. Unit tests
-9. Testing service, controllers with integration tests
-10. Update file to Amazon s3
-11. Managing private files with amazon S3
-12. Elastic search
-13. Implement refresh token jwt
-14. Imporving performance of database with indexes
-15. Defining transactions with typeorm
-16. Using the array data type of database with typeorm
-17. Offset and keyset pagination with database & typeorm
-18. Exploring idea of microservices
-19. Using RabbitMQ to communicate with microservices
-20. Communicating with microservices using gRPC framework
-21. Pattern **Command-Querry-Responsibility-Segregation** (CQRS)
-22. Storing JSON with PostgresSQL & TypeORM
-23. Implementing in-memory cache to increase the performance
-24. Cache with Redis. Running the app in a Nodejs cluster
+6. Database relationship
+7. Unit testing, integration testing
+8. End to end testing
+9.  Upload file to Amazon s3(Public bucket)
+10. Managing private files with amazon S3 (Private bucket)
+11. Elastic search
+12. Implement refresh token jwt
+13. Imporving performance of database with indexes
+14. Defining transactions with typeorm
+15. Using the array data type of database with typeorm
+16. Offset and keyset pagination with database & typeorm
+17. Exploring idea of microservices
+18. Using RabbitMQ to communicate with microservices
+19. Communicating with microservices using gRPC framework
+20. Pattern Command-Querry-Responsibility-Segregation (CQRS)
+21. Storing JSON with PostgresSQL & TypeORM
+22. Implementing in-memory cache to increase the performance
+23. Cache with Redis. Running the app in a Nodejs cluster
 
 </details>
 
@@ -79,6 +78,9 @@ This series demo is just for purpose learning or practice NestJS.
     - [Setting up AWS S3](#setting-up-aws-s3)
     - [Update FileModule for Private bucket](#update-filemodule-for-private-bucket)
     - [Fetch files and Generating presigned URLs from AWS S3 as  a stream](#fetch-files-and-generating-presigned-urls-from-aws-s3-as--a-stream)
+  - [10. Elasticsearch](#10-elasticsearch)
+  - [11.](#11)
+  - [12.](#12)
   - [References](#references)
 
 
@@ -2573,6 +2575,56 @@ Now, the user can access all of the files in a very straightforward way.
 
 ---
 
+
+## 10. Elasticsearch
+
+<details>
+<summary>Click to expand section</summary>
+
+Check the code at branch [10-elasticsearch](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/10-elasticsearch)
+
+
+Elasticsearch is a distributed, RESTful search and analytics engine capable of addressing a growing number of use cases.
+
+Elastic search is just a really, really fast RESTful search and analytics engine which can interface with various programming languages.
+
+Let's start:
+
+Check awesome article about this part at [wanago-nestjs-elasticsearch](https://wanago.io/2020/09/07/api-nestjs-elasticsearch/)
+
+**Missing docs for this part. Working in progress....**
+
+</details>
+
+---
+
+## 11.
+
+<details>
+<summary>Click to expand section</summary>
+
+Check the code at branch [10-elasticsearch](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/10-elasticsearch)
+
+
+**Missing docs for this part. Working in progress....**
+
+</details>
+
+---
+
+## 12.
+
+<details>
+<summary>Click to expand section</summary>
+
+Check the code at branch [10-elasticsearch](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/10-elasticsearch)
+
+
+**Missing docs for this part. Working in progress....**
+
+</details>
+
+---
 ## References
 
 - [Docs NestJs](https://docs.nestjs.com/)

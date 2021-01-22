@@ -7,9 +7,10 @@ import {
   Delete,
   Param,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { CreatePostDto, UpdatePostDto } from './dto';
-import { PostService } from './post.service';
+import { PostService } from './services/post.service';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 
@@ -19,7 +20,10 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
-  public async getPosts() {
+  public async getPosts(@Query('search') search?: string) {
+    if (search) {
+      return this.postService.searchForPost(search);
+    }
     return await this.postService.getPosts();
   }
 

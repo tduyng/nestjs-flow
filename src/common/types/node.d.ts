@@ -20,5 +20,8 @@ declare namespace NodeJS {
     readonly AWS_SECRET_ACCESS_KEY: string;
     readonly AWS_PUBLIC_BUCKET_NAME: string;
     readonly AWS_PRIVATE_BUCKET_NAME: string;
+    readonly ELASTICSEARCH_NODE: string;
+    readonly ELASTICSEARCH_USERNAME: string;
+    readonly ELASTICSEARCH_PASSWORD: string;
   }
 }
