@@ -83,7 +83,11 @@ This series demo is just for purpose learning or practice NestJS.
     - [Implementation in Nestjs](#implementation-in-nestjs)
     - [Creating an endpoint that uses the refresh token](#creating-an-endpoint-that-uses-the-refresh-token)
     - [Improving the log-out flow](#improving-the-log-out-flow)
-  - [12.](#12)
+  - [12. Improve performance with database indexes](#12-improve-performance-with-database-indexes)
+  - [13.](#13)
+  - [14.](#14)
+  - [15.](#15)
+  - [16.](#16)
   - [References](#references)
 
 
@@ -1652,7 +1656,7 @@ Run test: `yarn test`:
 
 Check the code at branch [8-e2e-testing](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/8-e2e-testing)
 
-Check more informations at [Nestjs end to end testing](https://docs.nestjs.com/fundamentals/testing)
+Check more information at [Nestjs end to end testing](https://docs.nestjs.com/fundamentals/testing)
 
 ### Introduction
 
@@ -2606,7 +2610,7 @@ Check awesome article about this part at [wanago-nestjs-elasticsearch](https://w
 <details>
 <summary>Click to expand section</summary>
 
-Check the code at branch [10-elasticsearch](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/10-elasticsearch)
+Check the code at branch [11-refresh-token](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/11-refresh-token)
 
 
 Check awesome article about this part at [wanago-nestjs-refresh-token](https://wanago.io/2020/09/21/api-nestjs-refresh-tokens-jwt/)
@@ -2941,19 +2945,85 @@ Now we can start handling the incoming refresh token. For starters, let’s deal
 
 ---
 
-## 12.
+## 12. Improve performance with database indexes
 
 <details>
 <summary>Click to expand section</summary>
 
-Check the code at branch [10-elasticsearch](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/10-elasticsearch)
+Check the code at branch [12-database-indexes](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/12-database-indexes)
 
+Check awesome article of Wanago at [Improving performance of our Postgres database with indexes](https://wanago.io/2020/10/19/nestjs-performance-postgres-database-indexes/)
 
 **Missing docs for this part. Working in progress....**
 
 </details>
 
 ---
+
+## 13.
+
+<details>
+<summary>Click to expand section</summary>
+
+Check the code at branch [10-elasticsearch](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/10-elasticsearch)
+
+Check awesome article of Wanago at [Improving performance of our Postgres database with indexes](https://wanago.io/2020/10/19/nestjs-performance-postgres-database-indexes/)
+
+**Missing docs for this part. Working in progress....**
+
+</details>
+
+---
+
+
+## 14.
+
+<details>
+<summary>Click to expand section</summary>
+
+Check the code at branch [10-elasticsearch](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/10-elasticsearch)
+
+Check awesome article of Wanago at [Improving performance of our Postgres database with indexes](https://wanago.io/2020/10/19/nestjs-performance-postgres-database-indexes/)
+
+**Missing docs for this part. Working in progress....**
+
+</details>
+
+---
+
+
+## 15.
+
+<details>
+<summary>Click to expand section</summary>
+
+Check the code at branch [10-elasticsearch](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/10-elasticsearch)
+
+Check awesome article of Wanago at [Improving performance of our Postgres database with indexes](https://wanago.io/2020/10/19/nestjs-performance-postgres-database-indexes/)
+
+**Missing docs for this part. Working in progress....**
+
+</details>
+
+---
+
+
+## 16.
+
+<details>
+<summary>Click to expand section</summary>
+
+Check the code at branch [10-elasticsearch](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/10-elasticsearch)
+
+Check awesome article of wanago at [Improving performance of our Postgres database with indexes](https://wanago.io/2020/10/19/nestjs-performance-postgres-database-indexes/)
+
+**Missing docs for this part. Working in progress....**
+
+</details>
+
+---
+
+
 ## References
 
 - [Docs NestJs](https://docs.nestjs.com/)
