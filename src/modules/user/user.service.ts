@@ -107,9 +107,13 @@ export class UserService {
           ...user,
           avatar: null,
         });
-        await this.publicFileService.deletePublicFile(user.avatar.id);
+        await this.publicFileService.deletePublicFileWithRunner(
+          queryRunner,
+          user.avatar.id,
+        );
       }
-      const avatar = await this.publicFileService.uploadPublicFile(
+      const avatar = await this.publicFileService.uploadPublicFileWithRunner(
+        queryRunner,
         imageBuffer,
         filename,
       );
@@ -142,7 +146,10 @@ export class UserService {
           avatar: null,
         });
 
-        await this.publicFileService.deletePublicFile(fileId);
+        await this.publicFileService.deletePublicFileWithRunner(
+          queryRunner,
+          fileId,
+        );
         await queryRunner.commitTransaction();
         result = { deleted: true };
       } catch (error) {

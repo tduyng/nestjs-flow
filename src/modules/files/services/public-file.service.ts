@@ -9,6 +9,8 @@ import { PublicFileRepository } from '../repositories/public-file.repository';
 
 import { CreatePublicFileDto, DeletePublicFileDto } from '../dto';
 import { S3PublicFileService } from './s3-public-file.service';
+import { QueryRunner } from 'typeorm';
+import { PublicFile } from '../public-file.entity';
 
 @Injectable()
 export class PublicFileService {
@@ -50,6 +52,29 @@ export class PublicFileService {
     }
   }
 
+  public async uploadPublicFileWithRunner(
+    queryRunner: QueryRunner,
+    dataBuffer: Buffer,
+    filename: string,
+  ) {
+    try {
+      const uploadResult = await this.s3PublicFileService.uploadResult(
+        dataBuffer,
+        filename,
+      );
+      const fileDto: CreatePublicFileDto = {
+        key: uploadResult.Key,
+        url: uploadResult.Location,
+      };
+      const newFile = queryRunner.manager.create(PublicFile, fileDto);
+      await queryRunner.manager.save(newFile);
+
+      return newFile;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   public async deletePublicFile(fileId: string) {
     const file = await this.getFileById(fileId);
     try {
@@ -62,6 +87,26 @@ export class PublicFileService {
       await this.s3PublicFileService.deleteFile(fileDto);
 
       return await this.publicFileRepo.deleteFile(fileId);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  public async deletePublicFileWithRunner(
+    queryRunner: QueryRunner,
+    fileId: string,
+  ) {
+    const file = await this.getFileById(fileId);
+    try {
+      if (!file) {
+        throw new NotFoundException('File not found');
+      }
+      const fileDto: DeletePublicFileDto = {
+        key: file.key,
+      };
+      await this.s3PublicFileService.deleteFile(fileDto);
+      await queryRunner.manager.delete(PublicFile, fileId);
+      return { deleted: true };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
