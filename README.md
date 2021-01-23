@@ -83,7 +83,7 @@ This series demo is just for purpose learning or practice NestJS.
     - [Implementation in Nestjs](#implementation-in-nestjs)
     - [Creating an endpoint that uses the refresh token](#creating-an-endpoint-that-uses-the-refresh-token)
     - [Improving the log-out flow](#improving-the-log-out-flow)
-  - [12. Improve performance with database indexes](#12-improve-performance-with-database-indexes)
+  - [12. Improve performance of databases](#12-improve-performance-of-databases)
   - [13.](#13)
   - [14.](#14)
   - [15.](#15)
@@ -2945,14 +2945,19 @@ Now we can start handling the incoming refresh token. For starters, let’s deal
 
 ---
 
-## 12. Improve performance with database indexes
+## 12. Improve performance of databases
 
 <details>
 <summary>Click to expand section</summary>
 
 Check the code at branch [12-database-indexes](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/12-database-indexes)
 
-Check awesome article of Wanago at [Improving performance of our Postgres database with indexes](https://wanago.io/2020/10/19/nestjs-performance-postgres-database-indexes/)
+Check awesome article of Wanago at:
+
+- [Improving performance of our Postgres database with indexes](https://wanago.io/2020/10/19/nestjs-performance-postgres-database-indexes/)
+- [Transaction in Postgres and Typeorm](https://wanago.io/2020/10/26/api-nestjs-transactions-postgresql-typeorm/)
+- [Using array data type in Postgres](https://wanago.io/2020/11/02/api-nestjs-array-data-type-postgresql-typeorm/)
+- [Pagination for entity](https://wanago.io/2020/11/09/api-nestjs-offset-keyset-pagination-postgresql-typeorm/)
 
 **Missing docs for this part. Working in progress....**
 
