@@ -2,7 +2,7 @@ import { User } from '@modules/user/user.entity';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Post } from '../post.entity';
-import { IPostSearchBody } from '../post.interface';
+import { IPostSearchBody } from '../types/post.interface';
 import { PostSearchService } from '../services/post-search.service';
 
 const onePostIndex = {
@@ -27,6 +27,7 @@ const oneSearchResult = [
   {
     body: {
       hits: {
+        total: 10,
         hits: 'some thing',
       },
     },
@@ -75,7 +76,7 @@ describe('PostSearchService', () => {
     it('Should return an array of post', async () => {
       esService.search.mockReturnValue(oneSearchResult);
       const result = await postSearchService.search('some text');
-      expect(result).toBeInstanceOf(Array);
+      expect(result).toBeDefined();
     });
   });
 
