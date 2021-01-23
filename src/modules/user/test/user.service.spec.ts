@@ -12,6 +12,7 @@ import { Address } from '@modules/address/address.entity';
 import { PrivateFile } from '@modules/files/private-file.entity';
 import { PrivateFileService } from '@modules/files/services/private-file.service';
 import { UploadFileDto } from '@modules/files/dto';
+import { Connection } from 'typeorm';
 
 const oneUser = {
   id: 'some id',
@@ -52,6 +53,7 @@ describe('UserService', () => {
   let publicFileService;
   let addressService;
   let privateFileService;
+  // let connection;
 
   const mockUserRepository = () => ({
     getUsers: jest.fn(),
@@ -94,6 +96,19 @@ describe('UserService', () => {
     deletePrivateFile: jest.fn(),
   });
 
+  const mockConnection = () => ({
+    createQueryRunner: jest.fn(() => ({
+      connect: jest.fn(),
+      startTransaction: jest.fn(),
+      commitTransaction: jest.fn(),
+      rollbackTransaction: jest.fn(),
+      release: jest.fn(),
+      manager: {
+        update: jest.fn(),
+      },
+    })),
+  });
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
@@ -120,6 +135,10 @@ describe('UserService', () => {
           provide: PrivateFileService,
           useFactory: mockPrivateFileService,
         },
+        {
+          provide: Connection,
+          useFactory: mockConnection,
+        },
       ],
     }).compile();
 
@@ -128,6 +147,7 @@ describe('UserService', () => {
     publicFileService = module.get<PublicFileService>(PublicFileService);
     addressService = module.get<AddressService>(AddressService);
     privateFileService = module.get<PrivateFileService>(PrivateFileService);
+    // connection = module.get<Connection>(Connection);
   });
 
   it('Should be defined', () => {
