@@ -88,4 +88,11 @@ export class PostService {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  public async getPostsWithParagraph(paragraph: string) {
+    return this.postRepository.query(
+      'SELECT * from post WHERE $1 = ANY(paragraphs)',
+      [paragraph],
+    );
+  }
 }

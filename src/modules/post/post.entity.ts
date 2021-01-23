@@ -25,6 +25,9 @@ export class Post {
   @Min(10)
   public content: string;
 
+  @Column('text', { array: true })
+  public paragraphs: string[];
+
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
