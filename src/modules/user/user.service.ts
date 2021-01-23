@@ -11,6 +11,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Connection } from 'typeorm';
 import { User } from './user.entity';
 import { UserRepository } from './user.repository';
 
@@ -22,6 +23,7 @@ export class UserService {
     private readonly publicFileService: PublicFileService,
     private readonly addressService: AddressService,
     private readonly privateFileService: PrivateFileService,
+    private connection: Connection,
   ) {}
 
   public async getUsers(): Promise<User[]> {
@@ -96,9 +98,13 @@ export class UserService {
     filename: string,
   ) {
     const user = await this.getUserById(userId);
+    const queryRunner = this.connection.createQueryRunner();
     try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
       if (user.avatar) {
-        await this.userRepository.updateAvatar(user, {
+        await queryRunner.manager.update(User, userId, {
+          ...user,
           avatar: null,
         });
         await this.publicFileService.deletePublicFile(user.avatar.id);
@@ -107,27 +113,50 @@ export class UserService {
         imageBuffer,
         filename,
       );
-      await this.userRepository.updateAvatar(user, { avatar: avatar });
+      await queryRunner.manager.update(User, userId, {
+        ...user,
+        avatar: avatar,
+      });
+
+      await queryRunner.commitTransaction();
       return avatar;
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    } finally {
+      await queryRunner.release();
     }
   }
 
   public async deleteAvatar(userId: string) {
     const user = await this.getUserById(userId);
-    try {
-      const fileId = user.avatar?.id;
-      if (fileId) {
-        await this.userRepository.updateAvatar(user, {
+    const queryRunner = this.connection.createQueryRunner();
+    const fileId = user.avatar?.id;
+    let result = { deleted: false };
+    if (fileId) {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+      try {
+        await queryRunner.manager.update(User, userId, {
+          ...user,
           avatar: null,
         });
+
         await this.publicFileService.deletePublicFile(fileId);
+        await queryRunner.commitTransaction();
+        result = { deleted: true };
+      } catch (error) {
+        await queryRunner.rollbackTransaction();
+
+        throw new HttpException(
+          error.message,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      } finally {
+        await queryRunner.release();
       }
-      return { deleted: true };
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    return result;
   }
 
   public async testUpdateUserAvatar(user: User, fileId: string) {
