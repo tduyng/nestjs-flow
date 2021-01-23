@@ -77,6 +77,8 @@ describe('UserService', () => {
     getUsers: jest.fn(),
     uploadPublicFile: jest.fn(),
     deletePublicFile: jest.fn(),
+    deletePublicFileWithRunner: jest.fn(),
+    uploadPublicFileWithRunner: jest.fn(),
   });
 
   const mockAddressService = () => ({
@@ -215,7 +217,7 @@ describe('UserService', () => {
 
     it('Should add avatar successfully', async () => {
       userRepository.getUserById.mockReturnValue(oneUser);
-      publicFileService.uploadPublicFile.mockReturnValue(oneAvatar);
+      publicFileService.uploadPublicFileWithRunner.mockReturnValue(oneAvatar);
       userRepository.updateAvatar.mockReturnValue(Promise.resolve());
       const result = await userService.addAvatar(
         'some id',
@@ -230,7 +232,9 @@ describe('UserService', () => {
     it('Should deleteAvatar successfully', async () => {
       userRepository.getUserById.mockReturnValue(oneUserWithAvatar);
       userRepository.updateAvatar.mockReturnValue(Promise.resolve());
-      publicFileService.deletePublicFile.mockReturnValue({ deleted: true });
+      publicFileService.deletePublicFileWithRunner.mockReturnValue({
+        deleted: true,
+      });
       const result = await userService.deleteAvatar('some id');
       expect(result).toEqual({ deleted: true });
     });
