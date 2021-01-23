@@ -1,10 +1,38 @@
-import { EntityRepository, Repository } from 'typeorm';
+import {
+  EntityRepository,
+  FindManyOptions,
+  MoreThan,
+  Repository,
+} from 'typeorm';
 import { CreatePostDto, UpdatePostDto } from './dto';
 import { Post } from './post.entity';
 
 @EntityRepository(Post)
 export class PostRepository extends Repository<Post> {
-  public async getPosts(): Promise<Post[]> {
+  public async getPosts(offset?: number, limit?: number, startId?: string) {
+    const where: FindManyOptions<Post>['where'] = {};
+    let separateCount = 0;
+    if (startId) {
+      where.id = MoreThan(startId);
+      separateCount = await this.count();
+    }
+
+    const [items, count] = await this.findAndCount({
+      where,
+      relations: ['author'],
+      order: {
+        createdAt: 'ASC',
+      },
+      skip: offset,
+      take: limit,
+    });
+    return {
+      items,
+      count: startId ? separateCount : count,
+    };
+  }
+
+  public async getAllPosts(): Promise<Post[]> {
     return await this.find();
   }
 

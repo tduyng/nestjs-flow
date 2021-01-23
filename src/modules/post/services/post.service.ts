@@ -19,8 +19,8 @@ export class PostService {
     private postSearchService: PostSearchService,
   ) {}
 
-  public async getPosts(): Promise<Post[]> {
-    return this.postRepository.getPosts();
+  public async getPosts(offset?: number, limit?: number, startId?: string) {
+    return this.postRepository.getPosts(offset, limit, startId);
   }
 
   public async getPostById(id: string): Promise<Post> {
@@ -52,10 +52,24 @@ export class PostService {
     }
   }
 
-  public async searchForPost(text: string) {
-    const results = await this.postSearchService.search(text);
+  public async searchForPost(
+    text: string,
+    offset?: number,
+    limit?: number,
+    startId?: string,
+  ) {
+    const { results, count } = await this.postSearchService.search(
+      text,
+      offset,
+      limit,
+      startId,
+    );
     const ids = results.map((result) => result.id) || [];
-    return this.postRepository.find({ where: { id: In(ids) } });
+    const items = await this.postRepository.find({ where: { id: In(ids) } });
+    return {
+      items,
+      count,
+    };
   }
 
   public async updatePost(id: string, postDto: UpdatePostDto): Promise<Post> {

@@ -1,7 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { Post } from '../post.entity';
-import { IPostSearchBody, IPostSearchResult } from '../post.interface';
+import {
+  IPostCountResult,
+  IPostSearchBody,
+  IPostSearchResult,
+} from '../types/post.interface';
 
 @Injectable()
 export class PostSearchService {
@@ -28,22 +32,69 @@ export class PostSearchService {
     }
   }
 
-  public async search(text: string) {
+  public async count(query: string, fields: string[]): Promise<number> {
+    const { body } = await this.esService.count<IPostCountResult>({
+      index: this._index,
+      body: {
+        query: {
+          multi_match: {
+            query,
+            fields,
+          },
+        },
+      },
+    });
+    return body.count;
+  }
+
+  public async search(
+    text: string,
+    offset?: number,
+    limit?: number,
+    startId?: string,
+  ) {
     try {
+      let separateCount = 0;
+      if (startId) {
+        separateCount = await this.count(text, ['title', 'paragraphs']);
+      }
+
       const { body } = await this.esService.search<IPostSearchResult>({
         index: this._index,
+        from: offset,
+        size: limit,
         body: {
           query: {
-            multi_match: {
-              query: text,
-              fields: ['title', 'content'],
+            bool: {
+              should: {
+                multi_match: {
+                  query: text,
+                  fields: ['title', 'paragraphs'],
+                },
+              },
+              filter: {
+                range: {
+                  id: {
+                    gt: startId,
+                  },
+                },
+              },
+            },
+          },
+          sort: {
+            createdAt: {
+              order: 'asc',
             },
           },
         },
       });
+      const count = body?.hits?.total;
       const hits = body?.hits?.hits;
-      const result = hits?.map((item) => item._source) || [];
-      return result;
+      const results = hits?.map((item) => item._source) || [];
+      return {
+        count: startId ? separateCount : count,
+        results,
+      };
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
