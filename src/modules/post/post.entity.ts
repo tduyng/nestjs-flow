@@ -2,6 +2,7 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  Index,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -40,6 +41,7 @@ export class Post {
   public updatedAt?: Date;
 
   /* Relationship */
+  @Index('post_authorId_index')
   @ManyToOne(() => User, (author: User) => author.posts)
   public author: User;
 
