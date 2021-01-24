@@ -84,7 +84,7 @@ This series demo is just for purpose learning or practice NestJS.
     - [Creating an endpoint that uses the refresh token](#creating-an-endpoint-that-uses-the-refresh-token)
     - [Improving the log-out flow](#improving-the-log-out-flow)
   - [12. Improve performance of databases](#12-improve-performance-of-databases)
-  - [13.](#13)
+  - [13. Nestjs microservice](#13-nestjs-microservice)
   - [14.](#14)
   - [15.](#15)
   - [16.](#16)
@@ -2965,14 +2965,19 @@ Check awesome article of Wanago at:
 
 ---
 
-## 13.
+## 13. Nestjs microservice
 
 <details>
 <summary>Click to expand section</summary>
 
-Check the code at branch [10-elasticsearch](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/10-elasticsearch)
+Check the code at branch [13-microservice](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/13-microservice)
 
-Check awesome article of Wanago at [Improving performance of our Postgres database with indexes](https://wanago.io/2020/10/19/nestjs-performance-postgres-database-indexes/)
+Project microservice found at [nest-email-subscription](https://gitlab.com/tienduy-nguyen/nestjs-demo/-/tree/master/nestjs-microservice)
+
+Check awesome article of Wanago at:
+- [Exploring the idea of microservice](https://wanago.io/2020/11/16/api-nestjs-microservices/)
+- [Using RabbitMQ to communicate with microservices](https://wanago.io/2020/11/23/api-nestjs-rabbitmq-microservices/)
+- [Using gRPC framework to comunicate microservices](https://wanago.io/2020/11/30/api-nestjs-microservices-grpc-framework/)
 
 **Missing docs for this part. Working in progress....**
 
