@@ -17,7 +17,7 @@ services:
       - postgres
       - rabbitmq
     networks:
-      - postgres-network
+      - nestjs-microservice-networks
 
   postgres:
     container_name: postgres
@@ -30,7 +30,7 @@ services:
     env_file:
       - .env.docker
     networks:
-      - postgres-network
+      - nestjs-microservice-networks
 
   pgadmin:
     links:
@@ -45,7 +45,7 @@ services:
     env_file:
       - .env.docker
     networks:
-      - postgres-network
+      - nestjs-microservice-networks
     logging:
       driver: none
 
@@ -64,7 +64,7 @@ services:
     logging:
       driver: none
     networks:
-      - postgres_network
+      -  nestjs-microservice-networks
 
 # Elasticsearch
   es01:
@@ -139,7 +139,8 @@ volumes:
     driver: local
 
 networks:
-  postgres-network:
-    driver: bridge
+  default:
+    external:
+      name: nestjs-microservice-networks
   elastic:
     driver: bridge

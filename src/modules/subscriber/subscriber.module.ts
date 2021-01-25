@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
+import { SubscriberController } from './subscriber.controller';
 
 @Module({
   imports: [ConfigModule.forRoot()],
