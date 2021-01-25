@@ -84,7 +84,7 @@ This series demo is just for purpose learning or practice NestJS.
     - [Creating an endpoint that uses the refresh token](#creating-an-endpoint-that-uses-the-refresh-token)
     - [Improving the log-out flow](#improving-the-log-out-flow)
   - [12. Improve performance of databases](#12-improve-performance-of-databases)
-  - [13. Nestjs microservice](#13-nestjs-microservice)
+  - [13.1 Nestjs microservices](#131-nestjs-microservices)
   - [14.](#14)
   - [15.](#15)
   - [16.](#16)
@@ -2965,12 +2965,13 @@ Check awesome article of Wanago at:
 
 ---
 
-## 13. Nestjs microservice
+## 13.1 Nestjs microservices
 
 <details>
 <summary>Click to expand section</summary>
 
 Check the code at branch [13-microservice](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/13-microservice)
+Check the code at branch [13-microservice-grpc](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/13-microservice-grpc)
 
 Project microservice found at [nest-email-subscription](https://gitlab.com/tienduy-nguyen/nestjs-demo/-/tree/master/nestjs-microservice)
 
