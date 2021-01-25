@@ -30,5 +30,7 @@ declare namespace NodeJS {
     readonly RABBITMQ_HOST: string;
     readonly RABBITMQ_QUEUE_NAME: string;
     readonly GRPC_CONNECTION_URL: string;
+    readonly REDIS_HOST: string;
+    readonly REDIS_PORT: string;
   }
 }
