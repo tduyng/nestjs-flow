@@ -11,6 +11,7 @@ import { CategoryModule } from '@modules/category/category.module';
 import { AddressModule } from '@modules/address/address.module';
 import { FilesModule } from '@modules/files/files.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { SubscriberModule } from '@modules/subscriber/subscriber.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { MulterModule } from '@nestjs/platform-express';
     CategoryModule,
     FilesModule,
     AddressModule,
+    SubscriberModule,
   ],
   controllers: [AppController],
   providers: [AppService],

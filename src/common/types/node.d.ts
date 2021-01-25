@@ -25,5 +25,9 @@ declare namespace NodeJS {
     readonly ELASTICSEARCH_PASSWORD: string;
     readonly JWT_REFRESH_TOKEN_SECRET: string;
     readonly JWT_REFRESH_TOKEN_EXPIRATION_TIME: string;
+    readonly RABBITMQ_USER: string;
+    readonly RABBITMQ_PASSWORD: string;
+    readonly RABBITMQ_HOST: string;
+    readonly RABBITMQ_QUEUE_NAME: string;
   }
 }

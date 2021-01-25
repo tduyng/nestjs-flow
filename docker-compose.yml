@@ -1,35 +1,5 @@
 version: '3.8'
 services:
-  postgres:
-    container_name: postgres
-    image: postgres:latest
-    restart: always
-    ports:
-      - '5432-5432'
-    volumes:
-      - /data/postgres:/data/postgres
-    env_file:
-      - docker.env
-    networks:
-      - postgres-network
-
-  pgadmin:
-    links:
-     - postgres:postgres
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    restart: unless-stopped
-    ports:
-      - '8080:80'
-    volumes:
-      - /data/pgadmin:/root/.pgadmin
-    env_file:
-      - docker.env
-    networks:
-      - postgres-network
-    logging:
-      driver: none
-
   nestjs:
     container_name: nestjs-flow
     build:
@@ -45,8 +15,56 @@ services:
       - /usr/src/app/node_modules
     depends_on:
       - postgres
+      - rabbitmq
     networks:
-      - postgres-network
+      - nestjs-microservice-networks
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    ports:
+      - '5432-5432'
+    volumes:
+      - /data/postgres:/data/postgres
+    env_file:
+      - .env.docker
+    networks:
+      - nestjs-microservice-networks
+
+  pgadmin:
+    links:
+     - postgres:postgres
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    ports:
+      - '8080:80'
+    volumes:
+      - /data/pgadmin:/root/.pgadmin
+    env_file:
+      - .env.docker
+    networks:
+      - nestjs-microservice-networks
+    logging:
+      driver: none
+
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    volumes:
+      - /var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    env_file:
+      - .env.rabbitmq
+    logging:
+      driver: none
+    networks:
+      -  nestjs-microservice-networks
 
 # Elasticsearch
   es01:
@@ -121,7 +139,8 @@ volumes:
     driver: local
 
 networks:
-  postgres-network:
-    driver: bridge
+  default:
+    external:
+      name: nestjs-microservice-networks
   elastic:
     driver: bridge

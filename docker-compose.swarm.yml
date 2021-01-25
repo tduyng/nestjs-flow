@@ -36,7 +36,7 @@ services:
       restart_policy:
         condition: on-failure
     env_file:
-      - docker.env
+      - .env.docker
     ports:
       - '5432-5432'
     volumes:
@@ -56,7 +56,7 @@ services:
     volumes:
       - /data/pgadmin:/root/.pgadmin
     env_file:
-      - docker.env
+      - .env.docker
     logging:
       driver: none
 
