@@ -2,7 +2,7 @@ import { User } from '@modules/user/user.entity';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Post } from '../post.entity';
-import { IPostSearchBody } from '../types/post.interface';
+import { IPostSearchBody } from '../types/post.types';
 import { PostSearchService } from '../services/post-search.service';
 
 const onePostIndex = {
