@@ -29,5 +29,6 @@ declare namespace NodeJS {
     readonly RABBITMQ_PASSWORD: string;
     readonly RABBITMQ_HOST: string;
     readonly RABBITMQ_QUEUE_NAME: string;
+    readonly GRPC_CONNECTION_URL: string;
   }
 }

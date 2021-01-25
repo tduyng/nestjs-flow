@@ -15,7 +15,7 @@ services:
       - /usr/src/app/node_modules
     depends_on:
       - postgres
-      - rabbitmq
+      # - rabbitmq
     networks:
       - nestjs-microservice-networks
 
@@ -49,22 +49,22 @@ services:
     logging:
       driver: none
 
-
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: rabbitmq
-    hostname: rabbitmq
-    volumes:
-      - /var/lib/rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    env_file:
-      - .env.rabbitmq
-    logging:
-      driver: none
-    networks:
-      -  nestjs-microservice-networks
+  # Only when use Microservice with RabbitMQ
+  # rabbitmq:
+  #   image: rabbitmq:3-management
+  #   container_name: rabbitmq
+  #   hostname: rabbitmq
+  #   volumes:
+  #     - /var/lib/rabbitmq
+  #   ports:
+  #     - "5672:5672"
+  #     - "15672:15672"
+  #   env_file:
+  #     - .env.rabbitmq
+  #   logging:
+  #     driver: none
+  #   networks:
+  #     -  nestjs-microservice-networks
 
 # Elasticsearch
   es01:

@@ -9,34 +9,30 @@ import {
   ClassSerializerInterceptor,
   Inject,
 } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientGrpc } from '@nestjs/microservices';
 import { CreateSubscriberDto } from './dto/create-subscriber.dto';
+import { ISubscriberService } from './subscriber.interface';
 
 @Controller('subscribers')
 @UseInterceptors(ClassSerializerInterceptor)
 export class SubscriberController {
-  constructor(
-    @Inject('SUBSCRIBER_SERVICE') private subscribersService: ClientProxy,
-  ) {}
+  private subscribersService: ISubscriberService;
+  constructor(@Inject('SUBSCRIBERS_PACKAGE') private client: ClientGrpc) {}
+
+  onModuleInit() {
+    this.subscribersService = this.client.getService<ISubscriberService>(
+      'SubscriberService',
+    );
+  }
 
   @Get()
   public async getSubscribers() {
-    return this.subscribersService.send(
-      {
-        cmd: 'get-subscribers',
-      },
-      '',
-    );
+    return this.subscribersService.getAllSubscribers({});
   }
 
   @Post()
   @UseGuards(JwtAuthGuard)
   public async createPost(@Body() subscriberDto: CreateSubscriberDto) {
-    return this.subscribersService.send(
-      {
-        cmd: 'add-subscriber',
-      },
-      subscriberDto,
-    );
+    return this.subscribersService.addSubscriber(subscriberDto);
   }
 }
