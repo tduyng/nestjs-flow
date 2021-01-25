@@ -15,6 +15,7 @@ services:
       - /usr/src/app/node_modules
     depends_on:
       - postgres
+      - redis
       # - rabbitmq
     networks:
       - nestjs-microservice-networks
@@ -48,6 +49,11 @@ services:
       - nestjs-microservice-networks
     logging:
       driver: none
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
 
   # Only when use Microservice with RabbitMQ
   # rabbitmq:
