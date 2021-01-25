@@ -61,6 +61,11 @@ services:
     env_file:
       - .env.rabbitmq
 
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+
   nest-nginx:
     build:
       context: .

@@ -17,7 +17,7 @@ import { SubscriberController } from './subscriber.controller';
             package: 'subscriber',
             protoPath: join(
               process.cwd(),
-              'src/modules/subscriber/subscribers.proto',
+              'src/modules/subscriber/subscriber.proto',
             ),
             url: process.env.GRPC_CONNECTION_URL,
           },

@@ -17,7 +17,7 @@ services:
       - postgres
       # - rabbitmq
     networks:
-      - nestjs-microservice-networks
+      - nestjs_network
 
   postgres:
     container_name: postgres
@@ -30,7 +30,7 @@ services:
     env_file:
       - .env.docker
     networks:
-      - nestjs-microservice-networks
+      - nestjs_network
 
   pgadmin:
     links:
@@ -45,7 +45,29 @@ services:
     env_file:
       - .env.docker
     networks:
-      - nestjs-microservice-networks
+      - nestjs_network
+    logging:
+      driver: none
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    networks:
+      - nestjs_network
+    logging:
+      driver: none
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+        - redis
+    networks:
+      - nestjs_network
     logging:
       driver: none
 
@@ -64,7 +86,7 @@ services:
   #   logging:
   #     driver: none
   #   networks:
-  #     -  nestjs-microservice-networks
+  #     -  nestjs_network
 
 # Elasticsearch
   es01:
@@ -88,7 +110,7 @@ services:
     logging:
       driver: none
     networks:
-      - elastic
+      - nestjs_network
   es02:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
     container_name: es02
@@ -108,7 +130,7 @@ services:
     logging:
       driver: none
     networks:
-      - elastic
+      - nestjs_network
   es03:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
     container_name: es03
@@ -128,7 +150,7 @@ services:
     logging:
       driver: none
     networks:
-      - elastic
+      - nestjs_network
 
 volumes:
   data01:
@@ -139,8 +161,6 @@ volumes:
     driver: local
 
 networks:
-  default:
-    external:
-      name: nestjs-microservice-networks
-  elastic:
+  nestjs_network:
     driver: bridge
+    name: nestjs_network
