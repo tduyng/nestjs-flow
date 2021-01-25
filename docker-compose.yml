@@ -15,7 +15,7 @@ services:
       - /usr/src/app/node_modules
     depends_on:
       - postgres
-      - rabbitmq
+      # - rabbitmq
     networks:
       - nestjs-microservice-networks
 
