@@ -3,6 +3,8 @@ import {
   HttpStatus,
   Injectable,
   NotFoundException,
+  CACHE_MANAGER,
+  Inject,
 } from '@nestjs/common';
 import { CreatePostDto, UpdatePostDto } from '../dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,17 +12,29 @@ import { Post } from '../post.entity';
 import { PostRepository } from '../post.repository';
 import { PostSearchService } from './post-search.service';
 import { In } from 'typeorm';
-
+import { GET_POSTS_CACHE_KEY } from '../types/post.types';
+import { Cache } from 'cache-manager';
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(PostRepository)
     private readonly postRepository: PostRepository,
     private postSearchService: PostSearchService,
+    @Inject(CACHE_MANAGER)
+    private cacheManager: Cache,
   ) {}
 
   public async getPosts(offset?: number, limit?: number, startId?: string) {
     return this.postRepository.getPosts(offset, limit, startId);
+  }
+
+  public async clearCache(): Promise<void> {
+    const keys: string[] = await this.cacheManager.store.keys();
+    keys.forEach((key) => {
+      if (key.startsWith(GET_POSTS_CACHE_KEY)) {
+        this.cacheManager.del(key);
+      }
+    });
   }
 
   public async getPostById(id: string): Promise<Post> {
@@ -46,6 +60,7 @@ export class PostService {
     try {
       const newPost = await this.postRepository.createPost(postDto);
       await this.postSearchService.indexPost(newPost);
+      await this.clearCache();
       return newPost;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -77,6 +92,7 @@ export class PostService {
       const post = await this.postRepository.getPostById(id);
       const updated = await this.postRepository.updatePost(post, postDto);
       await this.postSearchService.update(updated);
+      await this.clearCache();
       return updated;
     } catch (error) {
       if (error.status === HttpStatus.NOT_FOUND) {
@@ -94,6 +110,7 @@ export class PostService {
     try {
       await this.postRepository.deletePost(id);
       await this.postSearchService.remove(id);
+      await this.clearCache();
       return {
         status: 200,
         message: 'Ok',

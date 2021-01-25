@@ -8,17 +8,27 @@ import {
   Param,
   UseGuards,
   Query,
+  CacheKey,
+  CacheTTL,
+  ClassSerializerInterceptor,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreatePostDto, UpdatePostDto } from './dto';
 import { PostService } from './services/post.service';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
+import { GET_POSTS_CACHE_KEY } from './types/post.types';
+import { HttpCacheInterceptor } from './utils/http-cache.interceptor';
 
 @ApiTags('Posts')
 @Controller('posts')
+@UseInterceptors(ClassSerializerInterceptor)
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
+  @UseInterceptors(HttpCacheInterceptor)
+  @CacheKey(GET_POSTS_CACHE_KEY)
+  @CacheTTL(120)
   @Get()
   public async getPosts(@Query('search') search?: string) {
     if (search) {

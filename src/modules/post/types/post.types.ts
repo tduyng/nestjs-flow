@@ -17,3 +17,5 @@ export interface IPostSearchResult {
 export interface IPostCountResult {
   count: number;
 }
+
+export const GET_POSTS_CACHE_KEY = 'GET_POSTS_CACHE';

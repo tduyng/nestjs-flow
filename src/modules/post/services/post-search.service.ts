@@ -5,7 +5,7 @@ import {
   IPostCountResult,
   IPostSearchBody,
   IPostSearchResult,
-} from '../types/post.interface';
+} from '../types/post.types';
 
 @Injectable()
 export class PostSearchService {
