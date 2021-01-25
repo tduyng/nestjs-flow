@@ -80,7 +80,7 @@ This series demo is just for purpose learning or practice NestJS.
     - [Improving the log-out flow](#improving-the-log-out-flow)
   - [12. Improve performance of databases](#12-improve-performance-of-databases)
   - [13. Nestjs microservices](#13-nestjs-microservices)
-  - [14.](#14)
+  - [14. Command Query Responsibility Segregation (CQRS Pattern)](#14-command-query-responsibility-segregation-cqrs-pattern)
   - [15.](#15)
   - [16.](#16)
   - [References](#references)
@@ -2982,7 +2982,7 @@ Check awesome articles of Marcin Wanago at:
 ---
 
 
-## 14.
+## 14. Command Query Responsibility Segregation (CQRS Pattern)
 
 <details>
 <summary>Click to expand section</summary>
