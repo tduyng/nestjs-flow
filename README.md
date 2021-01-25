@@ -18,17 +18,12 @@ This series demo is just for purpose learning or practice NestJS.
 10. Managing private files with amazon S3 (Private bucket)
 11. Elastic search
 12. Implement refresh token jwt
-13. Imporving performance of database with indexes
-14. Defining transactions with typeorm
-15. Using the array data type of database with typeorm
-16. Offset and keyset pagination with database & typeorm
-17. Exploring idea of microservices
-18. Using RabbitMQ to communicate with microservices
-19. Communicating with microservices using gRPC framework
-20. Pattern Command-Querry-Responsibility-Segregation (CQRS)
-21. Storing JSON with PostgresSQL & TypeORM
-22. Implementing in-memory cache to increase the performance
-23. Cache with Redis. Running the app in a Nodejs cluster
+13. Explore SQL database with indexes, transactions, array data type
+14. Exploring idea of microservices (TCP Layer, RabbitMQ, gRPC framework)
+15. Pattern Command-Querry-Responsibility-Segregation (CQRS)
+16. Storing JSON with PostgresSQL & TypeORM
+17. Implementing in-memory cache to increase the performance
+18. Cache with Redis. Running the app in a Nodejs cluster
 
 </details>
 
@@ -84,7 +79,7 @@ This series demo is just for purpose learning or practice NestJS.
     - [Creating an endpoint that uses the refresh token](#creating-an-endpoint-that-uses-the-refresh-token)
     - [Improving the log-out flow](#improving-the-log-out-flow)
   - [12. Improve performance of databases](#12-improve-performance-of-databases)
-  - [13.1 Nestjs microservices](#131-nestjs-microservices)
+  - [13. Nestjs microservices](#13-nestjs-microservices)
   - [14.](#14)
   - [15.](#15)
   - [16.](#16)
@@ -2965,7 +2960,7 @@ Check awesome article of Wanago at:
 
 ---
 
-## 13.1 Nestjs microservices
+## 13. Nestjs microservices
 
 <details>
 <summary>Click to expand section</summary>
@@ -2975,7 +2970,7 @@ Check the code at branch [13-microservice-grpc](https://gitlab.com/tienduy-nguye
 
 Project microservice found at [nest-email-subscription](https://gitlab.com/tienduy-nguyen/nestjs-demo/-/tree/master/nestjs-microservice)
 
-Check awesome article of Wanago at:
+Check awesome articles of Marcin Wanago at:
 - [Exploring the idea of microservice](https://wanago.io/2020/11/16/api-nestjs-microservices/)
 - [Using RabbitMQ to communicate with microservices](https://wanago.io/2020/11/23/api-nestjs-rabbitmq-microservices/)
 - [Using gRPC framework to comunicate microservices](https://wanago.io/2020/11/30/api-nestjs-microservices-grpc-framework/)
