@@ -4,6 +4,7 @@ import { AppModule } from './app/app.module';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import { setupSwagger } from '@common/config/swagger';
+import { runInCluster } from '@common/utils/run-in-cluster';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,4 +24,4 @@ async function bootstrap() {
     console.log(`Server is running at http://localhost:${port}/`);
   });
 }
-bootstrap();
+runInCluster(bootstrap);

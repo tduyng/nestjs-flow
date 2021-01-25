@@ -17,7 +17,7 @@ import { ISubscriberService } from './subscriber.interface';
 @UseInterceptors(ClassSerializerInterceptor)
 export class SubscriberController {
   private subscribersService: ISubscriberService;
-  constructor(@Inject('SUBSCRIBERS_PACKAGE') private client: ClientGrpc) {}
+  constructor(@Inject('SUBSCRIBER_PACKAGE') private client: ClientGrpc) {}
 
   onModuleInit() {
     this.subscribersService = this.client.getService<ISubscriberService>(
