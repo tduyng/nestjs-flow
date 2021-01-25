@@ -81,8 +81,9 @@ This series demo is just for purpose learning or practice NestJS.
   - [12. Improve performance of databases](#12-improve-performance-of-databases)
   - [13. Nestjs microservices](#13-nestjs-microservices)
   - [14. Command Query Responsibility Segregation (CQRS Pattern)](#14-command-query-responsibility-segregation-cqrs-pattern)
-  - [Implementing CQRS in NestJs](#implementing-cqrs-in-nestjs)
-  - [15.](#15)
+    - [Implementing CQRS in NestJs](#implementing-cqrs-in-nestjs)
+  - [15.1 Implementing in-memory cache](#151-implementing-in-memory-cache)
+  - [15.2 Caching with Redis](#152-caching-with-redis)
   - [16.](#16)
   - [References](#references)
 
@@ -3002,7 +3003,7 @@ Doing the above forces us to avoid mixing domain logic and infrastructural opera
 
 `Domain-Driven Design is a very broad topic and it will be covered separately`
 
-## Implementing CQRS in NestJs
+### Implementing CQRS in NestJs
 
 The very first thing to do is to install a new package. It includes all of the utilities we need in this article.
 
@@ -3036,7 +3037,7 @@ export class Comment {
 
 ```
 
-
+...
 
 **Missing docs for this part. Working in progress....**
 
@@ -3045,20 +3046,40 @@ export class Comment {
 ---
 
 
-## 15.
+## 15.1 Implementing in-memory cache
 
 <details>
 <summary>Click to expand section</summary>
 
-Check the code at branch [10-elasticsearch](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/10-elasticsearch)
+Check the code at branch [15-in-memory-cache](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/15-in-memory-cache)
 
-Check awesome article of Wanago at [Improving performance of our Postgres database with indexes](https://wanago.io/2020/10/19/nestjs-performance-postgres-database-indexes/)
+Check awesome article of Wanago about this part:
+- [Implementing in-memory cache](https://wanago.io/2021/01/04/api-nestjs-in-memory-cache-performance/)
+
 
 **Missing docs for this part. Working in progress....**
 
 </details>
 
 ---
+
+## 15.2 Caching with Redis
+
+<details>
+<summary>Click to expand section</summary>
+
+Check the code at branch [15-redis](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/15-redis)
+
+Check awesome article of Wanago about this part:
+- [Caching with Redis](https://wanago.io/2021/01/11/nestjs-cache-redis-node-js-cluster/)
+
+
+**Missing docs for this part. Working in progress....**
+
+</details>
+
+---
+
 
 
 ## 16.
