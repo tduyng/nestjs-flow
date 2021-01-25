@@ -6,12 +6,14 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Min } from 'class-validator';
 import { User } from '@modules/user/user.entity';
 import { Category } from '@modules/category/category.entity';
 import { Expose } from 'class-transformer';
+import { Comment } from '@modules/comment/comment.entity';
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn('uuid')
@@ -53,6 +55,9 @@ export class Post {
   })
   @JoinTable()
   public categories: Category[];
+
+  @OneToMany(() => Comment, (comment: Comment) => comment.post)
+  public comments: Comment[];
 
   @BeforeUpdate()
   updateTimestamp() {
