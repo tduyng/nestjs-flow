@@ -35,5 +35,8 @@ declare namespace NodeJS {
     readonly EMAIL_SERVICE: string;
     readonly EMAIL_USER: string;
     readonly EMAIL_PASSWORD: string;
+    readonly FB_APP_ID: string;
+    readonly FB_APP_SECRET: string;
+    readonly FB_CALLBACK_URL: string;
   }
 }
