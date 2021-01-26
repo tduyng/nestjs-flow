@@ -15,6 +15,7 @@ import { SubscriberModule } from '@modules/subscriber/subscriber.module';
 import { CommentModule } from '@modules/comment/comment.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EmailSchedulingModule } from '@modules/email-scheduling/email-scheduling.module';
+import { ChatModule } from '@modules/chat/chat.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { EmailSchedulingModule } from '@modules/email-scheduling/email-schedulin
     SubscriberModule,
     CommentModule,
     EmailSchedulingModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
