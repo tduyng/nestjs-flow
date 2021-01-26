@@ -32,5 +32,8 @@ declare namespace NodeJS {
     readonly GRPC_CONNECTION_URL: string;
     readonly REDIS_HOST: string;
     readonly REDIS_PORT: string;
+    readonly EMAIL_SERVICE: string;
+    readonly EMAIL_USER: string;
+    readonly EMAIL_PASSWORD: string;
   }
 }

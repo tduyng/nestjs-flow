@@ -13,6 +13,8 @@ import { FilesModule } from '@modules/files/files.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { SubscriberModule } from '@modules/subscriber/subscriber.module';
 import { CommentModule } from '@modules/comment/comment.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { EmailSchedulingModule } from '@modules/email-scheduling/email-scheduling.module';
 
 @Module({
   imports: [
@@ -24,6 +26,7 @@ import { CommentModule } from '@modules/comment/comment.module';
     MulterModule.register({
       dest: 'src/common/upload',
     }),
+    ScheduleModule.forRoot(),
     PostModule,
     UserModule,
     AddressModule,
@@ -33,6 +36,7 @@ import { CommentModule } from '@modules/comment/comment.module';
     AddressModule,
     SubscriberModule,
     CommentModule,
+    EmailSchedulingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
