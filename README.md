@@ -84,7 +84,8 @@ This series demo is just for purpose learning or practice NestJS.
     - [Implementing CQRS in NestJs](#implementing-cqrs-in-nestjs)
   - [15.1 Implementing in-memory cache](#151-implementing-in-memory-cache)
   - [15.2 Caching with Redis](#152-caching-with-redis)
-  - [16.](#16)
+  - [16. Scheduling, cron jobs with Nodemailer](#16-scheduling-cron-jobs-with-nodemailer)
+  - [17. Realtime chat with Websocket](#17-realtime-chat-with-websocket)
   - [References](#references)
 
 
@@ -3082,14 +3083,30 @@ Check awesome article of Wanago about this part:
 
 
 
-## 16.
+## 16. Scheduling, cron jobs with Nodemailer
 
 <details>
 <summary>Click to expand section</summary>
 
-Check the code at branch [10-elasticsearch](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/10-elasticsearch)
+Check the code at branch [16-cronjob](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/16-cronjob)
 
-Check awesome article of wanago at [Improving performance of our Postgres database with indexes](https://wanago.io/2020/10/19/nestjs-performance-postgres-database-indexes/)
+Check awesome article of wanago at [Nestjs scheduling, cron job](https://wanago.io/2021/01/18/api-nestjs-cron-nodemailer/)
+
+**Missing docs for this part. Working in progress....**
+
+</details>
+
+---
+
+
+## 17. Realtime chat with Websocket
+
+<details>
+<summary>Click to expand section</summary>
+
+Check the code at branch [17-chat](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/17-chat)
+
+Check awesome article of wanago at [Nestjs Realtime chat with websocket](https://wanago.io/2021/01/25/api-nestjs-chat-websockets/)
 
 **Missing docs for this part. Working in progress....**
 
