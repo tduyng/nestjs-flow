@@ -1,3 +1,5 @@
+import { CacheModule } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostController } from '../post.controller';
 import { Post } from '../post.entity';
@@ -17,6 +19,7 @@ describe('PostController', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [ConfigModule.forRoot(), CacheModule.register()],
       controllers: [PostController],
       providers: [
         {
