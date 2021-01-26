@@ -4,6 +4,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -92,6 +93,52 @@ export class AuthService {
       cookie,
       token,
     };
+  }
+
+  public async getUserFromAuthToken(token: string) {
+    try {
+      const payload: IPayloadJwt = this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
+      });
+      if (!payload.userId) {
+        throw new BadRequestException('Invalid credentials');
+      }
+      return this.getUserById(payload.userId);
+    } catch (error) {
+      if (error.status) {
+        throw error;
+      }
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  public async getUserByEmail(email: string) {
+    try {
+      const user = await this.authRepository.getUserByEmail(email);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      return user;
+    } catch (error) {
+      if (error.status) {
+        throw error;
+      }
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  public async getUserById(userId: string) {
+    try {
+      const user = await this.authRepository.getUserById(userId);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      return user;
+    } catch (error) {
+      if (error.status) {
+        throw error;
+      }
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   public async setCurrentRefreshToken(

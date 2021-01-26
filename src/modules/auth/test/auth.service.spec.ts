@@ -166,4 +166,6 @@ describe('AuthService', () => {
       expect(result).toEqual('some user');
     });
   });
+
+  /* Test getUserFromAuthToken */
 });

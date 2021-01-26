@@ -3090,7 +3090,7 @@ Check awesome article of Wanago about this part:
 
 Check the code at branch [16-cronjob](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/16-cronjob)
 
-Check awesome article of wanago at [Nestjs scheduling, cron job](https://wanago.io/2021/01/18/api-nestjs-cron-nodemailer/)
+Check awesome article of Wanago at [Nestjs scheduling, cron job](https://wanago.io/2021/01/18/api-nestjs-cron-nodemailer/)
 
 **Missing docs for this part. Working in progress....**
 
@@ -3106,7 +3106,7 @@ Check awesome article of wanago at [Nestjs scheduling, cron job](https://wanago.
 
 Check the code at branch [17-chat](https://gitlab.com/tienduy-nguyen/nestjs-flow/-/tree/17-chat)
 
-Check awesome article of wanago at [Nestjs Realtime chat with websocket](https://wanago.io/2021/01/25/api-nestjs-chat-websockets/)
+Check awesome article of Wanago at [Nestjs Realtime chat with websocket](https://wanago.io/2021/01/25/api-nestjs-chat-websockets/)
 
 **Missing docs for this part. Working in progress....**
 

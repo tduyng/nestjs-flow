@@ -1,12 +1,14 @@
-import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostRepository } from '../post.repository';
 import { PostSearchService } from '../services/post-search.service';
 import { PostService } from '../services/post.service';
+import { CacheModule, CACHE_MANAGER, NotFoundException } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
 describe('PostService', () => {
   let postService: PostService;
   let postRepository;
+  let cacheManager;
 
   const mockPostRepository = () => ({
     getPosts: jest.fn(),
@@ -24,6 +26,7 @@ describe('PostService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [ConfigModule.forRoot(), CacheModule.register()],
       providers: [
         PostService,
         {
@@ -39,6 +42,7 @@ describe('PostService', () => {
 
     postService = module.get<PostService>(PostService);
     postRepository = module.get<PostRepository>(PostRepository);
+    cacheManager = module.get<any>(CACHE_MANAGER);
   });
 
   it('Should be defined', () => {
@@ -112,6 +116,21 @@ describe('PostService', () => {
   describe('deletePost', () => {
     it('Should delete product', async () => {
       postRepository.deletePost.mockResolvedValue(null);
+      expect(postRepository.deletePost).not.toHaveBeenCalled();
+      await postService.deletePost('some id');
+      expect(postRepository.deletePost).toHaveBeenCalledWith('some id');
+    });
+  });
+
+  describe('clearCache', () => {
+    it('Should clear caching successfully', async () => {
+      cacheManager.del = jest.fn();
+      cacheManager = {
+        store: {
+          keys: jest.fn(),
+        },
+      };
+      cacheManager.store.keys.mockReturnValue(['some', 'thing']);
       expect(postRepository.deletePost).not.toHaveBeenCalled();
       await postService.deletePost('some id');
       expect(postRepository.deletePost).toHaveBeenCalledWith('some id');
