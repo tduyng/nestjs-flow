@@ -25,6 +25,9 @@ import { PaginationDto } from '@common/global-dto/pagination.dto';
 
 @Controller('users')
 @ApiTags('Users')
+// @SerializeOptions({
+//   strategy: 'excludeAll',
+// })
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

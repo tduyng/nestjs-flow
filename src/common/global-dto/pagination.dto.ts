@@ -1,4 +1,4 @@
 export abstract class PaginationDto {
-  page?: number;
-  limit?: number;
+  page: number;
+  limit: number;
 }

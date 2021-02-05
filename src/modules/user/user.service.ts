@@ -29,10 +29,14 @@ export class UserService {
 
   public async getUsers(pagination?: PaginationDto) {
     try {
-      if (!pagination) {
-        return await this.userRepository.getAllUsers();
+      if (
+        pagination &&
+        Object.keys(pagination).length > 0 &&
+        pagination.constructor === Object
+      ) {
+        return await this.userRepository.getPaginatedUsers(pagination);
       }
-      return await this.userRepository.getPaginatedUsers(pagination);
+      return await this.userRepository.getAllUsers();
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
