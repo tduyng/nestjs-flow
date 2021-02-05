@@ -6,9 +6,11 @@ import {
   JoinColumn,
   OneToMany,
   BeforeUpdate,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { IsEmail, Min } from 'class-validator';
-import { Exclude } from 'class-transformer';
+import { classToPlain, Exclude } from 'class-transformer';
 import { Address } from '../address/address.entity';
 import { Post } from '@modules/post/post.entity';
 import { PublicFile } from '@modules/files/public-file.entity';
@@ -39,6 +41,8 @@ export class User {
     default: () => 'CURRENT_TIMESTAMP',
     nullable: true,
   })
+  @CreateDateColumn()
+  @Exclude()
   public createdAt?: Date;
 
   @Column({
@@ -46,6 +50,8 @@ export class User {
     default: () => 'CURRENT_TIMESTAMP',
     nullable: true,
   })
+  @UpdateDateColumn()
+  @Exclude()
   public updatedAt?: Date;
 
   /* Relationship */
@@ -87,6 +93,10 @@ export class User {
   @BeforeUpdate()
   updateTimestamp() {
     this.updatedAt = new Date();
+  }
+
+  toJSON() {
+    return classToPlain(this);
   }
 
   constructor(
