@@ -1,14 +1,51 @@
+import { PaginationDto } from '@common/global-dto/pagination.dto';
 import { Address } from '@modules/address/address.entity';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { EntityRepository, Repository } from 'typeorm';
-import { UpdateAvatarDto } from './dto';
+import { PaginatedUsersDto, UpdateAvatarDto } from './dto';
 import { User } from './user.entity';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-  public async getUsers(): Promise<User[]> {
-    return await this.find();
+  /**
+   * Get all users
+   *
+   * @return  {Promise<PaginatedUsersDto>}[return {data: User[], totalCount: number}]
+   */
+  public async getAllUsers(): Promise<PaginatedUsersDto> {
+    const users = await this.find();
+    const totalCount = await this.count();
+    return {
+      totalCount,
+      data: users,
+    } as PaginatedUsersDto;
   }
+
+  /**
+   * Get users by page and limit items of page
+   *
+   * @return  {Promise<PaginatedUsersDto>} [return PaginatedUsersDto]
+   */
+  public async getPaginatedUsers(
+    paginationDto: PaginationDto,
+  ): Promise<PaginatedUsersDto> {
+    const { page, limit } = paginationDto;
+    const skippedItems = (page - 1) * limit;
+    const totalCount = await this.count();
+    const users = await this.createQueryBuilder()
+      .orderBy(`"createdAt"`, 'DESC')
+      .offset(skippedItems)
+      .limit(limit)
+      .getMany();
+    const result: PaginatedUsersDto = {
+      totalCount,
+      page,
+      limit,
+      data: users,
+    };
+    return result;
+  }
+
   public async getUserById(id: string): Promise<User> {
     return await this.findOne({ where: { id: id } });
   }

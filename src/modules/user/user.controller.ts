@@ -1,4 +1,4 @@
-import { IRequestWithUser } from '@common/interfaces/http.interface';
+import { IRequestWithUser } from '@common/global-interfaces/http.interface';
 import { CreateAddressDto, UpdateAddressDto } from '@modules/address/dto';
 import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 import { UploadFileDto } from '@modules/files/dto';
@@ -10,6 +10,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UploadedFile,
   UploadedFiles,
@@ -20,6 +21,7 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { diskStorage } from 'multer';
+import { PaginationDto } from '@common/global-dto/pagination.dto';
 
 @Controller('users')
 @ApiTags('Users')
@@ -27,8 +29,8 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  public async getUsers() {
-    return await this.userService.getUsers();
+  public async getUsers(@Query() paginationDto?: PaginationDto) {
+    return await this.userService.getUsers(paginationDto);
   }
 
   /* Avatar */

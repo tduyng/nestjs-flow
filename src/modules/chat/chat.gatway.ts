@@ -2,7 +2,6 @@ import { Server, Socket } from 'socket.io';
 import {
   ConnectedSocket,
   MessageBody,
-  OnGatewayConnection,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,

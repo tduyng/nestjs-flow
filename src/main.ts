@@ -21,7 +21,7 @@ async function bootstrap() {
   setupSwagger(app);
   const port = process.env.SERVER_PORT;
   await app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}/`);
+    console.log(`Server is running at http://localhost:${port}/api/docs`);
   });
 }
 bootstrap();

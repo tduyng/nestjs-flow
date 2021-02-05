@@ -13,8 +13,8 @@ export class EmailService {
       port: 587,
       secure: false, // true for 465, false for other ports
       auth: {
-        user: this._testAccount.user || process.env.EMAIL_USER,
-        pass: this._testAccount.pass || process.env.EMAIL_PASSWORD,
+        user: this._testAccount?.user || process.env.EMAIL_USER,
+        pass: this._testAccount?.pass || process.env.EMAIL_PASSWORD,
       },
     });
   }

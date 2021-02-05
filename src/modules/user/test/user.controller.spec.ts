@@ -3,12 +3,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from '../user.service';
 import { User } from '../user.entity';
 import { PublicFile } from '@modules/files/public-file.entity';
-import { IRequestWithUser } from '@common/interfaces/http.interface';
+import { IRequestWithUser } from '@common/global-interfaces/http.interface';
 import { CreateAddressDto } from '@modules/address/dto';
 import { Address } from '@modules/address/address.entity';
 import { PrivateFile } from '@modules/files/private-file.entity';
+import { PaginatedUsersDto } from '../dto';
 
-const userArray = [{ id: 'some userId' } as User];
 const onePublicFile = { id: 'some fileId' } as PublicFile;
 
 const req: IRequestWithUser = {
@@ -22,6 +22,11 @@ const oneUser = {
     id: 'some avatarId',
   } as PublicFile,
 } as User;
+
+const paginatedUsers = {
+  data: [oneUser, oneUser],
+  totalCount: 2,
+} as PaginatedUsersDto;
 
 const onePrivateFile = { id: 'some fileId' } as PrivateFile;
 
@@ -37,7 +42,7 @@ describe('UserController', () => {
         {
           provide: UserService,
           useValue: {
-            getUsers: jest.fn().mockReturnValue(userArray),
+            getUsers: jest.fn().mockReturnValue(paginatedUsers),
             addAvatar: jest.fn().mockReturnValue(onePublicFile),
             deleteAvatar: jest.fn().mockReturnValue({ deleted: true }),
             createUserAddress: jest.fn().mockReturnValue(oneUser),
@@ -62,8 +67,8 @@ describe('UserController', () => {
   });
 
   describe('getUsers', () => {
-    it('Should return an array of user', async () => {
-      expect(userController.getUsers()).resolves.toEqual(userArray);
+    it('Should return an paginated user result for all users', async () => {
+      expect(userController.getUsers()).resolves.toEqual(paginatedUsers);
     });
   });
 

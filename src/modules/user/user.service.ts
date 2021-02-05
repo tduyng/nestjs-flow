@@ -1,3 +1,4 @@
+import { PaginationDto } from '@common/global-dto/pagination.dto';
 import { AddressService } from '@modules/address/address.service';
 import { CreateAddressDto, UpdateAddressDto } from '@modules/address/dto';
 import { UploadFileDto } from '@modules/files/dto';
@@ -26,9 +27,12 @@ export class UserService {
     private connection: Connection,
   ) {}
 
-  public async getUsers(): Promise<User[]> {
+  public async getUsers(pagination?: PaginationDto) {
     try {
-      return await this.userRepository.getUsers();
+      if (!pagination) {
+        return await this.userRepository.getAllUsers();
+      }
+      return await this.userRepository.getPaginatedUsers(pagination);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }

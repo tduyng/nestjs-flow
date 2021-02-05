@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from '../auth.service';
 import { AuthController } from '../auth.controller';
 import { RegisterUserDto } from '../dto';
-import { IRequestWithUser } from '@common/interfaces/http.interface';
+import { IRequestWithUser } from '@common/global-interfaces/http.interface';
 import { User } from '@modules/user/user.entity';
 
 const registerDto: RegisterUserDto = {

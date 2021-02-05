@@ -13,6 +13,8 @@ import { PrivateFile } from '@modules/files/private-file.entity';
 import { PrivateFileService } from '@modules/files/services/private-file.service';
 import { UploadFileDto } from '@modules/files/dto';
 import { Connection } from 'typeorm';
+import { PaginatedUsersDto } from '../dto';
+import { PaginationDto } from '@common/global-dto/pagination.dto';
 
 const oneUser = {
   id: 'some id',
@@ -21,6 +23,11 @@ const oneUser = {
   avatar: null,
   address: null,
 } as User;
+
+const arrayPaginatedUsers = {
+  data: [oneUser, oneUser],
+  totalCount: 2,
+} as PaginatedUsersDto;
 const oneUserWithAvatar = {
   id: 'some id',
   email: 'some email',
@@ -56,7 +63,8 @@ describe('UserService', () => {
   // let connection;
 
   const mockUserRepository = () => ({
-    getUsers: jest.fn(),
+    getAllUsers: jest.fn(),
+    getPaginatedUsers: jest.fn(),
     getUserById: jest.fn(),
     getUserWithFilesById: jest.fn(),
     getUserByEmail: jest.fn(),
@@ -156,15 +164,22 @@ describe('UserService', () => {
     expect(userService).toBeDefined();
   });
 
-  describe('getUsers', () => {
+  describe('getAllUsers', () => {
     it('Should return all users', async () => {
-      userRepository.getUsers.mockResolvedValue('all users');
-      expect(userRepository.getUsers).not.toHaveBeenCalled();
-
+      userRepository.getAllUsers.mockResolvedValue(arrayPaginatedUsers);
       const result = await userService.getUsers();
+      expect(result).toEqual(arrayPaginatedUsers);
+    });
+  });
 
-      expect(userRepository.getUsers).toHaveBeenCalled();
-      expect(result).toEqual('all users');
+  describe('getPaginatedUsers', () => {
+    it('Should return users by page', async () => {
+      userRepository.getPaginatedUsers.mockResolvedValue(arrayPaginatedUsers);
+      const result = await userService.getUsers({
+        limit: 2,
+        page: 1,
+      } as PaginationDto);
+      expect(result).toEqual(arrayPaginatedUsers);
     });
   });
 
