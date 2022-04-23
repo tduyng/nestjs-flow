@@ -3118,4 +3118,3 @@ Check awesome article of Wanago at [Nestjs Realtime chat with websocket](https:/
 ## References
 
 - [Docs NestJs](https://docs.nestjs.com/)
-- Thanks [Wanago](https://wanago.io/) to awesome of [series NestJS](https://github.com/mwanago/nestjs-typescript)
